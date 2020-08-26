@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'TermsOfUsePage.dart';
+import 'terms_of_use_page.dart';
 
 class IntroPage extends StatelessWidget {
   @override
@@ -18,17 +18,20 @@ class IntroPage extends StatelessWidget {
             SizedBox(
               height: 40.0,
             ),
-            RaisedButton(
-                child: Text(
-                  '시작하기',
-                  style: TextStyle(fontSize: 32),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TermsOfUsePage()));
-                })
+            ButtonTheme(
+              buttonColor: Colors.amberAccent[200],
+              child: RaisedButton(
+                  child: Text(
+                    '시작하기',
+                    style: TextStyle(fontSize: 32),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => TermsOfUsePage()));
+                  }),
+            )
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'ui/widget/IntroPage.dart';
+import 'ui/widget/intro_page.dart';
 
 void main() => runApp(AnonymousChat());
 
