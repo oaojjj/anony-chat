@@ -2,11 +2,11 @@ import 'package:anony_chat/model/terms_data.dart';
 
 class TermsDataAPI {
   List<TermsData> _mItems;
-  bool allAgree;
+  bool _allAgree;
 
   TermsDataAPI({List<TermsData> items}) {
     _mItems = items;
-    allAgree = false;
+    _allAgree = false;
   }
 
   List<TermsData> get mItems => _mItems;
@@ -15,24 +15,36 @@ class TermsDataAPI {
     _mItems = value;
   }
 
-  onCheck(int index, bool b) {
+  bool get allAgree => _allAgree;
+
+  set allAgree(bool value) {
+    _allAgree = value;
+  }
+
+  onChecked(int index, bool b) {
     _mItems[index].isChecked = b;
   }
 
   onAllAgreeCheckBox(bool b) {
-    allAgree = b;
+    _allAgree = b;
     _mItems.forEach((element) {
       element.isChecked = b;
     });
   }
 
   bool isRequiredChecked() {
-    if (allAgree) return true;
+    if (_allAgree) return true;
     for (final item in _mItems) {
       if (item.required && !item.isChecked) {
         return false;
       }
     }
     return true;
+  }
+
+  String returnRequiredString(int index) {
+    return _mItems[index].required
+        ? '(필수) ' + _mItems[index].title
+        : '(선택) ' + _mItems[index].title;
   }
 }
