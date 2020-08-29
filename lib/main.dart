@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'ui/widget/intro_page.dart';
+import 'ui/page/intro_page.dart';
 
 void main() => runApp(AnonymousChat());
 
@@ -9,11 +9,11 @@ class AnonymousChat extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Anonymous Chat',
-      theme: ThemeData(primarySwatch: Colors.amber),
+      theme: ThemeData(
+          primarySwatch: Colors.amber,
+          accentColor: Colors.amberAccent,
+          brightness: Brightness.light),
       home: IntroPage(),
     );
   }
 }
-
-
-

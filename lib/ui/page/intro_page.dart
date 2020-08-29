@@ -19,11 +19,13 @@ class IntroPage extends StatelessWidget {
               height: 40.0,
             ),
             ButtonTheme(
+              minWidth: 160.0,
+              height: 40.0,
               buttonColor: Colors.amberAccent,
               child: RaisedButton(
                   child: Text(
                     '시작하기',
-                    style: TextStyle(fontSize: 32),
+                    style: TextStyle(fontSize: 24),
                   ),
                   onPressed: () {
                     Navigator.push(
