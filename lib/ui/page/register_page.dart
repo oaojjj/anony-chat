@@ -58,12 +58,12 @@ class _RegisterPageState extends State<RegisterPage> {
             child: Container(
               padding: EdgeInsets.all(8.0),
               color: Colors.amberAccent[100],
-              height: 60.0,
+              height: 70.0,
               width: double.infinity,
               child: Text(
                 '회원정보는 설정에서\n 언제든 변경가능합니다.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16.0),
+                style: TextStyle(fontSize: 18.0),
               ),
             ),
           ),
@@ -78,8 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ButtonTheme(
                     shape: sexBtnColor
                         ? RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            side: BorderSide(color: Colors.black))
+                            borderRadius: BorderRadius.circular(4.0))
                         : null,
                     minWidth: 120.0,
                     height: 50.0,
@@ -100,8 +99,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     shape: sexBtnColor
                         ? null
                         : RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            side: BorderSide(color: Colors.black)),
+                            borderRadius: BorderRadius.circular(4.0)),
                     minWidth: 120.0,
                     height: 50.0,
                     child: FlatButton(
@@ -121,92 +119,99 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           SizedBox(height: 20.0),
-          Center(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Column(
-                      children: [
-                        Text('태어난 해',
-                            style:
-                                TextStyle(fontSize: 24.0, color: Colors.white)),
-                        SizedBox(height: 16.0),
-                        Text('지역',
-                            style:
-                                TextStyle(fontSize: 24.0, color: Colors.white))
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        // 객체 자체를 참조해야 setState 에서 참조 가능해서 변경
-                        createDropDownButton(_items[0]),
-                        SizedBox(height: 16.0),
-                        createDropDownButton(_items[1]),
-                      ],
-                    )
-                  ],
-                ),
-                SizedBox(height: 80.0),
-                ButtonTheme(
-                  buttonColor: Colors.amberAccent,
-                  minWidth: 240.0,
-                  height: 40.0,
-                  child: RaisedButton(
-                      child: Text('학생증인증하기', style: TextStyle(fontSize: 24.0)),
-                      onPressed: () {
-                        // TODO 학생증 인증 페이지
-                      }),
-                ),
-                SizedBox(height: 8.0),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text('같은 대학교 학생 안만나기',
-                      style: TextStyle(fontSize: 20.0, color: Colors.white)),
-                  SizedBox(width: 16.0),
-                  Container(
-                    width: 60.0,
-                    child: Switch(
-                        activeColor: Colors.white,
-                        value: newMember.isNotMeetingSameUniversity,
-                        onChanged: (value) {
-                          setState(() {
-                            newMember.isNotMeetingSameUniversity = value;
-                          });
-                        }),
-                  )
-                ]),
-                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text('전화번호 목록 친구 안만나기',
-                      style: TextStyle(fontSize: 20.0, color: Colors.white)),
-                  SizedBox(width: 16.0),
-                  Container(
-                    width: 60.0,
-                    child: Switch(
-                        activeColor: Colors.white,
-                        value: newMember.isNotMeetingPhoneList,
-                        onChanged: (value) {
-                          setState(() {
-                            newMember.isNotMeetingPhoneList = value;
-                          });
-                        }),
-                  )
-                ]),
-                SizedBox(height: 40.0),
-                ButtonTheme(
-                  minWidth: 160.0,
-                  height: 40.0,
-                  buttonColor: Colors.amberAccent,
-                  child: RaisedButton(
-                      child: Text(
-                        '가입하기',
-                        style: TextStyle(fontSize: 24.0),
+          Expanded(
+            child: Center(
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Column(
+                        children: [
+                          Text('태어난 해',
+                              style: TextStyle(
+                                  fontSize: 24.0, color: Colors.white)),
+                          SizedBox(height: 16.0),
+                          Text('지역',
+                              style: TextStyle(
+                                  fontSize: 24.0, color: Colors.white))
+                        ],
                       ),
-                      onPressed: !isCanRegister ? () => {
-                        // TODO 가입하기 버튼
-                      } : null),
-                )
-              ],
+                      Column(
+                        children: [
+                          // 객체 자체를 참조해야 setState 에서 참조 가능해서 변경
+                          createDropDownButton(_items[0]),
+                          SizedBox(height: 16.0),
+                          createDropDownButton(_items[1]),
+                        ],
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 60.0),
+                  ButtonTheme(
+                    buttonColor: Colors.amberAccent,
+                    minWidth: 240.0,
+                    height: 40.0,
+                    child: RaisedButton(
+                        child:
+                            Text('학생증인증하기', style: TextStyle(fontSize: 24.0)),
+                        onPressed: () {
+                          // TODO 학생증 인증 페이지
+                        }),
+                  ),
+                  SizedBox(height: 8.0),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Text('같은 대학교 학생 안만나기',
+                        style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                    SizedBox(width: 16.0),
+                    Container(
+                      width: 60.0,
+                      child: Switch(
+                          activeColor: Colors.white,
+                          value: newMember.isNotMeetingSameUniversity,
+                          onChanged: (value) {
+                            setState(() {
+                              newMember.isNotMeetingSameUniversity = value;
+                            });
+                          }),
+                    )
+                  ]),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Text('전화번호 목록 친구 안만나기',
+                        style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                    SizedBox(width: 16.0),
+                    Container(
+                      width: 60.0,
+                      child: Switch(
+                          activeColor: Colors.white,
+                          value: newMember.isNotMeetingPhoneList,
+                          onChanged: (value) {
+                            setState(() {
+                              newMember.isNotMeetingPhoneList = value;
+                            });
+                          }),
+                    )
+                  ]),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 24.0),
+            child: ButtonTheme(
+              minWidth: 160.0,
+              height: 40.0,
+              buttonColor: Colors.amberAccent,
+              child: RaisedButton(
+                  child: Text(
+                    '가입하기',
+                    style: TextStyle(fontSize: 24.0),
+                  ),
+                  onPressed: !isCanRegister
+                      ? () => {
+                            // TODO 가입하기 버튼
+                          }
+                      : null),
             ),
           )
         ],
@@ -220,7 +225,6 @@ class _RegisterPageState extends State<RegisterPage> {
       width: 100.0,
       decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(color: Colors.black, width: 1.0),
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
       child: Center(
         child: DropdownButtonHideUnderline(
