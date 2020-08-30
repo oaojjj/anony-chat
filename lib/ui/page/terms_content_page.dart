@@ -26,7 +26,7 @@ class TermsContentPage extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black), color: Colors.white),
+                  border: Border.all(color: Colors.black54), color: Colors.white),
               padding: EdgeInsets.all(16.0),
               margin: EdgeInsets.all(24.0),
               child: Text(mItem.content),

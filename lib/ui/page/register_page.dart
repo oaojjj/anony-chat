@@ -1,4 +1,5 @@
 import 'package:anony_chat/model/member.dart';
+import 'package:anony_chat/ui/page/student_card_certification_page.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -20,20 +21,23 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // #true남자, #false여자
   bool sexBtnColor;
-  bool isCanRegister;
+  bool stdCardCertification;
 
   // data
   List<MyDropDownMenuItem> _items = [];
-  List<String> _itemsBirth =
-      List<String>.generate(30, (i) => (i + 1970).toString() + '년생');
-  List<String> _itemsRegion = ['대구', '부산', '서울'];
+  List<String> _itemsBirth = List<String>.generate(30, (i) {
+    if (i == 0)
+      return '선택';
+    else
+      return (i + 1970).toString();
+  });
+  List<String> _itemsRegion = ['선택', '대구', '부산', '서울'];
 
   @override
   void initState() {
     newMember = Member();
-    isCanRegister = false;
     sexBtnColor = true;
-
+    stdCardCertification = false;
     _items.add(MyDropDownMenuItem(_itemsBirth));
     _items.add(MyDropDownMenuItem(_itemsRegion));
     super.initState();
@@ -155,9 +159,15 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: RaisedButton(
                         child:
                             Text('학생증인증하기', style: TextStyle(fontSize: 24.0)),
-                        onPressed: () {
-                          // TODO 학생증 인증 페이지
-                        }),
+                        onPressed: stdCardCertification
+                            ? null
+                            : () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SCCertification()));
+                              }),
                   ),
                   SizedBox(height: 8.0),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -197,7 +207,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(bottom: 24.0),
+            padding: EdgeInsets.only(bottom: 12.0),
             child: ButtonTheme(
               minWidth: 160.0,
               height: 40.0,
@@ -205,9 +215,9 @@ class _RegisterPageState extends State<RegisterPage> {
               child: RaisedButton(
                   child: Text(
                     '가입하기',
-                    style: TextStyle(fontSize: 24.0),
+                    style: TextStyle(fontSize: 20.0),
                   ),
-                  onPressed: !isCanRegister
+                  onPressed: isCanRegister()
                       ? () => {
                             // TODO 가입하기 버튼
                           }
@@ -226,23 +236,27 @@ class _RegisterPageState extends State<RegisterPage> {
       decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
-      child: Center(
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<String>(
-              value: item.selected,
-              items: item.list.map<DropdownMenuItem<String>>((value) {
-                return DropdownMenuItem(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (newItem) {
-                setState(() {
-                  item.selected = newItem;
-                });
-              }),
-        ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+            value: item.selected,
+            items: item.list.map<DropdownMenuItem<String>>((value) {
+              return DropdownMenuItem(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (newItem) {
+              setState(() {
+                item.selected = newItem;
+              });
+            }),
       ),
     );
+  }
+
+  bool isCanRegister() {
+    if (newMember.birthYear == '선택' || newMember.region == '선택') return false;
+    if (stdCardCertification != true) return false;
+    return true;
   }
 }

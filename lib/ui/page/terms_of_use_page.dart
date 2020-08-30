@@ -70,21 +70,23 @@ class _TermsOfUsePageState extends State<TermsOfUsePage> {
               },
             ),
           ),
-          ButtonTheme(
-            minWidth: 160.0,
-            buttonColor: Colors.amberAccent,
-            child: RaisedButton(
-                child: Text('확인'),
-                onPressed: _termsDataAPI.isRequiredChecked()
-                    ? () => {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => RegisterPage()))
-                        }
-                    : null),
+          Padding(
+            padding: EdgeInsets.only(bottom: 12.0),
+            child: ButtonTheme(
+              minWidth: 160.0,
+              buttonColor: Colors.amberAccent,
+              child: RaisedButton(
+                  child: Text('확인', style: TextStyle(fontSize: 20.0)),
+                  onPressed: _termsDataAPI.isRequiredChecked()
+                      ? () => {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => RegisterPage()))
+                          }
+                      : null),
+            ),
           ),
-          SizedBox(height: 16.0)
         ],
       ),
     );

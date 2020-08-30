@@ -3,8 +3,8 @@ class Member {
   String region; // 지역
   String university;
   String studentCard;
+  String birthYear;
   int studentID;
-  int birthYear;
   bool isNotMeetingSameUniversity = false;
   bool isNotMeetingPhoneList = false;
 
