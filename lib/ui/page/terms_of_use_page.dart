@@ -1,7 +1,7 @@
 import 'package:anony_chat/api/terms_api.dart';
 import 'package:anony_chat/model/terms_data.dart';
-import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/ui/page/register_page.dart';
-import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/ui/page/terms_content_page.dart';
+import 'package:anony_chat/ui/page/register_page.dart';
+import 'package:anony_chat/ui/page/terms_content_page.dart';
 import 'package:flutter/material.dart';
 
 // 이용약관 동의 페이지
@@ -36,7 +36,7 @@ class _TermsOfUsePageState extends State<TermsOfUsePage> {
         centerTitle: true,
         backgroundColor: Colors.amber[700],
         title: Text(
-          '이용약관',
+          '이용약관 동의',
           style: TextStyle(color: Colors.white),
         ),
       ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'ui/page/intro_page.dart';
 
 void main() => runApp(AnonymousChat());

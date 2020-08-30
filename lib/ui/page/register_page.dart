@@ -6,23 +6,36 @@ class RegisterPage extends StatefulWidget {
   _RegisterPageState createState() => _RegisterPageState();
 }
 
+class MyDropDownMenuItem {
+  List<String> list;
+  String selected;
+
+  MyDropDownMenuItem(this.list) {
+    selected = list[0];
+  }
+}
+
 class _RegisterPageState extends State<RegisterPage> {
   Member newMember;
+
+  // #true남자, #false여자
+  bool sexBtnColor;
   bool isCanRegister;
-  bool sexColor;
-  String _selectedItemBirth;
-  String _selectedItemRegion;
+
+  // data
+  List<MyDropDownMenuItem> _items = [];
   List<String> _itemsBirth =
-      List<String>.generate(50, (i) => (i + 1950).toString() + '년생');
+      List<String>.generate(30, (i) => (i + 1970).toString() + '년생');
   List<String> _itemsRegion = ['대구', '부산', '서울'];
 
   @override
   void initState() {
     newMember = Member();
     isCanRegister = false;
-    sexColor = false;
-    _selectedItemBirth = _itemsBirth[0];
-    _selectedItemRegion = _itemsRegion[0];
+    sexBtnColor = true;
+
+    _items.add(MyDropDownMenuItem(_itemsBirth));
+    _items.add(MyDropDownMenuItem(_itemsRegion));
     super.initState();
   }
 
@@ -44,7 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
           Center(
             child: Container(
               padding: EdgeInsets.all(8.0),
-              color: Colors.amberAccent,
+              color: Colors.amberAccent[100],
               height: 60.0,
               width: double.infinity,
               child: Text(
@@ -55,7 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           SizedBox(
-            height: 24.0,
+            height: 30.0,
           ),
           Container(
             child: Center(
@@ -63,23 +76,43 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ButtonTheme(
-                    minWidth: 100.0,
+                    shape: sexBtnColor
+                        ? RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            side: BorderSide(color: Colors.black))
+                        : null,
+                    minWidth: 120.0,
                     height: 50.0,
                     child: FlatButton(
                       child: Text('남자', style: TextStyle(fontSize: 20.0)),
-                      onPressed: () {},
-                      color: Colors.black12,
+                      onPressed: () {
+                        setState(() {
+                          sexBtnColor = true;
+                        });
+                        newMember.sex = '남자';
+                      },
+                      color: sexBtnColor ? Colors.amberAccent : Colors.black26,
                       textColor: Colors.black,
                     ),
                   ),
                   SizedBox(width: 24.0),
                   ButtonTheme(
-                    minWidth: 100.0,
+                    shape: sexBtnColor
+                        ? null
+                        : RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                            side: BorderSide(color: Colors.black)),
+                    minWidth: 120.0,
                     height: 50.0,
                     child: FlatButton(
                       child: Text('여자', style: TextStyle(fontSize: 20.0)),
-                      onPressed: () {},
-                      color: Colors.amberAccent[100],
+                      onPressed: () {
+                        setState(() {
+                          sexBtnColor = false;
+                        });
+                        newMember.sex = '여자';
+                      },
+                      color: sexBtnColor ? Colors.black26 : Colors.amberAccent,
                       textColor: Colors.black,
                     ),
                   ),
@@ -87,55 +120,124 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
           ),
+          SizedBox(height: 20.0),
           Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('태어난 해',
-                  style: TextStyle(fontSize: 20.0, color: Colors.white)),
-              SizedBox(width: 20.0),
-              DropdownButton<String>(
-                  value: _selectedItemBirth,
-                  items: _itemsBirth.map<DropdownMenuItem<String>>((value) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newItem) {
-                    setState(() {
-                      _selectedItemBirth = newItem;
-                    });
-                  })
-            ],
-          )),
-          Center(
-              child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('지역', style: TextStyle(fontSize: 20.0, color: Colors.white)),
-              SizedBox(width: 20.0),
-              DropdownButton<String>(
-                  style: TextStyle(color: Colors.white),
-                  value: _selectedItemRegion,
-                  underline: Container(
-                    height: 2,
-                    color: Colors.amberAccent,
-                  ),
-                  items: _itemsRegion.map<DropdownMenuItem<String>>((value) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (newItem) {
-                    setState(() {
-                      _selectedItemRegion = newItem;
-                    });
-                  })
-            ],
-          ))
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      children: [
+                        Text('태어난 해',
+                            style:
+                                TextStyle(fontSize: 24.0, color: Colors.white)),
+                        SizedBox(height: 16.0),
+                        Text('지역',
+                            style:
+                                TextStyle(fontSize: 24.0, color: Colors.white))
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        // 객체 자체를 참조해야 setState 에서 참조 가능해서 변경
+                        createDropDownButton(_items[0]),
+                        SizedBox(height: 16.0),
+                        createDropDownButton(_items[1]),
+                      ],
+                    )
+                  ],
+                ),
+                SizedBox(height: 80.0),
+                ButtonTheme(
+                  buttonColor: Colors.amberAccent,
+                  minWidth: 240.0,
+                  height: 40.0,
+                  child: RaisedButton(
+                      child: Text('학생증인증하기', style: TextStyle(fontSize: 24.0)),
+                      onPressed: () {
+                        // TODO 학생증 인증 페이지
+                      }),
+                ),
+                SizedBox(height: 8.0),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text('같은 대학교 학생 안만나기',
+                      style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                  SizedBox(width: 16.0),
+                  Container(
+                    width: 60.0,
+                    child: Switch(
+                        activeColor: Colors.white,
+                        value: newMember.isNotMeetingSameUniversity,
+                        onChanged: (value) {
+                          setState(() {
+                            newMember.isNotMeetingSameUniversity = value;
+                          });
+                        }),
+                  )
+                ]),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text('전화번호 목록 친구 안만나기',
+                      style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                  SizedBox(width: 16.0),
+                  Container(
+                    width: 60.0,
+                    child: Switch(
+                        activeColor: Colors.white,
+                        value: newMember.isNotMeetingPhoneList,
+                        onChanged: (value) {
+                          setState(() {
+                            newMember.isNotMeetingPhoneList = value;
+                          });
+                        }),
+                  )
+                ]),
+                SizedBox(height: 40.0),
+                ButtonTheme(
+                  minWidth: 160.0,
+                  height: 40.0,
+                  buttonColor: Colors.amberAccent,
+                  child: RaisedButton(
+                      child: Text(
+                        '가입하기',
+                        style: TextStyle(fontSize: 24.0),
+                      ),
+                      onPressed: !isCanRegister ? () => {
+                        // TODO 가입하기 버튼
+                      } : null),
+                )
+              ],
+            ),
+          )
         ],
+      ),
+    );
+  }
+
+  Widget createDropDownButton(MyDropDownMenuItem item) {
+    return Container(
+      height: 40.0,
+      width: 100.0,
+      decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.black, width: 1.0),
+          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+      child: Center(
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+              value: item.selected,
+              items: item.list.map<DropdownMenuItem<String>>((value) {
+                return DropdownMenuItem(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (newItem) {
+                setState(() {
+                  item.selected = newItem;
+                });
+              }),
+        ),
       ),
     );
   }
