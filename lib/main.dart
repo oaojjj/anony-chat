@@ -1,3 +1,4 @@
+import 'package:anony_chat/style/style.dart';
 import 'package:flutter/material.dart';
 import 'ui/page/intro_page.dart';
 
@@ -11,7 +12,7 @@ class AnonymousChat extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.amber,
           accentColor: Colors.amberAccent,
-          brightness: Brightness.light),
+          scaffoldBackgroundColor: Colors.amber),
       home: IntroPage(),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:anony_chat/api/terms_api.dart';
 import 'package:anony_chat/model/terms_data.dart';
+import 'package:anony_chat/style/style.dart';
 import 'package:anony_chat/ui/page/register_page.dart';
 import 'package:anony_chat/ui/page/terms_content_page.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,7 @@ class _TermsOfUsePageState extends State<TermsOfUsePage> {
       ),
       backgroundColor: Colors.amber,
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Expanded(
             child: ListView.separated(
@@ -70,23 +72,27 @@ class _TermsOfUsePageState extends State<TermsOfUsePage> {
               },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 12.0),
-            child: ButtonTheme(
-              minWidth: 160.0,
-              buttonColor: Colors.amberAccent,
-              child: RaisedButton(
-                  child: Text('확인', style: TextStyle(fontSize: 20.0)),
-                  onPressed: _termsDataAPI.isRequiredChecked()
-                      ? () => {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterPage()))
-                          }
-                      : null),
+          Container(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32.0),
+              child: ButtonTheme(
+                buttonColor: Colors.amberAccent,
+                minWidth: double.infinity,
+                height: 50.0,
+                child: RaisedButton(
+                    child: Text('확인', style: TextStyle(fontSize: 28.0)),
+                    onPressed: _termsDataAPI.isRequiredChecked()
+                        ? () => {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegisterPage()))
+                            }
+                        : null),
+              ),
             ),
           ),
+          SizedBox(height: Style.instance.size.height * 0.05)
         ],
       ),
     );

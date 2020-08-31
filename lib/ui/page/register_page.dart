@@ -1,4 +1,5 @@
 import 'package:anony_chat/model/member.dart';
+import 'package:anony_chat/style/style.dart';
 import 'package:anony_chat/ui/page/student_card_certification_page.dart';
 import 'package:flutter/material.dart';
 
@@ -57,6 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       backgroundColor: Colors.amber,
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Center(
             child: Container(
@@ -128,10 +130,9 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        children: [
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(children: [
                           Text('태어난 해',
                               style: TextStyle(
                                   fontSize: 24.0, color: Colors.white)),
@@ -139,52 +140,46 @@ class _RegisterPageState extends State<RegisterPage> {
                           Text('지역',
                               style: TextStyle(
                                   fontSize: 24.0, color: Colors.white))
-                        ],
-                      ),
-                      Column(
-                        children: [
+                        ]),
+                        Column(children: [
                           // 객체 자체를 참조해야 setState 에서 참조 가능해서 변경
                           createDropDownButton(_items[0]),
                           SizedBox(height: 16.0),
-                          createDropDownButton(_items[1]),
-                        ],
-                      )
-                    ],
-                  ),
+                          createDropDownButton(_items[1])
+                        ])
+                      ]),
                   SizedBox(height: 60.0),
                   ButtonTheme(
-                    buttonColor: Colors.amberAccent,
-                    minWidth: 240.0,
-                    height: 40.0,
-                    child: RaisedButton(
-                        child:
-                            Text('학생증인증하기', style: TextStyle(fontSize: 24.0)),
-                        onPressed: stdCardCertification
-                            ? null
-                            : () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SCCertification()));
-                              }),
-                  ),
+                      buttonColor: Colors.amberAccent,
+                      minWidth: 240.0,
+                      height: 40.0,
+                      child: RaisedButton(
+                          child:
+                              Text('학생증인증하기', style: TextStyle(fontSize: 24.0)),
+                          onPressed: stdCardCertification
+                              ? null
+                              : () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SCCertification()));
+                                })),
                   SizedBox(height: 8.0),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text('같은 대학교 학생 안만나기',
                         style: TextStyle(fontSize: 20.0, color: Colors.white)),
                     SizedBox(width: 16.0),
                     Container(
-                      width: 60.0,
-                      child: Switch(
-                          activeColor: Colors.white,
-                          value: newMember.isNotMeetingSameUniversity,
-                          onChanged: (value) {
-                            setState(() {
-                              newMember.isNotMeetingSameUniversity = value;
-                            });
-                          }),
-                    )
+                        width: 60.0,
+                        child: Switch(
+                            activeColor: Colors.white,
+                            value: newMember.isNotMeetingSameUniversity,
+                            onChanged: (value) {
+                              setState(() {
+                                newMember.isNotMeetingSameUniversity = value;
+                              });
+                            }))
                   ]),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     Text('전화번호 목록 친구 안만나기',
@@ -206,24 +201,23 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 12.0),
-            child: ButtonTheme(
-              minWidth: 160.0,
-              height: 40.0,
-              buttonColor: Colors.amberAccent,
-              child: RaisedButton(
-                  child: Text(
-                    '가입하기',
-                    style: TextStyle(fontSize: 20.0),
-                  ),
-                  onPressed: isCanRegister()
-                      ? () => {
-                            // TODO 가입하기 버튼
-                          }
-                      : null),
+          Container(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 32.0),
+              child: ButtonTheme(
+                  buttonColor: Colors.amberAccent,
+                  minWidth: double.infinity,
+                  height: 50.0,
+                  child: RaisedButton(
+                      child: Text('가입하기', style: TextStyle(fontSize: 20.0)),
+                      onPressed: isCanRegister()
+                          ? () => {
+                                // TODO 가입하기 버튼
+                              }
+                          : null)),
             ),
-          )
+          ),
+          SizedBox(height: Style.instance.size.height * 0.05),
         ],
       ),
     );
@@ -237,20 +231,16 @@ class _RegisterPageState extends State<RegisterPage> {
           color: Colors.white,
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
       child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-            value: item.selected,
-            items: item.list.map<DropdownMenuItem<String>>((value) {
-              return DropdownMenuItem(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (newItem) {
-              setState(() {
-                item.selected = newItem;
-              });
-            }),
-      ),
+          child: DropdownButton<String>(
+              value: item.selected,
+              items: item.list.map<DropdownMenuItem<String>>((value) {
+                return DropdownMenuItem(value: value, child: Text(value));
+              }).toList(),
+              onChanged: (newItem) {
+                setState(() {
+                  item.selected = newItem;
+                });
+              })),
     );
   }
 
