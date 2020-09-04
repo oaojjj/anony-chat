@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "727340374289",
+    "firebase_url": "https://anony-chat-32124.firebaseio.com",
+    "project_id": "anony-chat-32124",
+    "storage_bucket": "anony-chat-32124.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:727340374289:android:2f37e9ab27af4cefb1d4b0",
+        "android_client_info": {
+          "package_name": "com.chaeft.anony_chat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "727340374289-mq54u55a88fpbrof0bjiarrpof56lb6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuR-dnkSfeIZ9cLRktsC4ORoQIb8gC0Gc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "727340374289-mq54u55a88fpbrof0bjiarrpof56lb6i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

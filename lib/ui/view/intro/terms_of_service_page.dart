@@ -1,7 +1,7 @@
 import 'package:anony_chat/api/terms_api.dart';
 import 'package:anony_chat/model/terms_data.dart';
-import 'package:anony_chat/ui/page/register_page.dart';
-import 'package:anony_chat/ui/page/terms_content_page.dart';
+import 'package:anony_chat/ui/view/register_page.dart';
+import 'package:anony_chat/ui/view/terms_content_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -44,7 +44,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
               // 모두 동의하기 넣기위해 길이 +1
               itemCount: _termsDataAPI.mItems.length + 1,
               itemBuilder: (context, index) {
-                return createTerms(index);
+                return _createTerms(index);
               },
               separatorBuilder: (context, index) {
                 return Divider(
@@ -73,8 +73,8 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
     );
   }
 
-  Widget createTerms(int index) {
-    if (index == _termsDataAPI.mItems.length) return createFooter();
+  Widget _createTerms(int index) {
+    if (index == _termsDataAPI.mItems.length) return _createFooter();
 
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -98,7 +98,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
     );
   }
 
-  Widget createFooter() {
+  Widget _createFooter() {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
       leading: Checkbox(

@@ -1,5 +1,5 @@
 import 'package:anony_chat/model/member.dart';
-import 'package:anony_chat/ui/page/student_card_certification_page.dart';
+import 'package:anony_chat/ui/view/student_card_certification_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -78,11 +78,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ButtonTheme(
-                    shape: sexBtnColor
-                        ? RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4.0),
-                        side: BorderSide(color: Colors.black))
-                        : null,
                     minWidth: 120.0,
                     height: 50.0,
                     child: FlatButton(
@@ -98,11 +93,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   SizedBox(width: 24.0),
                   ButtonTheme(
-                    shape: !sexBtnColor
-                        ? RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4.0),
-                        side: BorderSide(color: Colors.black))
-                        : null,
                     minWidth: 120.0,
                     height: 50.0,
                     child: FlatButton(
@@ -135,9 +125,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ]),
                         Column(children: [
                           // 객체 자체를 참조해야 setState 에서 참조 가능해서 변경
-                          createDropDownButton(_items[0]),
+                          _createDropDownButton(_items[0]),
                           SizedBox(height: 16.0),
-                          createDropDownButton(_items[1])
+                          _createDropDownButton(_items[1])
                         ])
                       ]),
                   SizedBox(height: 80.0),
@@ -197,7 +187,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget createDropDownButton(MyDropDownMenuItem item) {
+  Widget _createDropDownButton(MyDropDownMenuItem item) {
     return Container(
       height: 40.0,
       width: 100.0,
