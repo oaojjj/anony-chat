@@ -1,22 +1,38 @@
-class Member {
+class User {
   String sex;
-  String region; // 지역
+  String region;
   String university;
-  String studentCard;
+  String studentCardImage;
   String birthYear;
   int studentID;
-  bool isNotMeetingSameUniversity = false;
-  bool isNotMeetingPhoneList = false;
+  bool isNotMeetingSameUniversity;
+  bool isNotMeetingPhoneList;
+
+  User(
+      {this.sex='남자',
+      this.region,
+      this.university,
+      this.studentCardImage,
+      this.birthYear,
+      this.studentID,
+      this.isNotMeetingSameUniversity=false,
+      this.isNotMeetingPhoneList=false});
 
   @override
   String toString() {
-    return 'sex=' + sex +
-        'region=' + region +
-        'university' + university +
-        'studentCard' + studentCard +
-        'studentID' + studentID.toString() +
-        'birthYear' + birthYear.toString() +
-        'isNotMeetingSameUniversity' + isNotMeetingSameUniversity.toString() +
-        'isNotMeetingPhoneList' + isNotMeetingPhoneList.toString();
+    return 'sex:' +
+        sex +
+        '\nbirthYear:' +
+        birthYear+
+        '\nregion:' +
+        region +
+        '\nuniversity:' +
+        university +
+        '\nstudentID:' +
+        studentID.toString() +
+        '\nisNotMeetingSameUniversity:' +
+        isNotMeetingSameUniversity.toString() +
+        '\nisNotMeetingPhoneList:' +
+        isNotMeetingPhoneList.toString();
   }
 }

@@ -1,4 +1,4 @@
-import 'package:anony_chat/model/terms_data.dart';
+import 'package:anony_chat/model/dao/terms_data.dart';
 
 class TermsDataAPI {
   List<TermsData> _mItems;

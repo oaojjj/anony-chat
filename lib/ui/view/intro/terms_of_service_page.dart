@@ -1,9 +1,11 @@
 import 'package:anony_chat/api/terms_api.dart';
-import 'package:anony_chat/model/terms_data.dart';
-import 'package:anony_chat/ui/view/register_page.dart';
-import 'package:anony_chat/ui/view/terms_content_page.dart';
+import 'package:anony_chat/model/dao/terms_data.dart';
+import 'package:anony_chat/provider/sign_up_auth_state_provider.dart';
+import 'package:anony_chat/ui/view/intro/sign_up_page.dart';
+import 'package:anony_chat/ui/view/intro/terms_content_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // 이용약관 동의 페이지
 class TermsOfServicePage extends StatefulWidget {
@@ -12,7 +14,7 @@ class TermsOfServicePage extends StatefulWidget {
 }
 
 class _TermsOfServicePageState extends State<TermsOfServicePage> {
-  TermsDataAPI _termsDataAPI;
+  TermsDataAPI _tda;
 
   // TEST data
   final List<TermsData> testItems = [
@@ -24,7 +26,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
 
   @override
   void initState() {
-    _termsDataAPI = TermsDataAPI(items: testItems);
+    _tda = TermsDataAPI(items: testItems);
     super.initState();
   }
 
@@ -42,7 +44,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
           Expanded(
             child: ListView.separated(
               // 모두 동의하기 넣기위해 길이 +1
-              itemCount: _termsDataAPI.mItems.length + 1,
+              itemCount: _tda.mItems.length + 1,
               itemBuilder: (context, index) {
                 return _createTerms(index);
               },
@@ -58,12 +60,17 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
             ),
           ),
           BottomButton(
-              onPressed: _termsDataAPI.isRequiredChecked()
+              onPressed: _tda.isRequiredChecked()
                   ? () => {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => RegisterPage()))
+                              builder: (context) => ChangeNotifierProvider<
+                                  RegisterAuthStateProvider>.value(
+                                child: SignUpPage(),
+                                value: RegisterAuthStateProvider(),
+                              ),
+                            ))
                       }
                   : null,
               text: '확인'),
@@ -73,53 +80,46 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
     );
   }
 
+  // 약관동의 리스트
   Widget _createTerms(int index) {
-    if (index == _termsDataAPI.mItems.length) return _createFooter();
+    if (index == _tda.mItems.length) return _createFooter();
 
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
       leading: Checkbox(
-          value: _termsDataAPI.mItems[index].isChecked,
+          value: _tda.mItems[index].isChecked,
           onChanged: (value) {
             setState(() {
-              _termsDataAPI.onChecked(index, value);
+              _tda.onChecked(index, value);
             });
           }),
-      title: Text(_termsDataAPI.returnRequiredString(index)),
-      trailing: ButtonTheme(
-        minWidth: 30.0,
-        buttonColor: Colors.amberAccent,
-        child: IconButton(
-            icon: Icon(Icons.search),
-            onPressed: () {
-              _navigateDisplaySelection(context, index);
-            }),
-      ),
+      title: Text(_tda.returnRequiredString(index)),
+      trailing: IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            _navigateTermsContent(context, index);
+          }),
     );
   }
 
+  // 모두 동의하기
   Widget _createFooter() {
     return ListTile(
-      contentPadding: EdgeInsets.symmetric(horizontal: 8.0),
       leading: Checkbox(
-          value: _termsDataAPI.allAgree,
+          value: _tda.allAgree,
           onChanged: (value) {
             setState(() {
-              _termsDataAPI.onAllAgreeCheckBox(value);
+              _tda.onAllAgreeCheckBox(value);
             });
           }),
       title: Text("모두 동의하기", style: TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
-  _navigateDisplaySelection(BuildContext context, int index) async {
+  _navigateTermsContent(BuildContext context, int index) async {
     TermsData result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                TermsContentPage(_termsDataAPI.mItems[index])));
-    setState(() {
-      result.isChecked = true;
-    });
+            builder: (context) => TermsContentPage(_tda.mItems[index])));
+    result.isChecked = true;
   }
 }
