@@ -1,8 +1,12 @@
+import 'package:anony_chat/routes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-import 'ui/view/intro/intro_page.dart';
-
-void main() => runApp(AnonymousChat());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(AnonymousChat());
+}
 
 class AnonymousChat extends StatelessWidget {
   @override
@@ -10,9 +14,8 @@ class AnonymousChat extends StatelessWidget {
     return MaterialApp(
       title: 'Anonymous Chat',
       theme: ThemeData(
-          primarySwatch: Colors.amber,
-          accentColor: Colors.amberAccent),
-      home: IntroPage(),
+          primarySwatch: Colors.amber, accentColor: Colors.amberAccent),
+      routes: routes,
     );
   }
 }

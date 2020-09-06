@@ -1,8 +1,7 @@
 import 'package:anony_chat/api/terms_api.dart';
 import 'package:anony_chat/model/dao/terms_data.dart';
-import 'package:anony_chat/provider/sign_up_auth_state_provider.dart';
-import 'package:anony_chat/ui/view/intro/sign_up_page.dart';
-import 'package:anony_chat/ui/view/intro/terms_content_page.dart';
+import 'package:anony_chat/provider/register_state_provider.dart';
+import 'package:anony_chat/ui/view/intro/register_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,9 +44,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
             child: ListView.separated(
               // 모두 동의하기 넣기위해 길이 +1
               itemCount: _tda.mItems.length + 1,
-              itemBuilder: (context, index) {
-                return _createTerms(index);
-              },
+              itemBuilder: (context, index) => _createTerms(index),
               separatorBuilder: (context, index) {
                 return Divider(
                   height: 1.0,
@@ -60,19 +57,16 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
             ),
           ),
           BottomButton(
-              onPressed: _tda.isRequiredChecked()
-                  ? () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ChangeNotifierProvider<
-                                  RegisterAuthStateProvider>.value(
-                                child: SignUpPage(),
-                                value: RegisterAuthStateProvider(),
-                              ),
-                            ))
-                      }
-                  : null,
+              onPressed: _tda.isRequiredChecked() ? () => {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChangeNotifierProvider<RegisterStateProvider>.value(
+                        child: RegisterPage(),
+                        value: RegisterStateProvider(),
+                      ),
+                    ))
+              } : null,
               text: '확인'),
           SizedBox(height: size.height * 0.05)
         ],
@@ -88,16 +82,12 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
       leading: Checkbox(
           value: _tda.mItems[index].isChecked,
           onChanged: (value) {
-            setState(() {
-              _tda.onChecked(index, value);
-            });
+            setState(() => _tda.onChecked(index, value));
           }),
       title: Text(_tda.returnRequiredString(index)),
       trailing: IconButton(
           icon: Icon(Icons.search),
-          onPressed: () {
-            _navigateTermsContent(context, index);
-          }),
+          onPressed: () => _navigateTermsContent(context, index)),
     );
   }
 
@@ -107,19 +97,16 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
       leading: Checkbox(
           value: _tda.allAgree,
           onChanged: (value) {
-            setState(() {
-              _tda.onAllAgreeCheckBox(value);
-            });
+            setState(() => _tda.onAllAgreeCheckBox(value));
           }),
       title: Text("모두 동의하기", style: TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
   _navigateTermsContent(BuildContext context, int index) async {
-    TermsData result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => TermsContentPage(_tda.mItems[index])));
-    result.isChecked = true;
+    TermsData result = await Navigator.pushNamed<dynamic>(
+        context, '/termsContent',
+        arguments: _tda.mItems[index]);
+    setState(() => result.isChecked = true);
   }
 }

@@ -1,7 +1,6 @@
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import 'terms_of_service_page.dart';
 
 class IntroPage extends StatelessWidget {
   @override
@@ -19,14 +18,23 @@ class IntroPage extends StatelessWidget {
                   CircleAvatar(backgroundImage: AssetImage('assets/dog.png'))),
           SizedBox(height: size.height * 0.4),
           BottomButton(
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => TermsOfServicePage()));
-              },
+              onPressed: () => Navigator.pushNamed(context, _route())
+              ,
               text: '시작하기'),
           SizedBox(height: size.height * 0.05)
         ],
       ),
     );
   }
+
+  String _route() {
+    FirebaseAuth mAuth = FirebaseAuth.instance;
+    User currentUser = mAuth.currentUser;
+    if (currentUser != null) {
+      return '/main';
+    } else {
+      return '/termsOfService';
+    }
+  }
+
 }

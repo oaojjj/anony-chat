@@ -1,7 +1,8 @@
-import 'package:anony_chat/model/dao/user.dart';
-import 'package:anony_chat/provider/sign_up_auth_state_provider.dart';
+import 'package:anony_chat/model/dao/user.dart' as my;
+import 'package:anony_chat/provider/register_state_provider.dart';
 import 'package:anony_chat/ui/view/intro/student_card_certification_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,13 +16,13 @@ class MyDropDownMenuItem {
   }
 }
 
-class SignUpPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  User newUser;
+class _RegisterPageState extends State<RegisterPage> {
+  my.User newUser;
 
   // #true남자, #false여자
   bool sexBtnColor;
@@ -38,7 +39,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void initState() {
-    newUser = User();
+    newUser = my.User();
     sexBtnColor = true;
     _items.add(MyDropDownMenuItem('태어난해', _itemsBirth));
     _items.add(MyDropDownMenuItem('지역', _itemsRegion));
@@ -86,9 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: Text('남자', style: TextStyle(fontSize: 20.0)),
                         onPressed: () {
                           newUser.sex = '남자';
-                          setState(() {
-                            sexBtnColor = true;
-                          });
+                          setState(() => sexBtnColor = true);
                         },
                         color:
                             sexBtnColor ? Colors.amberAccent : Colors.black26,
@@ -102,9 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: Text('여자', style: TextStyle(fontSize: 20.0)),
                         onPressed: () {
                           newUser.sex = '여자';
-                          setState(() {
-                            sexBtnColor = false;
-                          });
+                          setState(() => sexBtnColor = false);
                         },
                         color:
                             !sexBtnColor ? Colors.amberAccent : Colors.black26,
@@ -143,12 +140,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: RaisedButton(
                       color: Colors.amberAccent,
                       child: Text('학생증인증하기', style: TextStyle(fontSize: 24.0)),
-                      onPressed: Provider.of<RegisterAuthStateProvider>(context)
+                      onPressed: Provider.of<RegisterStateProvider>(context)
                               .stdCardCertification
                           ? null
-                          : () {
-                              _navigateStdCardCertification(context);
-                            }),
+                          : () => _navigateStdCardCertification(context)),
                 ),
                 SizedBox(height: 8.0),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -158,9 +153,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: Switch(
                           value: newUser.isNotMeetingSameUniversity,
                           onChanged: (value) {
-                            setState(() {
-                              newUser.isNotMeetingSameUniversity = value;
-                            });
+                            setState(() =>
+                                newUser.isNotMeetingSameUniversity = value);
                           }))
                 ]),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -170,9 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: Switch(
                         value: newUser.isNotMeetingPhoneList,
                         onChanged: (value) {
-                          setState(() {
-                            newUser.isNotMeetingPhoneList = value;
-                          });
+                          setState(() => newUser.isNotMeetingPhoneList = value);
                         }),
                   )
                 ]),
@@ -181,11 +173,9 @@ class _SignUpPageState extends State<SignUpPage> {
             SizedBox(height: 24.0),
             BottomButton(
                 onPressed:
-                    Provider.of<RegisterAuthStateProvider>(context).authState ==
+                    Provider.of<RegisterStateProvider>(context).authState ==
                             AuthState.canRegister
-                        ? () => {
-                  print(newUser.toString())
-                    }
+                        ? () => { _registerAndLogin()}
                         : null,
                 text: '가입하기'),
             SizedBox(height: size.height * 0.05),
@@ -203,11 +193,12 @@ class _SignUpPageState extends State<SignUpPage> {
 
     // result!=null => 인증에 성공한 경우
     if (result != null) {
-      Provider.of<RegisterAuthStateProvider>(context,listen: false).successCertification();
+      Provider.of<RegisterStateProvider>(context, listen: false)
+          .successCertification();
       newUser.university = result[0];
       newUser.studentID = int.parse(result[1]);
+      // newUser.studentCardImage=
       // result[2]에 File의 형태로 학생증 이미지 넘어옴
-      //newUser.studentCardImage=
 
       // TODO 가입 로직 짜기
       // 가입(newUser);
@@ -250,5 +241,10 @@ class _SignUpPageState extends State<SignUpPage> {
       default:
         break;
     }
+  }
+
+  Future<void> _registerAndLogin() async {
+    await FirebaseAuth.instance.signInAnonymously();
+    Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false);
   }
 }

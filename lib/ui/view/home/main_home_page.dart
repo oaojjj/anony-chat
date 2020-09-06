@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -12,9 +13,9 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: SafeArea(
-        child: Container(
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -25,7 +26,7 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     ButtonTheme(
                         height: 50.0,
-                        minWidth: 100.0,
+                        minWidth: 50.0,
                         child:
                             RaisedButton(child: Text('메뉴'), onPressed: () {})),
                     Stack(
@@ -35,7 +36,7 @@ class _MainPageState extends State<MainPage> {
                         ButtonTheme(
                           height: 50.0,
                           minWidth: 250.0,
-                            child: RaisedButton(
+                          child: RaisedButton(
                             onPressed: () {},
                             child: Text('보낼 수 있는 메시지: $n개',
                                 textAlign: TextAlign.left),
@@ -59,6 +60,11 @@ class _MainPageState extends State<MainPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Container(
+                    child: RaisedButton(
+                      child: Text('로그아웃'),
+                        onPressed: (){
+                      FirebaseAuth.instance.signOut();
+                    }),
                     decoration:
                         BoxDecoration(border: Border.all(color: Colors.black)),
                   ),
@@ -71,7 +77,7 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     ButtonTheme(
                         height: 50.0,
-                        minWidth: 100.0,
+                        minWidth: 50.0,
                         child:
                             RaisedButton(child: Text('목록'), onPressed: () {})),
                     ButtonTheme(
