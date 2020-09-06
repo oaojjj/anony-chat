@@ -7,7 +7,7 @@ import 'package:anony_chat/ui/view/intro/terms_of_service_page.dart';
 import 'package:flutter/material.dart';
 
 final routes = {
-  '/': (BuildContext context) => IntroPage(),
+  //'/': (BuildContext context) => IntroPage(),
   '/intro': (BuildContext context) => IntroPage(),
   '/termsOfService': (BuildContext context) => TermsOfServicePage(),
   '/termsContent': (BuildContext context) => TermsContentPage(),

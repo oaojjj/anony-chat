@@ -4,5 +4,9 @@ class TermsData {
   String title;
   String content;
 
-  TermsData(this.required, this.isChecked, this.title, this.content);
+  TermsData.fromMap(Map<String, dynamic> map)
+      : required = map['required'],
+        isChecked = map['isChecked'],
+        title = map['title'],
+        content = map['content'];
 }

@@ -125,12 +125,9 @@ class _SCCertificationState extends State<SCCertification> {
               ]),
               SizedBox(height: 8.0),
               showImage(),
-              SizedBox(height: 32.0),
+              SizedBox(height: 24.0),
               BottomButton(
-                  onPressed: _isUpload ? () {
-                          _successCertification(context);
-                        }
-                      : null,
+                  onPressed: true ? () {_successCertification(context);} : null,
                   text: '인증하기'),
             ],
           ),

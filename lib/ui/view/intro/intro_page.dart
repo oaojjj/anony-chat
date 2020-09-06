@@ -1,5 +1,4 @@
 import 'package:anony_chat/ui/widget/bottom_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class IntroPage extends StatelessWidget {
@@ -14,27 +13,14 @@ class IntroPage extends StatelessWidget {
           Container(
               height: 160.0,
               width: 160.0,
-              child:
-                  CircleAvatar(backgroundImage: AssetImage('assets/dog.png'))),
+              child: CircleAvatar(backgroundImage: AssetImage('assets/images/dog.png'))),
           SizedBox(height: size.height * 0.4),
           BottomButton(
-              onPressed: () => Navigator.pushNamed(context, _route())
-              ,
+              onPressed: () => Navigator.pushNamed(context, '/termsOfService'),
               text: '시작하기'),
           SizedBox(height: size.height * 0.05)
         ],
       ),
     );
   }
-
-  String _route() {
-    FirebaseAuth mAuth = FirebaseAuth.instance;
-    User currentUser = mAuth.currentUser;
-    if (currentUser != null) {
-      return '/main';
-    } else {
-      return '/termsOfService';
-    }
-  }
-
 }

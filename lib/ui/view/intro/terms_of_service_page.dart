@@ -15,17 +15,33 @@ class TermsOfServicePage extends StatefulWidget {
 class _TermsOfServicePageState extends State<TermsOfServicePage> {
   TermsDataAPI _tda;
 
-  // TEST data
-  final List<TermsData> testItems = [
-    TermsData(true, false, '약관동의 테스트 제목',
-        '제 1장 총칙\n\n 제1조(목적)\n\n본 약관은 국가공간정보포털 웹사이트(이하 \"국가공간정보포털\")가 제공하는 모든 서비스 어쩌고 저쩌고 약관동의 너무 길다. 하기싫다...\n\n 제 2조(약관의 효력과 변경)\n\n 1. 어쩌고 저쩌고 본 약관 내용에 어쩌고 하는경우 어쩌고 저쩌고 저쩌고 어쩌고 저쩌고 이쩌고 자쩌고\n정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애\n\n\n\n\n\n\n\testsetestestsem\n\ntesttestestestse\n\n\n\테스트\n\n\n\n\n\n\n\n\n\스크롤뷰 되나요'),
-    TermsData(true, false, '약관동의 테스트 제목2', '약관동의 테스트 내용2'),
-    TermsData(false, false, '광고성 문자 수신 동의', '약관동의 테스트 내용3'),
+  // dummy data
+  final List<TermsData> dummyItems = [
+    TermsData.fromMap({
+      'required': true,
+      'isChecked': false,
+      'title': '약관동의 테스트 제목',
+      'content':
+          '제 1장 총칙\n\n 제1조(목적)\n\n본 약관은 국가공간정보포털 웹사이트(이하 \"국가공간정보포털\")가 제공하는 모든 서비스 어쩌고 저쩌고 약관동의 너무 길다. 하기싫다...\n\n 제 2조(약관의 효력과 변경)\n\n 1. 어쩌고 저쩌고 본 약관 내용에 어쩌고 하는경우 어쩌고 저쩌고 저쩌고 어쩌고 저쩌고 이쩌고 자쩌고\n정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애\n\n\n\n\n\n\n\testsetestestsem\n\ntesttestestestse\n\n\n\테스트\n\n\n\n\n\n\n\n\n\스크롤뷰 되나요',
+    }),
+    TermsData.fromMap({
+      'required': true,
+      'isChecked': false,
+      'title': '약관동의 테스트 제목2',
+      'content':
+          '제 2장 총칙\n\n 제1조(목적)\n\n본 약관은 국가공간정보포털 웹사이트(이하 \"국가공간정보포털\")가 제공하는 모든 서비스 어쩌고 저쩌고 약관동의 너무 길다. 하기싫다...\n\n 제 2조(약관의 효력과 변경)\n\n 1. 어쩌고 저쩌고 본 약관 내용에 어쩌고 하는경우 어쩌고 저쩌고 저쩌고 어쩌고 저쩌고 이쩌고 자쩌고\n정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애정신나갈것같애\n\n\n\n\n\n\n\testsetestestsem\n\ntesttestestestse\n\n\n\테스트\n\n\n\n\n\n\n\n\n\스크롤뷰 되나요',
+    }),
+    TermsData.fromMap({
+      'required': false,
+      'isChecked': false,
+      'title': '광고성 문자 수신 동의',
+      'content': 'test3',
+    })
   ];
 
   @override
   void initState() {
-    _tda = TermsDataAPI(items: testItems);
+    _tda = TermsDataAPI(items: dummyItems);
     super.initState();
   }
 
@@ -44,7 +60,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
             child: ListView.separated(
               // 모두 동의하기 넣기위해 길이 +1
               itemCount: _tda.mItems.length + 1,
-              itemBuilder: (context, index) => _createTerms(index),
+              itemBuilder: (context, index) => _buildTerms(index),
               separatorBuilder: (context, index) {
                 return Divider(
                   height: 1.0,
@@ -57,16 +73,19 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
             ),
           ),
           BottomButton(
-              onPressed: _tda.isRequiredChecked() ? () => {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChangeNotifierProvider<RegisterStateProvider>.value(
-                        child: RegisterPage(),
-                        value: RegisterStateProvider(),
-                      ),
-                    ))
-              } : null,
+              onPressed: _tda.isRequiredChecked()
+                  ? () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChangeNotifierProvider<
+                                  RegisterStateProvider>.value(
+                                child: RegisterPage(),
+                                value: RegisterStateProvider(),
+                              ),
+                            ))
+                      }
+                  : null,
               text: '확인'),
           SizedBox(height: size.height * 0.05)
         ],
@@ -75,8 +94,8 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
   }
 
   // 약관동의 리스트
-  Widget _createTerms(int index) {
-    if (index == _tda.mItems.length) return _createFooter();
+  Widget _buildTerms(int index) {
+    if (index == _tda.mItems.length) return _buildFooter();
 
     return ListTile(
       leading: Checkbox(
@@ -92,7 +111,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
   }
 
   // 모두 동의하기
-  Widget _createFooter() {
+  Widget _buildFooter() {
     return ListTile(
       leading: Checkbox(
           value: _tda.allAgree,

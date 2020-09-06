@@ -1,8 +1,8 @@
 import 'package:anony_chat/model/dao/user.dart' as my;
+import 'package:anony_chat/model/register_model.dart';
 import 'package:anony_chat/provider/register_state_provider.dart';
 import 'package:anony_chat/ui/view/intro/student_card_certification_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,6 +23,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   my.User newUser;
+  RegisterModel registerModel = RegisterModel();
 
   // #true남자, #false여자
   bool sexBtnColor;
@@ -89,8 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           newUser.sex = '남자';
                           setState(() => sexBtnColor = true);
                         },
-                        color:
-                            sexBtnColor ? Colors.amberAccent : Colors.black26,
+                        color: sexBtnColor ? Colors.amberAccent : Colors.black26,
                       ),
                     ),
                     SizedBox(width: 24.0),
@@ -103,8 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           newUser.sex = '여자';
                           setState(() => sexBtnColor = false);
                         },
-                        color:
-                            !sexBtnColor ? Colors.amberAccent : Colors.black26,
+                        color: !sexBtnColor ? Colors.amberAccent : Colors.black26,
                       ),
                     ),
                   ],
@@ -124,9 +123,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     ]),
                     Column(children: [
                       // 객체 자체를 참조해야 setState 에서 참조 가능해서 변경
-                      _createDropDownButton(_items[0]),
+                      _buildDropDownButton(_items[0]),
                       SizedBox(height: 16.0),
-                      _createDropDownButton(_items[1])
+                      _buildDropDownButton(_items[1])
                     ])
                   ],
                 ),
@@ -140,8 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: RaisedButton(
                       color: Colors.amberAccent,
                       child: Text('학생증인증하기', style: TextStyle(fontSize: 24.0)),
-                      onPressed: Provider.of<RegisterStateProvider>(context)
-                              .stdCardCertification
+                      onPressed: Provider.of<RegisterStateProvider>(context).stdCardCertification
                           ? null
                           : () => _navigateStdCardCertification(context)),
                 ),
@@ -152,10 +150,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   Container(
                       child: Switch(
                           value: newUser.isNotMeetingSameUniversity,
-                          onChanged: (value) {
-                            setState(() =>
-                                newUser.isNotMeetingSameUniversity = value);
-                          }))
+                          onChanged: (value) => setState(() =>
+                              newUser.isNotMeetingSameUniversity = value))),
                 ]),
                 Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Text('전화번호 목록 친구 안만나기', style: TextStyle(fontSize: 18.0)),
@@ -163,19 +159,17 @@ class _RegisterPageState extends State<RegisterPage> {
                   Container(
                     child: Switch(
                         value: newUser.isNotMeetingPhoneList,
-                        onChanged: (value) {
-                          setState(() => newUser.isNotMeetingPhoneList = value);
-                        }),
-                  )
+                        onChanged: (value) => setState(
+                            () => newUser.isNotMeetingPhoneList = value)),
+                  ),
                 ]),
               ],
             ),
             SizedBox(height: 24.0),
             BottomButton(
                 onPressed:
-                    Provider.of<RegisterStateProvider>(context).authState ==
-                            AuthState.canRegister
-                        ? () => { _registerAndLogin()}
+                    Provider.of<RegisterStateProvider>(context).authState == AuthState.canRegister
+                        ? () => {_registerAndLogin()}
                         : null,
                 text: '가입하기'),
             SizedBox(height: size.height * 0.05),
@@ -199,13 +193,10 @@ class _RegisterPageState extends State<RegisterPage> {
       newUser.studentID = int.parse(result[1]);
       // newUser.studentCardImage=
       // result[2]에 File의 형태로 학생증 이미지 넘어옴
-
-      // TODO 가입 로직 짜기
-      // 가입(newUser);
     }
   }
 
-  Widget _createDropDownButton(MyDropDownMenuItem item) {
+  Widget _buildDropDownButton(MyDropDownMenuItem item) {
     return Container(
       height: 40.0,
       width: 100.0,
@@ -220,9 +211,7 @@ class _RegisterPageState extends State<RegisterPage> {
             return DropdownMenuItem(value: value, child: Text(value));
           }).toList(),
           onChanged: (value) {
-            setState(() {
-              item.selected = value;
-            });
+            setState(() => item.selected = value);
             _setDropDownValue(item.title, value);
           },
         ),
@@ -239,12 +228,13 @@ class _RegisterPageState extends State<RegisterPage> {
         newUser.birthYear = value;
         break;
       default:
+        throw Exception('set drop_down_value error');
         break;
     }
   }
 
   Future<void> _registerAndLogin() async {
-    await FirebaseAuth.instance.signInAnonymously();
-    Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false);
+    await registerModel.register(newUser).whenComplete(() =>
+        Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false));
   }
 }
