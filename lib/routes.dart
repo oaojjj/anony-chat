@@ -1,4 +1,5 @@
 import 'package:anony_chat/ui/view/home/main_home_page.dart';
+import 'package:anony_chat/ui/view/home/profile_page.dart';
 import 'package:anony_chat/ui/view/intro/intro_page.dart';
 import 'package:anony_chat/ui/view/intro/register_page.dart';
 import 'package:anony_chat/ui/view/intro/student_card_certification_page.dart';
@@ -14,4 +15,5 @@ final routes = {
   '/register': (BuildContext context) => RegisterPage(),
   '/stdCardCertification': (BuildContext context) => SCCertification(),
   '/main': (BuildContext context) => MainPage(),
+  '/profile': (BuildContext context) => ProfilePage(),
 };

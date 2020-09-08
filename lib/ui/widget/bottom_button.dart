@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class BottomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +13,7 @@ class BottomButton extends StatelessWidget {
         child: ButtonTheme(
           minWidth: double.infinity,
           height: 50.0,
-          buttonColor: Colors.amberAccent,
+          buttonColor: color,
           child: RaisedButton(
             child: Text(text, style: TextStyle(fontSize: 24)),
             onPressed: onPressed,
@@ -22,5 +23,5 @@ class BottomButton extends StatelessWidget {
     );
   }
 
-  BottomButton({@required this.onPressed,@required this.text});
+  BottomButton({this.onPressed, this.text, this.color = Colors.amberAccent});
 }

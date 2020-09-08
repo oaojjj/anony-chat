@@ -73,8 +73,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
             ),
           ),
           BottomButton(
-              onPressed: _tda.isRequiredChecked()
-                  ? () => {
+              onPressed: _tda.isRequiredChecked() ? () => {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
