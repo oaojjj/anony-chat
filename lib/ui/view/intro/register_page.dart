@@ -5,6 +5,7 @@ import 'package:anony_chat/ui/view/intro/student_card_certification_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class MyDropDownMenuItem {
@@ -53,7 +54,9 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    return loading ? Loading() : SafeArea(
+    return loading
+        ? Loading()
+        : SafeArea(
             child: Scaffold(
               appBar: AppBar(
                 iconTheme: IconThemeData(color: Colors.white),
@@ -150,7 +153,8 @@ class _RegisterPageState extends State<RegisterPage> {
                             child: Text('학생증인증하기',
                                 style: TextStyle(fontSize: 24.0)),
                             onPressed:
-                                Provider.of<RegisterStateProvider>(context).stdCardCertification
+                                Provider.of<RegisterStateProvider>(context)
+                                        .stdCardCertification
                                     ? null
                                     : () =>
                                         _navigateStdCardCertification(context)),
@@ -165,8 +169,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             Container(
                                 child: Switch(
                                     value: newMember.isNotMeetingSameUniversity,
-                                    onChanged: (value) =>
-                                        setState(() => newMember.isNotMeetingSameUniversity = value))),
+                                    onChanged: (value) => setState(() =>
+                                        newMember.isNotMeetingSameUniversity =
+                                            value))),
                           ]),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -177,15 +182,16 @@ class _RegisterPageState extends State<RegisterPage> {
                             Container(
                               child: Switch(
                                   value: newMember.isNotMeetingPhoneList,
-                                  onChanged: (value) =>
-                                      setState(() => newMember.isNotMeetingPhoneList = value)),
+                                  onChanged: (value) => setState(() =>
+                                      newMember.isNotMeetingPhoneList = value)),
                             ),
                           ]),
                     ],
                   ),
                   SizedBox(height: 24.0),
                   BottomButton(
-                      onPressed: Provider.of<RegisterStateProvider>(context).authState == AuthState.canRegister
+                      onPressed: Provider.of<RegisterStateProvider>(context).authState ==
+                              AuthState.canRegister
                           ? () => {_registerAndLogin()}
                           : null,
                       text: '가입하기'),
@@ -251,13 +257,22 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _registerAndLogin() async {
+    if (newMember.region == '선택' || newMember.university == '선택') {
+      Fluttertoast.showToast(
+          msg: '공란을 채워주세요.',
+          backgroundColor: Colors.black,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER);
+      return;
+    }
     setState(() => loading = true);
     _memberInfoModel = MemberInfoModel();
     await _memberInfoModel.register(newMember).whenComplete(() =>
-        Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false));
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/main', (route) => false));
   }
 
-  // TODO 시간나면 고치기
-  // 학생증 인증하고나서 버튼을 누르면 아래의 오류가 뜨는데 왜뜨는지 모르겠음
-  // A RenderFlex overflowed by 159 pixels on the bottom.
+// TODO 시간나면 고치기
+// 학생증 인증하고나서 버튼을 누르면 아래의 오류가 뜨는데 왜뜨는지 모르겠음
+// A RenderFlex overflowed by 159 pixels on the bottom.
 }

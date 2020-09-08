@@ -19,7 +19,7 @@ class MemberInfoModel {
       member.id = await getTotalMemberCount() + 1;
 
       // 회원 번호로 관리하기 위해 테이블에 회원번호와 매핑되는 uid 추가
-      await db.reference().child(USER_IDS_TABLE).child('id').set({'${mAuth.currentUser.uid}': member.id});
+      await db.reference().child(USER_IDS_TABLE).child('id').child('${mAuth.currentUser.uid}').set(member.id);
       await db.reference().child(USER_IDS_TABLE).update({'count': member.id});
 
       // 회원 정보 등록(최종회원가입)
