@@ -3,7 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'dao/member.dart';
 
-class MemberInfoModel {
+class MemberModel {
   final FirebaseAuth mAuth = FirebaseAuth.instance;
   final FirebaseDatabase db = FirebaseDatabase.instance;
 

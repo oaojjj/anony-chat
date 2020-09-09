@@ -1,5 +1,5 @@
 import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/model/member_info_model.dart';
+import 'package:anony_chat/model/member_model.dart';
 import 'package:anony_chat/ui/view/intro/register_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
@@ -11,7 +11,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  MemberInfoModel _memberInfoModel;
+  MemberModel _memberModel;
   Member _member;
   Member _fixProfile;
 
@@ -149,7 +149,7 @@ class _ProfilePageState extends State<ProfilePage> {
         SizedBox(height: 24.0),
         BottomButton(
           onPressed: _fixColor ? () {
-                  _memberInfoModel.updateProfile(_fixProfile);
+                  _memberModel.updateProfile(_fixProfile);
                   _member = Member.fromMap(_fixProfile.toJson());
                   setState(() => _fixColor = false);
                 } : null,
@@ -198,8 +198,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _fetchData() async {
-    _memberInfoModel = MemberInfoModel();
-    _member = await _memberInfoModel.getProfile();
+    _memberModel = MemberModel();
+    _member = await _memberModel.getProfile();
     _fixProfile = Member.fromMap(_member.toJson());
     _initUI();
     setState(() => loading = false);

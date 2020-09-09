@@ -1,5 +1,5 @@
 import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/model/member_info_model.dart';
+import 'package:anony_chat/model/member_model.dart';
 import 'package:anony_chat/provider/register_state_provider.dart';
 import 'package:anony_chat/ui/view/intro/student_card_certification_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
@@ -24,7 +24,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  MemberInfoModel _memberInfoModel;
+  MemberModel _memberModel;
   Member newMember = Member();
 
   List<MyDropDownMenuItem> _items = [];
@@ -266,8 +266,8 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
     setState(() => loading = true);
-    _memberInfoModel = MemberInfoModel();
-    await _memberInfoModel.register(newMember).whenComplete(() =>
+    _memberModel = MemberModel();
+    await _memberModel.register(newMember).whenComplete(() =>
         Navigator.of(context)
             .pushNamedAndRemoveUntil('/main', (route) => false));
   }
