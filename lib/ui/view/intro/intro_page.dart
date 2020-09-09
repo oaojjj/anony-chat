@@ -9,11 +9,11 @@ class IntroPage extends StatelessWidget {
       backgroundColor: Colors.amber,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
+        children: [
           Container(
               height: 160.0,
               width: 160.0,
-              child: CircleAvatar(backgroundImage: AssetImage('assets/images/dog.png'))),
+              child: CircleAvatar(backgroundImage: AssetImage('assets/images/earth.png'))),
           SizedBox(height: size.height * 0.4),
           BottomButton(
               onPressed: () => Navigator.pushNamed(context, '/terms_of_service'),

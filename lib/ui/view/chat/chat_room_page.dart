@@ -16,31 +16,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        endDrawer: Container(
-          width: 200.0,
-          child: Drawer(
-            child: ListView(
-              children: [
-                ListTile(
-                  dense: true,
-                  title: Text('신고하기', style: TextStyle(fontSize: 18.0)),
-                  onTap: () {},
-                ),
-                Divider(
-                  height: 0,
-                  color: Colors.black,
-                ),
-                ListTile(
-                  dense: true,
-                  title: Text('채팅방 나가기', style: TextStyle(fontSize: 18.0)),
-                  onTap: () {
-                    _showMyDialog();
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
+        endDrawer: _buildEndDrawer(),
         appBar: AppBar(
           title: Text('채팅방', style: TextStyle(color: Colors.white)),
           centerTitle: true,
@@ -133,7 +109,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
+      builder: (_) {
         return AlertDialog(
           title: Text('나가기'),
           content: Text('채팅방을 나가면 더이상 대화를 할 수 없습니다.'),
@@ -154,6 +130,34 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildEndDrawer() {
+    return Container(
+      width: 200.0,
+      child: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              dense: true,
+              title: Text('신고하기', style: TextStyle(fontSize: 18.0)),
+              onTap: () {},
+            ),
+            Divider(
+              height: 0,
+              color: Colors.black,
+            ),
+            ListTile(
+              dense: true,
+              title: Text('채팅방 나가기', style: TextStyle(fontSize: 18.0)),
+              onTap: () {
+                _showMyDialog();
+              },
+            )
+          ],
+        ),
+      ),
     );
   }
 }

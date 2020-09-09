@@ -66,20 +66,26 @@ class _MainPageState extends State<MainPage> {
                       child: Container(
                         width: 64.0,
                         child: ButtonTheme(
-                            buttonColor: Colors.amberAccent,
-                            child: RaisedButton(
-                                child: Text('목록'),
-                                onPressed: () =>
-                                    Navigator.pushNamed(context, '/chat_list'))),
+                          height: 48,
+                          buttonColor: Colors.amberAccent,
+                          child: RaisedButton(
+                              child: Text('목록', style: TextStyle(fontSize: 16)),
+                              onPressed: () =>
+                                  Navigator.pushNamed(context, '/chat_list')),
+                        ),
                       ),
                     ),
                     Flexible(
                       flex: 3,
                       fit: FlexFit.tight,
                       child: ButtonTheme(
-                          buttonColor: Colors.amberAccent,
-                          child: RaisedButton(
-                              child: Text('보내기'), onPressed: () {})),
+                        height: 48,
+                        buttonColor: Colors.amberAccent,
+                        child: RaisedButton(
+                            child: Text('보내기', style: TextStyle(fontSize: 20)),
+                            onPressed: () =>
+                                Navigator.pushNamed(context, '/chat_send')),
+                      ),
                     )
                   ],
                 ),

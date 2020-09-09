@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'ui/view/chat/chat_list_page.dart';
 import 'ui/view/chat/chat_room_page.dart';
+import 'ui/view/chat/chat_send_page.dart';
 import 'ui/view/home/main_home_page.dart';
 import 'ui/view/home/profile_page.dart';
 import 'ui/view/home/service_info_page.dart';
@@ -22,5 +23,6 @@ final routes = {
   '/profile': (BuildContext context) => ProfilePage(),
   '/service_info': (BuildContext context) => ServiceInfoPage(),
   '/chat': (BuildContext context) => ChatRoomPage(),
-  '/chat_list': (BuildContext context) => ChatListPage()
+  '/chat_list': (BuildContext context) => ChatListPage(),
+  '/chat_send': (BuildContext context) => ChatSendPage()
 };
