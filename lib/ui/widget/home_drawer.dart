@@ -1,6 +1,9 @@
+import 'package:anony_chat/model/chat_model.dart';
 import 'package:flutter/material.dart';
 
 class HomeDrawer extends StatelessWidget {
+  final ChatModel _chatModel = ChatModel();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,6 +31,12 @@ class HomeDrawer extends StatelessWidget {
               leading: Icon(Icons.settings, size: 24.0),
               title: Text('서비스 정보', style: TextStyle(fontSize: 20.0)),
               onTap: () => Navigator.pushNamed(context, '/service_info'),
+            ),
+            ListTile(
+              title: Text('테스트', style: TextStyle(fontSize: 20.0)),
+              onTap: () {
+                _chatModel.getTest();
+              },
             )
           ],
         ),

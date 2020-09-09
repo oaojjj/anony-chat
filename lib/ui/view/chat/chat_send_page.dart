@@ -20,6 +20,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
     'assets/images/planet5.png',
     'assets/images/planet6.png',
   ];
+
   int n = 5;
 
   @override
@@ -35,12 +36,12 @@ class _ChatSendPageState extends State<ChatSendPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('메시지 보내기', style: TextStyle(color: Colors.white)),
-          centerTitle: true,
-          iconTheme: new IconThemeData(color: Colors.white),
-          leading: IconButton(
-              icon: Icon(Icons.close), onPressed: () => Navigator.pop(context)),
-        ),
+            title: Text('메시지 보내기', style: TextStyle(color: Colors.white)),
+            centerTitle: true,
+            iconTheme: new IconThemeData(color: Colors.white),
+            leading: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () => Navigator.pop(context))),
         body: SingleChildScrollView(
           child: Container(
             color: Colors.black87,

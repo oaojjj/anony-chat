@@ -66,137 +66,157 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              body: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Container(
-                    color: Colors.amberAccent[100],
-                    height: 70.0,
-                    width: double.infinity,
-                    child: Center(
-                      child: Text(
-                        '회원정보는 설정에서\n 언제든 변경가능합니다.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18.0),
+              body: Container(
+                color: Colors.black87,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      color: Colors.amberAccent[100],
+                      height: 70.0,
+                      width: double.infinity,
+                      child: Center(
+                        child: Text(
+                          '회원정보는 설정에서\n 언제든 변경가능합니다.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18.0),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 24.0),
-                  Container(
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ButtonTheme(
-                            minWidth: 120.0,
-                            height: 50.0,
-                            child: FlatButton(
-                              child:
-                                  Text('남성', style: TextStyle(fontSize: 20.0)),
-                              onPressed: () {
-                                newMember.sex = '남성';
-                                setState(() => sexBtnColor = true);
-                              },
-                              color: sexBtnColor
-                                  ? Colors.amberAccent
-                                  : Colors.black26,
-                            ),
-                          ),
-                          SizedBox(width: 24.0),
-                          ButtonTheme(
-                            minWidth: 120.0,
-                            height: 50.0,
-                            child: FlatButton(
-                              child:
-                                  Text('여성', style: TextStyle(fontSize: 20.0)),
-                              onPressed: () {
-                                newMember.sex = '여성';
-                                setState(() => sexBtnColor = false);
-                              },
-                              color: !sexBtnColor
-                                  ? Colors.amberAccent
-                                  : Colors.black26,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 24.0),
-                  Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(children: [
-                            Text('태어난 해', style: TextStyle(fontSize: 24.0)),
-                            SizedBox(height: 16.0),
-                            Text('지역', style: TextStyle(fontSize: 24.0))
-                          ]),
-                          Column(children: [
-                            // 객체 자체를 참조해야 setState 에서 참조 가능해서 변경
-                            _buildDropDownButton(_items[0]),
-                            SizedBox(height: 16.0),
-                            _buildDropDownButton(_items[1])
-                          ])
-                        ],
-                      ),
-                    ],
-                  ),
-                  Spacer(),
-                  Column(
-                    children: [
-                      ButtonTheme(
-                        minWidth: 200.0,
-                        child: RaisedButton(
-                            color: Colors.amberAccent,
-                            child: Text('학생증인증하기',
-                                style: TextStyle(fontSize: 24.0)),
-                            onPressed:
-                                Provider.of<RegisterStateProvider>(context)
-                                        .stdCardCertification
-                                    ? null
-                                    : () =>
-                                        _navigateStdCardCertification(context)),
-                      ),
-                      SizedBox(height: 8.0),
-                      Row(
+                    SizedBox(height: 24.0),
+                    Container(
+                      child: Center(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('같은 대학교 학생 안만나기',
-                                style: TextStyle(fontSize: 18.0)),
-                            SizedBox(width: 8.0),
-                            Container(
+                            ButtonTheme(
+                              minWidth: 120.0,
+                              height: 50.0,
+                              child: FlatButton(
+                                child: Text('남성',
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: sexBtnColor
+                                            ? Colors.black
+                                            : Colors.white)),
+                                onPressed: () {
+                                  newMember.sex = '남성';
+                                  setState(() => sexBtnColor = true);
+                                },
+                                color: sexBtnColor
+                                    ? Colors.amberAccent
+                                    : Colors.white24,
+                              ),
+                            ),
+                            SizedBox(width: 24.0),
+                            ButtonTheme(
+                              minWidth: 120.0,
+                              height: 50.0,
+                              child: FlatButton(
+                                child: Text('여성',
+                                    style: TextStyle(
+                                        fontSize: 20.0,
+                                        color: !sexBtnColor
+                                            ? Colors.black
+                                            : Colors.white)),
+                                onPressed: () {
+                                  newMember.sex = '여성';
+                                  setState(() => sexBtnColor = false);
+                                },
+                                color: !sexBtnColor
+                                    ? Colors.amberAccent
+                                    : Colors.white24,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 24.0),
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(children: [
+                              Text('태어난 해',
+                                  style: TextStyle(
+                                      fontSize: 24.0, color: Colors.white)),
+                              SizedBox(height: 16.0),
+                              Text('지역',
+                                  style: TextStyle(
+                                      fontSize: 24.0, color: Colors.white))
+                            ]),
+                            Column(children: [
+                              // 객체 자체를 참조해야 setState 에서 참조 가능해서 변경
+                              _buildDropDownButton(_items[0]),
+                              SizedBox(height: 16.0),
+                              _buildDropDownButton(_items[1])
+                            ])
+                          ],
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    Column(
+                      children: [
+                        ButtonTheme(
+                          minWidth: 200.0,
+                          child: RaisedButton(
+                              color: Colors.amberAccent,
+                              child: Text('학생증인증하기',
+                                  style: TextStyle(fontSize: 24.0)),
+                              onPressed: Provider.of<RegisterStateProvider>(
+                                          context)
+                                      .stdCardCertification
+                                  ? null
+                                  : () =>
+                                      _navigateStdCardCertification(context)),
+                        ),
+                        SizedBox(height: 8.0),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('같은 대학교 학생 안만나기',
+                                  style: TextStyle(
+                                      fontSize: 18.0, color: Colors.white)),
+                              SizedBox(width: 8.0),
+                              Container(
+                                  child: Switch(
+                                      value:
+                                          newMember.isNotMeetingSameUniversity,
+                                      onChanged: (value) => setState(() =>
+                                          newMember.isNotMeetingSameUniversity =
+                                              value))),
+                            ]),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('전화번호 목록 친구 안만나기',
+                                  style: TextStyle(
+                                      fontSize: 18.0, color: Colors.white)),
+                              SizedBox(width: 8.0),
+                              Container(
                                 child: Switch(
-                                    value: newMember.isNotMeetingSameUniversity,
+                                    value: newMember.isNotMeetingPhoneList,
                                     onChanged: (value) => setState(() =>
-                                        newMember.isNotMeetingSameUniversity =
-                                            value))),
-                          ]),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('전화번호 목록 친구 안만나기',
-                                style: TextStyle(fontSize: 18.0)),
-                            SizedBox(width: 8.0),
-                            Container(
-                              child: Switch(
-                                  value: newMember.isNotMeetingPhoneList,
-                                  onChanged: (value) => setState(() =>
-                                      newMember.isNotMeetingPhoneList = value)),
-                            ),
-                          ]),
-                    ],
-                  ),
-                  SizedBox(height: 24.0),
-                  BottomButton(
-                      onPressed: Provider.of<RegisterStateProvider>(context).authState ==
-                              AuthState.canRegister
-                          ? () => {_registerAndLogin()}
-                          : null,
-                      text: '가입하기'),
-                  SizedBox(height: size.height * 0.05),
-                ],
+                                        newMember.isNotMeetingPhoneList =
+                                            value)),
+                              ),
+                            ]),
+                      ],
+                    ),
+                    SizedBox(height: 24.0),
+                    BottomButton(
+                        onPressed: Provider.of<RegisterStateProvider>(context)
+                                    .authState ==
+                                AuthState.canRegister
+                            ? () => {_registerAndLogin()}
+                            : null,
+                        text: '가입하기'),
+                    SizedBox(height: size.height * 0.05),
+                  ],
+                ),
               ),
             ),
           );
@@ -257,10 +277,13 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _registerAndLogin() async {
-    if (newMember.region == '선택' || newMember.university == '선택') {
+    if ((newMember.region == '선택' || newMember.region == null) ||
+        (newMember.university == '선택' || newMember.university == null)) {
       Fluttertoast.showToast(
+          fontSize: 20.0,
+          textColor: Colors.black,
           msg: '공란을 채워주세요.',
-          backgroundColor: Colors.black,
+          backgroundColor: Colors.white,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER);
       return;

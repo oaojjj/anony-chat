@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class SCCertification extends StatefulWidget {
-
-
   @override
   _SCCertificationState createState() => _SCCertificationState();
 }
@@ -41,95 +39,106 @@ class _SCCertificationState extends State<SCCertification> {
           centerTitle: true,
           title: Text('학생증인증하기', style: TextStyle(color: Colors.white))),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 24.0),
-              Column(children: [
-                Container(
-                  padding: EdgeInsets.all(8.0),
-                  width: 320.0,
-                  height: 200.0,
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.black26)),
-                  child: Center(
-                      child: SingleChildScrollView(child: Text(guidanceText))),
-                ),
+        child: Container(
+          color: Colors.black87,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
                 SizedBox(height: 24.0),
-                Form(
-                  autovalidate: _validate,
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text('학교', style: TextStyle(fontSize: 24.0)),
-                          Container(
-                            width: 240.0,
-                            child: TextFormField(
-                              controller: _universityController,
-                              keyboardType: TextInputType.name,
-                              validator: (value) {
-                                if (value.isEmpty) return '학교를 입력하세요.';
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: '학교 입력',
-                                isDense: true,
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text('학번', style: TextStyle(fontSize: 24.0)),
-                          Container(
-                            width: 240.0,
-                            child: TextFormField(
-                              controller: _studentIDController,
-                              keyboardType: TextInputType.number,
-                              validator: (value) {
-                                if (value.isEmpty) return '학번를 입력하세요.';
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                hintText: '학번 입력',
-                                isDense: true,
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Container(
-                  width: 160.0,
-                  child: ButtonTheme(
-                    buttonColor: Colors.amberAccent,
-                    child: RaisedButton(
+                Column(children: [
+                  Container(
+                    padding: EdgeInsets.all(8.0),
+                    width: 320.0,
+                    height: 200.0,
+                    decoration: BoxDecoration(color: Colors.white),
+                    child: Center(
                         child:
-                            Text('학생증 업로드', style: TextStyle(fontSize: 20.0)),
-                        onPressed: () {
-                          uploadImage();
-                        }),
+                            SingleChildScrollView(child: Text(guidanceText))),
                   ),
-                ),
-              ]),
-              SizedBox(height: 8.0),
-              showImage(),
-              SizedBox(height: 24.0),
-              BottomButton(
-                  onPressed: true ? () {_successCertification(context);} : null,
-                  text: '인증하기'),
-            ],
+                  SizedBox(height: 24.0),
+                  Form(
+                    autovalidate: _validate,
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text('학교',
+                                style: TextStyle(
+                                    fontSize: 24.0, color: Colors.white)),
+                            Container(
+                              width: 240.0,
+                              child: TextFormField(
+                                controller: _universityController,
+                                keyboardType: TextInputType.name,
+                                validator: (value) {
+                                  if (value.isEmpty) return '학교를 입력하세요.';
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                    hintText: '학교 입력',
+                                    isDense: true,
+                                    border: OutlineInputBorder(),
+                                    fillColor: Colors.white,
+                                    filled: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text('학번',
+                                style: TextStyle(
+                                    fontSize: 24.0, color: Colors.white)),
+                            Container(
+                              width: 240.0,
+                              child: TextFormField(
+                                controller: _studentIDController,
+                                keyboardType: TextInputType.number,
+                                validator: (value) {
+                                  if (value.isEmpty) return '학번를 입력하세요.';
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                    hintText: '학번 입력',
+                                    isDense: true,
+                                    border: OutlineInputBorder(),
+                                    fillColor: Colors.white,
+                                    filled: true),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  Container(
+                    width: 160.0,
+                    child: ButtonTheme(
+                      buttonColor: Colors.amberAccent,
+                      child: RaisedButton(
+                          child:
+                              Text('학생증 업로드', style: TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            uploadImage();
+                          }),
+                    ),
+                  ),
+                ]),
+                SizedBox(height: 8.0),
+                showImage(),
+                SizedBox(height: 24.0),
+                BottomButton(
+                    onPressed:
+                        true ? () => _successCertification(context) : null,
+                    text: '인증하기'),
+                SizedBox(height: 100)
+              ],
+            ),
           ),
         ),
       ),
@@ -162,7 +171,8 @@ class _SCCertificationState extends State<SCCertification> {
       // No any error in validation
       Navigator.pop(
           context,
-          [_universityController.text, _studentIDController.text, _image].toList());
+          [_universityController.text, _studentIDController.text, _image]
+              .toList());
     } else {
       // validation error
       setState(() {

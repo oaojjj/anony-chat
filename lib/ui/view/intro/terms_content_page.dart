@@ -19,21 +19,23 @@ class _TermsContentPageState extends State<TermsContentPage> {
         centerTitle: true,
         title: Text('이용약관', style: TextStyle(color: Colors.white)),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              decoration:
-                  BoxDecoration(border: Border.all(color: Colors.black26)),
-              padding: EdgeInsets.all(16.0),
-              margin: EdgeInsets.all(16.0),
-              child: Text(item.content),
-            ),
-            BottomButton(
-                onPressed: () => Navigator.pop(context, item), text: '동의'),
-            SizedBox(height: size.height * 0.05)
-          ],
+      body: Container(
+        color: Colors.black87,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                decoration: BoxDecoration(color: Colors.white),
+                padding: EdgeInsets.all(16.0),
+                margin: EdgeInsets.all(16.0),
+                child: Text(item.content),
+              ),
+              BottomButton(
+                  onPressed: () => Navigator.pop(context, item), text: '동의'),
+              SizedBox(height: size.height * 0.05)
+            ],
+          ),
         ),
       ),
     );
