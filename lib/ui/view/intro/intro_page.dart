@@ -16,7 +16,7 @@ class IntroPage extends StatelessWidget {
               child: CircleAvatar(backgroundImage: AssetImage('assets/images/dog.png'))),
           SizedBox(height: size.height * 0.4),
           BottomButton(
-              onPressed: () => Navigator.pushNamed(context, '/termsOfService'),
+              onPressed: () => Navigator.pushNamed(context, '/terms_of_service'),
               text: '시작하기'),
           SizedBox(height: size.height * 0.05)
         ],

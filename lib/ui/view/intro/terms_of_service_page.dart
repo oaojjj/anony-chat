@@ -123,7 +123,7 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
 
   _navigateTermsContent(BuildContext context, int index) async {
     TermsData result = await Navigator.pushNamed<dynamic>(
-        context, '/termsContent',
+        context, '/terms_content',
         arguments: _tda.mItems[index]);
     setState(() => result.isChecked = true);
   }

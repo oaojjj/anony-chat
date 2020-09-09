@@ -29,7 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   List<MyDropDownMenuItem> _items = [];
 
-  // true#남자 false#여자
+  // true#남성 false#여성
   bool sexBtnColor = true;
 
   // 회원가입 요청시 데이터 처리 로딩
@@ -92,9 +92,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             height: 50.0,
                             child: FlatButton(
                               child:
-                                  Text('남자', style: TextStyle(fontSize: 20.0)),
+                                  Text('남성', style: TextStyle(fontSize: 20.0)),
                               onPressed: () {
-                                newMember.sex = '남자';
+                                newMember.sex = '남성';
                                 setState(() => sexBtnColor = true);
                               },
                               color: sexBtnColor
@@ -108,9 +108,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             height: 50.0,
                             child: FlatButton(
                               child:
-                                  Text('여자', style: TextStyle(fontSize: 20.0)),
+                                  Text('여성', style: TextStyle(fontSize: 20.0)),
                               onPressed: () {
-                                newMember.sex = '여자';
+                                newMember.sex = '여성';
                                 setState(() => sexBtnColor = false);
                               },
                               color: !sexBtnColor

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'ui/view/chat/chat_list_page.dart';
 import 'ui/view/chat/chat_room_page.dart';
 import 'ui/view/home/main_home_page.dart';
 import 'ui/view/home/profile_page.dart';
@@ -13,12 +14,13 @@ import 'ui/view/intro/terms_of_service_page.dart';
 final routes = {
   //'/': (BuildContext context) => IntroPage(),
   '/intro': (BuildContext context) => IntroPage(),
-  '/termsOfService': (BuildContext context) => TermsOfServicePage(),
-  '/termsContent': (BuildContext context) => TermsContentPage(),
+  '/terms_of_service': (BuildContext context) => TermsOfServicePage(),
+  '/terms_content': (BuildContext context) => TermsContentPage(),
   '/register': (BuildContext context) => RegisterPage(),
-  '/stdCardCertification': (BuildContext context) => SCCertification(),
+  '/std_card_certification': (BuildContext context) => SCCertification(),
   '/main': (BuildContext context) => MainPage(),
   '/profile': (BuildContext context) => ProfilePage(),
-  '/serviceInfo': (BuildContext context) => ServiceInfoPage(),
-  '/chat': (BuildContext context) => ChatRoomPage()
+  '/service_info': (BuildContext context) => ServiceInfoPage(),
+  '/chat': (BuildContext context) => ChatRoomPage(),
+  '/chat_list': (BuildContext context) => ChatListPage()
 };
