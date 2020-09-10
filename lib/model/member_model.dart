@@ -1,3 +1,4 @@
+import 'package:anony_chat/model/shared_preferences_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
@@ -10,23 +11,31 @@ class MemberModel {
   static const String USERS_TABLE = 'users';
   static const String USER_IDS_TABLE = 'user_ids';
 
+  // 가입하기
   Future<void> register(Member member) async {
-    if (member != null) {
-      // 익명 로그인
-      await mAuth.signInAnonymously();
+    await mAuth.signInAnonymously();
 
-      // 회원번호
-      member.id = await getTotalMemberCount() + 1;
+    SPDatabase.saveProfileToLocal(member);
 
-      // 회원 번호로 관리하기 위해 테이블에 회원번호와 매핑되는 uid 추가
-      await db.reference().child(USER_IDS_TABLE).child('id').child('${member.id}').set(mAuth.currentUser.uid);
-      await db.reference().child(USER_IDS_TABLE).update({'count': member.id});
+    // 회원번호
+    member.id = await getTotalMemberCount() + 1;
 
-      // 회원 정보 등록(최종회원가입)
-      // join이 안되니까 uid로 관리하는게 맞는듯?
-      // TODO 좋은 방법있는지 보류
-      await db.reference().child(USERS_TABLE).child('${mAuth.currentUser.uid}').set(member.toJson());
-    }
+    // 회원 번호로 관리하기 위해 테이블에 회원번호와 매핑되는 uid 추가
+    await db
+        .reference()
+        .child(USER_IDS_TABLE)
+        .child('id/${member.id}')
+        .set(mAuth.currentUser.uid);
+
+    await db.reference().child(USER_IDS_TABLE).update({'count': member.id});
+
+    // 회원 정보 등록(최종회원가입)
+    // TODO join이 안되니까 uid로 관리하는게 맞는듯? 좋은 방법있는지 보류
+    await db
+        .reference()
+        .child(USERS_TABLE)
+        .child('${mAuth.currentUser.uid}')
+        .set(member.toJson());
   }
 
   Future<String> test() async {
@@ -35,19 +44,27 @@ class MemberModel {
     return test.value['test'];
   }
 
+  // 전체 회원 수 가져오기
   Future<int> getTotalMemberCount() async {
     var snapshot = await db.reference().child(USER_IDS_TABLE).once();
     return snapshot.value['count'];
   }
 
+  // 회원 번호 가져오기
   Future<int> getMemberID() async {
     var snapshot = await db.reference().child(USER_IDS_TABLE).once();
     print(snapshot.value['${mAuth.currentUser.uid}']);
     return snapshot.value['${mAuth.currentUser.uid}'];
   }
 
-  Future<Member> getProfile() async {
-    var snapshot = await db.reference().child(USERS_TABLE).child('${mAuth.currentUser.uid}').once();
+  // 회원 프로필 가져오기
+  Future<Member> loadProfile() async {
+    var snapshot = await db
+        .reference()
+        .child(USERS_TABLE)
+        .child('${mAuth.currentUser.uid}')
+        .once();
+
     var member = Member.fromMap({
       'id': snapshot.value['id'],
       'sex': snapshot.value['sex'],
@@ -63,13 +80,15 @@ class MemberModel {
     return member;
   }
 
+  // 회원 프로필 수정하기
   Future<void> updateProfile(Member fixProfile) async {
-    if (fixProfile != null) {
-      await db
-          .reference()
-          .child(USERS_TABLE)
-          .child(mAuth.currentUser.uid)
-          .update(fixProfile.toJson());
-    }
+
+    SPDatabase.saveProfileToLocal(fixProfile);
+
+    await db
+        .reference()
+        .child(USERS_TABLE)
+        .child(mAuth.currentUser.uid)
+        .update(fixProfile.toJson());
   }
 }

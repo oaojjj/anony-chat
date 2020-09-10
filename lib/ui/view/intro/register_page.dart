@@ -24,7 +24,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  MemberModel _memberModel;
+  MemberModel _memberModel = MemberModel();
   Member newMember = Member();
 
   List<MyDropDownMenuItem> _items = [];
@@ -228,14 +228,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
     print(result);
 
-    // result!=null => 인증에 성공한 경우
+    // result != null => 인증에 성공한 경우
     if (result != null) {
       Provider.of<RegisterStateProvider>(context, listen: false)
           .successCertification();
       newMember.university = result[0];
       newMember.studentID = int.parse(result[1]);
       // newUser.studentCardImage=
-      // result[2]에 File의 형태로 학생증 이미지 넘어옴
+      // TODO result[2]에 File의 형태로 학생증 이미지 넘어옴
     }
   }
 
@@ -277,6 +277,8 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _registerAndLogin() async {
+
+    // 예외 처리를 뷰에서 해주는게 맞나?
     if ((newMember.region == '선택' || newMember.region == null) ||
         (newMember.university == '선택' || newMember.university == null)) {
       Fluttertoast.showToast(
@@ -288,11 +290,12 @@ class _RegisterPageState extends State<RegisterPage> {
           gravity: ToastGravity.CENTER);
       return;
     }
+
+    // 최종 가입을 할 수 있는 상태
     setState(() => loading = true);
-    _memberModel = MemberModel();
-    await _memberModel.register(newMember).whenComplete(() =>
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil('/main', (route) => false));
+    await _memberModel.register(newMember).whenComplete(() => Navigator.of(context)
+        .pushNamedAndRemoveUntil('/main', (route) => false))
+        .catchError((onError) {print('register error');});
   }
 
 // TODO 시간나면 고치기

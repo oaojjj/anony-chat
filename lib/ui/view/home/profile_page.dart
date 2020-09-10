@@ -1,9 +1,11 @@
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/model/member_model.dart';
+import 'package:anony_chat/model/shared_preferences_model.dart';
 import 'package:anony_chat/ui/view/intro/register_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -11,13 +13,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  MemberModel _memberModel;
+  MemberModel _memberModel = MemberModel();
   Member _member;
   Member _fixProfile;
 
   List<MyDropDownMenuItem> _items = [];
 
-  // true#남자 false#여자
+  // true#남성 false#여성
   bool sexBtnColor = true;
   bool loading = true;
 
@@ -197,16 +199,17 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  // TODO 프로필을 로컬에 저장하고 업데이트가 일어날때마다 로컬데이터를 업데이트 해주는게 더 좋을듯
+  // 수정 성공시 토스트메시지 띄우기
   _fetchData() async {
-    _memberModel = MemberModel();
-    _member = await _memberModel.getProfile();
+    _member = await SPDatabase.loadProfile();
     _fixProfile = Member.fromMap(_member.toJson());
     _initUI();
     setState(() => loading = false);
   }
 
   _initUI() {
-    sexBtnColor = _member.sex == '남자';
+    sexBtnColor = _member.sex == '남성';
     _items[0].selected = _member.birthYear;
     _items[1].selected = _member.region;
   }
