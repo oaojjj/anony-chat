@@ -129,8 +129,6 @@ class _SCCertificationState extends State<SCCertification> {
                     ),
                   ),
                 ]),
-                SizedBox(height: 8.0),
-                showImage(),
                 SizedBox(height: 24.0),
                 BottomButton(
                     onPressed:
@@ -147,10 +145,9 @@ class _SCCertificationState extends State<SCCertification> {
 
   Future uploadImage() async {
     var image = await ImagePicker().getImage(source: ImageSource.gallery);
-
+    _image = File(image.path);
     setState(() {
       _isUpload = true;
-      _image = File(image.path);
     });
   }
 

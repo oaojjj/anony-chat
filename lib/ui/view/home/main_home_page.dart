@@ -1,6 +1,8 @@
-import 'package:anony_chat/ui/widget/home_drawer.dart';
+import 'package:anony_chat/ui/view/chat/chat_list_page.dart';
+import 'package:anony_chat/ui/view/chat/chat_send_page.dart';
+import 'package:anony_chat/ui/widget/home/home_page.dart';
+import 'package:anony_chat/ui/widget/home/notification_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -8,91 +10,42 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int n = 5;
-  int nn = 1;
+  final List<Widget> _navigationPage = [
+    HomePage(),
+    ChatListPage(),
+    Container(),
+    NotificationPage()
+  ];
+
+  int _selectedBottom = 0;
+
+  void _onItemTapped(int index) {
+    setState(() => _selectedBottom = index);
+    if (_selectedBottom == 2) {
+      Navigator.pushNamed(context, '/chat_send');
+      _selectedBottom = 0;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
-        drawer: HomeDrawer(),
-        appBar: AppBar(
-          title: Text('남은 메세지: $n개', style: TextStyle(color: Colors.white)),
-          centerTitle: true,
-          elevation: 0.0,
-          iconTheme: new IconThemeData(color: Colors.white),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: ButtonTheme(
-                  buttonColor: Colors.white,
-                  minWidth: 72.0,
-                  child: RaisedButton(
-                      child: Text('광고+1',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      onPressed: () {}),
-                ),
-              ),
-            ),
-          ],
-        ),
-        body: Container(
-          color: Colors.black87,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Center(
-                  child: Container(
-                      width: 64.0,
-                      height: 64.0,
-                      child: InkWell(
-                        child: CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/images/moon.png')),
-                        onTap: () => Navigator.pushNamed(context, '/chat'),
-                      )),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        width: 64.0,
-                        child: ButtonTheme(
-                          height: 48,
-                          buttonColor: Colors.amberAccent,
-                          child: RaisedButton(
-                              child: Text('목록', style: TextStyle(fontSize: 16)),
-                              onPressed: () =>
-                                  Navigator.pushNamed(context, '/chat_list')),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 3,
-                      fit: FlexFit.tight,
-                      child: ButtonTheme(
-                        height: 48,
-                        buttonColor: Colors.amberAccent,
-                        child: RaisedButton(
-                            child: Text('보내기', style: TextStyle(fontSize: 20)),
-                            onPressed: () =>
-                                Navigator.pushNamed(context, '/chat_send')),
-                      ),
-                    )
-                  ],
-                ),
-              ),
+        body: _navigationPage[_selectedBottom],
+        bottomNavigationBar: BottomNavigationBar(
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('홈')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.chat), title: Text('채팅')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.send), title: Text('보내기')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.notifications), title: Text('알림')),
             ],
-          ),
-        ),
+            currentIndex: _selectedBottom,
+            onTap: _onItemTapped,
+            selectedItemColor: Colors.black,
+            unselectedItemColor: Colors.grey),
       ),
     );
   }

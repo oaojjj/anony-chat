@@ -1,6 +1,15 @@
+import 'dart:io';
+
+import 'package:anony_chat/model/chat_model.dart';
+import 'package:anony_chat/model/dao/chat_room.dart';
+import 'package:anony_chat/model/dao/message.dart';
+import 'package:anony_chat/model/member_model.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatSendPage extends StatefulWidget {
   @override
@@ -8,20 +17,23 @@ class ChatSendPage extends StatefulWidget {
 }
 
 class _ChatSendPageState extends State<ChatSendPage> {
-  String _choiceImagePath = 'assets/images/earth.png';
-  final List<Widget> _images = [];
-  final List<String> _imagePaths = [
-    'assets/images/earth.png',
-    'assets/images/moon.png',
-    'assets/images/planet1.png',
-    'assets/images/planet2.png',
-    'assets/images/planet3.png',
-    'assets/images/planet4.png',
-    'assets/images/planet5.png',
-    'assets/images/planet6.png',
-  ];
+  final _messageController = TextEditingController();
 
-  int n = 5;
+  String _choiceImage = 'earth.png';
+  ChatType _selectedSendType = ChatType.random;
+  File _photo;
+
+  final List<Widget> _images = [];
+  final List<String> _planetName = [
+    'earth.png',
+    'moon.png',
+    'planet1.png',
+    'planet2.png',
+    'planet3.png',
+    'planet4.png',
+    'planet5.png',
+    'planet6.png',
+  ];
 
   @override
   void initState() {
@@ -31,90 +43,184 @@ class _ChatSendPageState extends State<ChatSendPage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
             title: Text('메시지 보내기', style: TextStyle(color: Colors.white)),
             centerTitle: true,
-            iconTheme: new IconThemeData(color: Colors.white),
             leading: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () => Navigator.pop(context))),
-        body: SingleChildScrollView(
-          child: Container(
-            color: Colors.black87,
-            child: Column(
-              children: [
-                SizedBox(height: 32.0),
-                Center(
-                  child: Container(
-                    width: 120,
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: 120.0,
-                          height: 120.0,
-                          child: GestureDetector(
-                            onTap: () => _choicePlanet(),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image(image: AssetImage(_choiceImagePath)),
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            iconTheme: IconThemeData(color: Colors.white)),
+        backgroundColor: Colors.grey[900],
+        body: Container(
+          child: SingleChildScrollView(
+            child: Container(
+              child: Column(
+                children: [
+                  SizedBox(height: 40.0),
+                  Center(
+                    child: Container(
+                      width: 120,
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: 120.0,
+                            height: 120.0,
+                            child: GestureDetector(
+                              onTap: () => _choicePlanet(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image(
+                                    image: AssetImage(
+                                        'assets/images/$_choiceImage')),
+                              ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          right: 0,
-                          bottom: 0,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            child: IconButton(
-                                icon: Icon(Icons.settings,
-                                    color: Colors.grey[700]),
-                                onPressed: () => _choicePlanet()),
+                          Positioned(
+                            right: 0,
+                            bottom: 0,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: IconButton(
+                                  icon: Icon(Icons.settings,
+                                      color: Colors.grey[700]),
+                                  onPressed: () => _choicePlanet()),
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 40.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Container(
+                      color: Colors.white,
+                      height: 240,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                            controller: _messageController,
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            decoration:
+                                InputDecoration.collapsed(hintText: '메시지 입력')),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Row(
+                      children: [
+                        RaisedButton(
+                            child: Text('사진'), onPressed: () => uploadImage()),
+                        Spacer(),
+                        StreamBuilder(
+                            stream: MemberModel.getPossibleMessageOfSend(),
+                            builder: (_, AsyncSnapshot<Event> snap) {
+                              if (!snap.hasData)
+                                return Row(children: [
+                                  Text('오늘 보낼 수 있는 메시지:',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.white)),
+                                  CircularProgressIndicator()
+                                ]);
+                              return Text(
+                                  '오늘 보낼 수 있는 메시지: ${snap.data.snapshot.value.toString()}개',
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white));
+                            }),
                       ],
                     ),
                   ),
-                ),
-                SizedBox(height: 32.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Container(
-                    color: Colors.white,
-                    height: 240,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration:
-                              InputDecoration.collapsed(hintText: '메시지 입력')),
-                    ),
+                  SizedBox(height: 16.0),
+                  BottomButton(
+                    text: '보내기',
+                    onPressed: () async {
+                      await sendMessage();
+                      Navigator.pop(context);
+                    },
                   ),
-                ),
-                SizedBox(height: 24.0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Row(
-                    children: [
-                      RaisedButton(child: Text('사진'), onPressed: () {}),
-                      Spacer(),
-                      Text('오늘 보낼 수 있는 메시지: $n개',
-                          style: TextStyle(fontSize: 16, color: Colors.white))
-                    ],
-                  ),
-                ),
-                SizedBox(height: 24.0),
-                BottomButton(onPressed: () => {}, text: '보내기'),
-                SizedBox(height: size.height * 0.05),
-              ],
+                ],
+              ),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> sendMessage() async {
+    await _selectSendType();
+    return ChatModel.createChatRoom(
+        chatRoom: ChatRoom(
+            planetName: _choiceImage,
+            type:_selectedSendType,
+            message: Message(
+                sender: FirebaseAuth.instance.currentUser.uid,
+                content: _messageController.text,
+                photo: _photo,
+                time: DateTime.now())));
+  }
+
+  Future<void> _selectSendType() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (_) {
+        return StatefulBuilder(builder: (_, setState) {
+          return AlertDialog(
+            title: Text('누구에게 보낼까요?'),
+            content: Container(
+              height: 170,
+              child: Column(
+                children: [
+                  ListTile(
+                    title: const Text('랜덤'),
+                    leading: Radio(
+                      value: ChatType.random,
+                      groupValue: _selectedSendType,
+                      onChanged: (value) =>
+                          setState(() => _selectedSendType = value),
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('남성'),
+                    leading: Radio(
+                      value: ChatType.onlyMan,
+                      groupValue: _selectedSendType,
+                      onChanged: (value) =>
+                          setState(() => _selectedSendType = value),
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('여성'),
+                    leading: Radio(
+                      value: ChatType.onlyWoman,
+                      groupValue: _selectedSendType,
+                      onChanged: (value) =>
+                          setState(() => _selectedSendType = value),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('취소', style: TextStyle(color: Colors.black)),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              FlatButton(
+                child: Text('확인', style: TextStyle(color: Colors.black)),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        });
+      },
     );
   }
 
@@ -137,18 +243,23 @@ class _ChatSendPageState extends State<ChatSendPage> {
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
-        setState(() => _choiceImagePath = path);
+        setState(() => _choiceImage = path);
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Image(image: AssetImage('$path')),
+        child: Image(image: AssetImage('assets/images/$path')),
       ),
     );
   }
 
   void initData() {
-    _imagePaths.forEach((element) {
+    _planetName.forEach((element) {
       _images.add(createPlanet(element));
     });
+  }
+
+  Future uploadImage() async {
+    var image = await ImagePicker().getImage(source: ImageSource.gallery);
+    _photo = File(image.path);
   }
 }

@@ -21,30 +21,38 @@ class _ChatRoomPreviewState extends State<ChatRoomPreview> {
           Row(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 16, right: 24, top: 16),
+                padding: const EdgeInsets.only(
+                    left: 16, right: 24, top: 16, bottom: 8),
                 child: Image(
                     height: 64.0, image: AssetImage('${widget.imagePath}')),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.title,
-                        style: TextStyle(color: Colors.white, fontSize: 18.0)),
-                    Text(widget.sex,
-                        style: TextStyle(color: Colors.amberAccent))
-                  ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16, right: 8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(widget.title,
+                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis),
+                      Text(widget.sex,
+                          style: TextStyle(color: Colors.amberAccent)),
+                      Row(
+                        children: [
+                          Spacer(),
+                          Text(widget.date,
+                              style: TextStyle(color: Colors.white)),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
-              ),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.only(top: 56, right: 16),
-                child: Text(widget.date, style: TextStyle(color: Colors.white)),
               ),
             ],
           ),
-          Divider(indent: 104.0, thickness: 0.4, color: Colors.amberAccent)
+          Divider(
+              height: 1, indent: 104, thickness: 0.4, color: Colors.amberAccent)
         ],
       ),
     );

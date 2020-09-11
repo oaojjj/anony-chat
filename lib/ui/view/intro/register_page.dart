@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/model/member_model.dart';
 import 'package:anony_chat/provider/register_state_provider.dart';
@@ -29,10 +31,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   List<MyDropDownMenuItem> _items = [];
 
+  File _stdCardImage;
+
   // true#남성 false#여성
   bool sexBtnColor = true;
-
-  // 회원가입 요청시 데이터 처리 로딩
   bool loading = false;
 
   // test data
@@ -234,8 +236,7 @@ class _RegisterPageState extends State<RegisterPage> {
           .successCertification();
       newMember.university = result[0];
       newMember.studentID = int.parse(result[1]);
-      // newUser.studentCardImage=
-      // TODO result[2]에 File의 형태로 학생증 이미지 넘어옴
+      _stdCardImage = result[2];
     }
   }
 
@@ -277,7 +278,6 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Future<void> _registerAndLogin() async {
-
     // 예외 처리를 뷰에서 해주는게 맞나?
     if ((newMember.region == '선택' || newMember.region == null) ||
         (newMember.university == '선택' || newMember.university == null)) {
@@ -293,9 +293,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
     // 최종 가입을 할 수 있는 상태
     setState(() => loading = true);
-    await _memberModel.register(newMember).whenComplete(() => Navigator.of(context)
-        .pushNamedAndRemoveUntil('/main', (route) => false))
-        .catchError((onError) {print('register error');});
+    await _memberModel
+        .register(newMember, _stdCardImage)
+        .whenComplete(() => Navigator.of(context)
+            .pushNamedAndRemoveUntil('/main', (route) => false))
+        .catchError((onError) {
+      print('register error');
+    });
   }
 
 // TODO 시간나면 고치기

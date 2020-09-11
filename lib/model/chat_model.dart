@@ -1,28 +1,24 @@
-import 'dart:math';
+import 'package:anony_chat/model/dao/chat_room.dart';
 
-import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/model/member_model.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'dao/message.dart';
 
 class ChatModel {
-  Future<void> getTest() async {
-    final memberModel = MemberModel();
-    final int totalMember = await memberModel.getTotalMemberCount();
 
+  // 메시지를 받는 사람 수
+  static const int RECEIVER_NUMBER = 1;
 
+  static Future<void> sendMessage({Message message}) async {}
 
-    final DataSnapshot snapShot = await FirebaseDatabase.instance
-        .reference()
-        .child(MemberModel.USER_IDS_TABLE)
-        .once();
+  // 채팅방 만들기 Todo *매칭시스템의 기준이 명확하지 않아서 일단 틀만 갖춤
+  static Future<void> createChatRoom({ChatRoom chatRoom}) async {
+    switch (chatRoom.type) {
+      case ChatType.random:
 
-    final Map<dynamic, dynamic> test = snapShot.value;
-
-    print(test);
-    test.forEach((key, value) {
-      print(test[key]);
-    });
-
-    print(snapShot);
+        break;
+      case ChatType.onlyMan:
+        break;
+      case ChatType.onlyWoman:
+        break;
+    }
   }
 }

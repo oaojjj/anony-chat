@@ -1,6 +1,6 @@
+import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/model/member_model.dart';
-import 'package:anony_chat/model/shared_preferences_model.dart';
 import 'package:anony_chat/ui/view/intro/register_page.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
@@ -84,7 +84,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: FlatButton(
                     child: Text('남성', style: TextStyle(fontSize: 20.0)),
                     onPressed: () => setState(() => member.sex = '남성'),
-                    color: member.sex == '남성' ? Colors.amberAccent : Colors.black26,
+                    color: member.sex == '남성'
+                        ? Colors.amberAccent
+                        : Colors.black26,
                   ),
                 ),
                 SizedBox(width: 24.0),
@@ -94,7 +96,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   child: FlatButton(
                     child: Text('여성', style: TextStyle(fontSize: 20.0)),
                     onPressed: () => setState(() => member.sex = '여성'),
-                    color: member.sex == '여성' ? Colors.amberAccent : Colors.black26,
+                    color: member.sex == '여성'
+                        ? Colors.amberAccent
+                        : Colors.black26,
                   ),
                 ),
               ],
@@ -150,11 +154,13 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         SizedBox(height: 24.0),
         BottomButton(
-          onPressed: _fixColor ? () {
+          onPressed: _fixColor
+              ? () {
                   _memberModel.updateProfile(_fixProfile);
                   _member = Member.fromMap(_fixProfile.toJson());
                   setState(() => _fixColor = false);
-                } : null,
+                }
+              : null,
           text: '수정',
         ),
       ],
@@ -199,10 +205,9 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  // TODO 프로필을 로컬에 저장하고 업데이트가 일어날때마다 로컬데이터를 업데이트 해주는게 더 좋을듯
-  // 수정 성공시 토스트메시지 띄우기
+  // TODO 수정 성공시 토스트메시지 띄우기
   _fetchData() async {
-    _member = await SPDatabase.loadProfile();
+    _member = await SPController.loadProfile();
     _fixProfile = Member.fromMap(_member.toJson());
     _initUI();
     setState(() => loading = false);

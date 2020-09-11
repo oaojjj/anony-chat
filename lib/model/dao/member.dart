@@ -3,19 +3,19 @@ class Member {
   String sex;
   String region;
   String university;
-  String studentCardImage;
   String birthYear;
   int studentID;
+  int possibleMessageOfSend;
   bool isNotMeetingSameUniversity;
   bool isNotMeetingPhoneList;
 
   Member(
-      {this.sex = '남자',
+      {this.sex = '남성',
       this.region,
       this.university,
-      this.studentCardImage,
       this.birthYear,
       this.studentID,
+      this.possibleMessageOfSend = 5,
       this.isNotMeetingSameUniversity = false,
       this.isNotMeetingPhoneList = false});
 
@@ -26,6 +26,7 @@ class Member {
         university = map['university'],
         birthYear = map['birthYear'],
         studentID = map['studentID'],
+        possibleMessageOfSend = map['possibleMessageOfSend'],
         isNotMeetingSameUniversity = map['isNotMeetingSameUniversity'],
         isNotMeetingPhoneList = map['isNotMeetingPhoneList'];
 
@@ -41,6 +42,8 @@ class Member {
         region +
         '\nuniversity:' +
         university +
+        '\possibleMessageOfSend:' +
+        possibleMessageOfSend.toString() +
         '\nstudentID:' +
         studentID.toString() +
         '\nisNotMeetingSameUniversity:' +
@@ -56,6 +59,7 @@ class Member {
         'university': university,
         'birthYear': birthYear,
         'studentID': studentID,
+        'possibleMessageOfSend': possibleMessageOfSend,
         'isNotMeetingSameUniversity': isNotMeetingSameUniversity,
         'isNotMeetingPhoneList': isNotMeetingPhoneList,
       };
@@ -65,25 +69,19 @@ class Member {
       identical(this, other) ||
       other is Member &&
           runtimeType == other.runtimeType &&
-          id == other.id &&
           sex == other.sex &&
           region == other.region &&
           university == other.university &&
-          studentCardImage == other.studentCardImage &&
           birthYear == other.birthYear &&
-          studentID == other.studentID &&
           isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
           isNotMeetingPhoneList == other.isNotMeetingPhoneList;
 
   @override
   int get hashCode =>
-      id.hashCode ^
       sex.hashCode ^
       region.hashCode ^
       university.hashCode ^
-      studentCardImage.hashCode ^
       birthYear.hashCode ^
-      studentID.hashCode ^
       isNotMeetingSameUniversity.hashCode ^
       isNotMeetingPhoneList.hashCode;
 }

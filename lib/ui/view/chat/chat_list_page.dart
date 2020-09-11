@@ -1,5 +1,5 @@
 import 'package:anony_chat/ui/widget/chat/chat_room_preview.dart';
-import 'package:anony_chat/ui/widget/home_drawer.dart';
+import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/ui/widget/home/home_drawer.dart';
 import 'package:flutter/material.dart';
 
 class ChatListPage extends StatefulWidget {
@@ -10,7 +10,7 @@ class ChatListPage extends StatefulWidget {
 class _ChatListPageState extends State<ChatListPage> {
   final List<ChatRoomPreview> _chatRooms = [
     ChatRoomPreview(
-        title: '오늘 뭐하세요?',
+        title: '오늘 뭐하세요? 테스트 길이 overflow 뜨나요 혹시 안뜨나요 혹시',
         sex: '여성',
         date: '9월 9일',
         imagePath: 'assets/images/moon.png'),
@@ -35,15 +35,10 @@ class _ChatListPageState extends State<ChatListPage> {
         title: Text('채팅 목록', style: TextStyle(color: Colors.white)),
         centerTitle: true,
         iconTheme: new IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.home), onPressed: () => Navigator.pop(context))
-        ],
       ),
       body: Container(
         color: Colors.black87,
         child: ListView.builder(
-          padding: EdgeInsets.only(top: 8.0),
           itemBuilder: (_, index) => _chatRooms[index],
           itemCount: _chatRooms.length,
         ),

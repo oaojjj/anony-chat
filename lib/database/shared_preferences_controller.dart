@@ -1,8 +1,7 @@
+import 'package:anony_chat/model/dao/member.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'dao/member.dart';
-
-class SPDatabase {
+class SPController {
   // 가입할 때 프로필 저장
   static Future<void> saveProfileToLocal(Member member) async {
     final prefs = await SharedPreferences.getInstance();
@@ -12,7 +11,6 @@ class SPDatabase {
     prefs.setString('birthYear', member.birthYear);
     prefs.setString('region', member.region);
     prefs.setString('university', member.university);
-    prefs.setInt('studentID', member.studentID);
     prefs.setBool(
         'isNotMeetingSameUniversity', member.isNotMeetingSameUniversity);
     prefs.setBool('isNotMeetingPhoneList', member.isNotMeetingPhoneList);
@@ -23,14 +21,20 @@ class SPDatabase {
     final prefs = await SharedPreferences.getInstance();
 
     return Member.fromMap({
-    'id':prefs.get('id'),
-    'sex':prefs.get('sex'),
-    'birthYear':prefs.get('birthYear'),
-    'region':prefs.get('region'),
-    'university':prefs.get('university'),
-    'studentID':prefs.get('studentID'),
-    'isNotMeetingSameUniversity':prefs.get('isNotMeetingSameUniversity'),
-    'isNotMeetingPhoneList':prefs.get('isNotMeetingPhoneList')
+      'id': prefs.get('id') ?? -1,
+      'sex': prefs.get('sex') ?? "",
+      'birthYear': prefs.get('birthYear') ?? "",
+      'region': prefs.get('region') ?? "",
+      'university': prefs.get('university') ?? "",
+      'isNotMeetingSameUniversity':
+          prefs.get('isNotMeetingSameUniversity') ?? false,
+      'isNotMeetingPhoneList': prefs.get('isNotMeetingPhoneList') ?? false,
     });
+  }
+
+  // test
+  static Future<String> loadPlanetImageURL() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('planet');
   }
 }
