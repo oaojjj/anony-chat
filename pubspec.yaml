@@ -38,6 +38,8 @@ dependencies:
   async: ^2.3.0 #캐쉬
   fluttertoast: ^7.0.4 #플러터 토스트
   shared_preferences: ^0.5.10 # 로컬디비
+  intl: ^0.16.1 # DateFormat
+  flutter_native_timezone: ^1.0.4 #시간이 로컬로 안나와서 추가
 
 dev_dependencies:
   flutter_test:

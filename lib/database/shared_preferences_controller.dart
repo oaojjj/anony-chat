@@ -32,6 +32,11 @@ class SPController {
     });
   }
 
+  static Future<int> getID() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('id');
+  }
+
   // test
   static Future<String> loadPlanetImageURL() async {
     final prefs = await SharedPreferences.getInstance();

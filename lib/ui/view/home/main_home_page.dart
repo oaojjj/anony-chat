@@ -1,5 +1,4 @@
 import 'package:anony_chat/ui/view/chat/chat_list_page.dart';
-import 'package:anony_chat/ui/view/chat/chat_send_page.dart';
 import 'package:anony_chat/ui/widget/home/home_page.dart';
 import 'package:anony_chat/ui/widget/home/notification_page.dart';
 import 'package:flutter/material.dart';

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/chat_model.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
@@ -10,6 +11,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatSendPage extends StatefulWidget {
   @override
@@ -156,14 +158,17 @@ class _ChatSendPageState extends State<ChatSendPage> {
   Future<void> sendMessage() async {
     await _selectSendType();
     return ChatModel.createChatRoom(
-        chatRoom: ChatRoom(
-            planetName: _choiceImage,
-            type:_selectedSendType,
-            message: Message(
-                sender: FirebaseAuth.instance.currentUser.uid,
-                content: _messageController.text,
-                photo: _photo,
-                time: DateTime.now())));
+      chatRoom: ChatRoom(
+        planetName: _choiceImage,
+        type: _selectedSendType,
+        message: Message(
+          senderID: await SPController.getID(),
+          content: _messageController.text,
+          photo: _photo,
+          time: DateTime.now().millisecondsSinceEpoch,
+        ),
+      ),
+    );
   }
 
   Future<void> _selectSendType() async {

@@ -17,10 +17,13 @@ class ChatRoom {
 
   ChatRoom.fromMap(Map<String, dynamic> map)
       : planetName = map['planetName'],
-        message = map['message'];
+        message = map['message'],
+        type = map['type'];
 
   Map<String, dynamic> toJson() => {
         'planetName': planetName,
-        'message': message,
+        'lastMessage': message.content,
+        'timestamp': message.time,
+        'type': type.toString().substring(9),
       };
 }

@@ -1,23 +1,27 @@
 import 'dart:io';
 
 class Message {
-  String sender;
+  int senderID;
   String content;
-  DateTime time;
+  int time;
   File photo;
 
-  Message({this.sender, this.content, this.time, this.photo});
+  Message({this.senderID, this.content, this.time, this.photo});
 
   Message.fromMap(Map<String, dynamic> map)
-      : sender = map['sender'],
+      : senderID = map['sender'],
         content = map['content'],
         time = map['time'],
         photo = map['photo'];
 
-  Map<String, dynamic> toJson() => {
-        'sender': sender,
-        'content': content,
-        'time': time,
-        'photo': photo,
+
+  Map<String, dynamic> toJson() =>
+      {
+        '$time': {
+          'sender': senderID,
+          'content': content,
+          'time': time,
+          'photo': photo ?? 'null',
+        }
       };
 }

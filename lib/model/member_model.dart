@@ -8,8 +8,8 @@ import 'package:firebase_database/firebase_database.dart';
 import 'dao/member.dart';
 
 class MemberModel {
-  static final FirebaseAuth _mAuth = FirebaseAuth.instance;
-  static final FirebaseDatabase _db = FirebaseDatabase.instance;
+   final FirebaseAuth _mAuth = FirebaseAuth.instance;
+   final FirebaseDatabase _db = FirebaseDatabase.instance;
 
   static const String USERS_TABLE = 'users';
   static const String USER_IDS_TABLE = 'user_ids';
@@ -44,15 +44,14 @@ class MemberModel {
 
   // 전체 회원 수 가져오기
   static Future<int> getTotalMemberCount() async {
-    var snapshot = await _db.reference().child(USER_IDS_TABLE).once();
+    final snapshot = await FirebaseDatabase.instance.reference().child(USER_IDS_TABLE).once();
     return snapshot.value['count'];
   }
 
-  // 회원 번호 가져오기
-  static Future<int> getMemberID() async {
-    var snapshot = await _db.reference().child(USER_IDS_TABLE).once();
-    print(snapshot.value['${_mAuth.currentUser.uid}']);
-    return snapshot.value['${_mAuth.currentUser.uid}'];
+  // 회원 uid 가져오기
+  static Future<int> getMemberUid(int id) async {
+    final snapshot = await FirebaseDatabase.instance.reference().child(USER_IDS_TABLE).once();
+    return snapshot.value['$id'];
   }
 
   // 회원 프로필 수정하기
@@ -68,7 +67,7 @@ class MemberModel {
 
   // 남은 메시지 조회
   static Stream<Event> getPossibleMessageOfSend() {
-    return _db
+    return FirebaseDatabase.instance
         .reference()
         .child(USERS_TABLE)
         .child('${FirebaseAuth.instance.currentUser.uid}/possibleMessageOfSend')

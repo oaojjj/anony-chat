@@ -1,3 +1,4 @@
+import 'package:anony_chat/model/chat_model.dart';
 import 'package:anony_chat/ui/widget/chat/chat_room_preview.dart';
 import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/ui/widget/home/home_drawer.dart';
 import 'package:flutter/material.dart';
@@ -8,26 +9,11 @@ class ChatListPage extends StatefulWidget {
 }
 
 class _ChatListPageState extends State<ChatListPage> {
-  final List<ChatRoomPreview> _chatRooms = [
-    ChatRoomPreview(
-        title: '오늘 뭐하세요? 테스트 길이 overflow 뜨나요 혹시 안뜨나요 혹시',
-        sex: '여성',
-        date: '9월 9일',
-        imagePath: 'assets/images/moon.png'),
-    ChatRoomPreview(
-        title: '같이 롤 할래요?',
-        sex: '여성',
-        date: '9월 6일',
-        imagePath: 'assets/images/planet1.png'),
-    ChatRoomPreview(
-        title: '싸움 잘하세요?',
-        sex: '남성',
-        date: '2019년 12월 11일',
-        imagePath: 'assets/images/planet2.png'),
-  ];
+  List<ChatRoomPreview> _chatRooms = [];
 
   @override
   Widget build(BuildContext context) {
+    getChatList();
     return SafeArea(
         child: Scaffold(
       drawer: HomeDrawer(),
@@ -39,10 +25,23 @@ class _ChatListPageState extends State<ChatListPage> {
       body: Container(
         color: Colors.black87,
         child: ListView.builder(
-          itemBuilder: (_, index) => _chatRooms[index],
+          itemBuilder: (_, index) => FutureBuilder(
+              future: getChatList(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData)
+                  return Center(child: CircularProgressIndicator());
+                else {
+                  return InkWell(onTap: () {}, child: _chatRooms[index]);
+                }
+              }),
           itemCount: _chatRooms.length,
         ),
       ),
     ));
+  }
+
+  Future<List<ChatRoomPreview>> getChatList() async {
+    _chatRooms = await ChatModel.getChatList();
+    return _chatRooms;
   }
 }

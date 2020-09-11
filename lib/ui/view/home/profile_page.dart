@@ -221,5 +221,4 @@ class _ProfilePageState extends State<ProfilePage> {
 }
 
 // hint => https://idlecomputer.tistory.com/326
-// 20.09.08#FutureBuilder는 setstate를 실행하면 다시 build가 돌면서 FutureBuilder의 future 부분을 실행한다. 그래서 계속 쓸데없는 초기화가 일어나서 일단 이렇게함
-// TODO 더 좋은 방법은 있을듯 일단 보류
+// 20.09.08 #FutureBuilder는 setstate를 실행하면 다시 build가 돌면서 FutureBuilder의 future 부분을 실행한다. 그래서 계속 쓸데없는 초기화가 일어나서 일단 이렇게함
