@@ -1,10 +1,8 @@
 import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/member_model.dart';
-import 'package:anony_chat/ui/widget/chat/chat_room_preview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:intl/intl.dart';
 
 import 'dao/message.dart';
 
@@ -17,22 +15,64 @@ class ChatModel {
   static const String CHAT_ROOM_TABLE = 'chat_room';
   static const String CHAT_LIST_TABLE = 'chat_list';
 
-  static Future<void> sendMessage({Message message}) async {}
+  Future<void> sendMessage({Message message}) async {}
 
   // 채팅방 만들기 Todo *매칭시스템의 기준이 명확하지 않아서 일단 생성하는거만
   // TODO 랜덤으로 상대방을 찾을 때 이미 채팅이 생선된 방은 제외하는 로직 추가해야함
-  static Future<void> createChatRoom({ChatRoom chatRoom}) async {
+  Future<void> createChatRoom({ChatRoom chatRoom}) async {
     int totalMember = await MemberModel.getTotalMemberCount();
+    chatRoom.message.senderID = await SPController.getID();
 
     switch (chatRoom.type) {
       case ChatType.random:
+        // 받는 사람은 chatType에 따라 바뀌게 적용
         int receiver = 2;
+        await _initChatReceiver(chatRoom, receiver);
+
+        // 나의 채팅 리스트 만들기
         _db
             .reference()
             .child(CHAT_LIST_TABLE)
-            .child('${chatRoom.message.senderID}')
-            .child('${chatRoom.message.senderID}_$receiver')
+            .child('${_mAuth.currentUser.uid}')
+            .child(
+                '${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
             .set(chatRoom.toJson());
+
+        // 나의 채팅방 만들기
+        _db
+            .reference()
+            .child(CHAT_ROOM_TABLE)
+            .child('${_mAuth.currentUser.uid}')
+            .child(
+                '${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
+            .set(chatRoom.message.toJson());
+
+        //TODO 리팩토링은 나중에 하자
+        // swap
+        int temp = chatRoom.message.receiverID;
+        _initChatReceiver(chatRoom, chatRoom.message.senderID);
+        chatRoom.message.senderID = temp;
+
+        // 너의 채팅 리스트 만들기
+        _db
+            .reference()
+            .child(CHAT_LIST_TABLE)
+            .child(
+                '${await MemberModel.getMemberUid(chatRoom.message.senderID)}')
+            .child(
+                '${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
+            .set(chatRoom.toJson());
+
+        // 너의 채팅방 만들기
+        _db
+            .reference()
+            .child(CHAT_ROOM_TABLE)
+            .child(
+                '${await MemberModel.getMemberUid(chatRoom.message.senderID)}')
+            .child(
+                '${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
+            .set(chatRoom.message.toJson());
+
         break;
       case ChatType.onlyMan:
         break;
@@ -41,29 +81,15 @@ class ChatModel {
     }
   }
 
-  static Future<List<ChatRoomPreview>> getChatList() async {
-    List<ChatRoomPreview> list = [];
-    final chatList = await _db
-        .reference()
-        .child(CHAT_LIST_TABLE)
-        .child('${await SPController.getID()}')
-        .once();
+  _initChatReceiver(ChatRoom chatRoom, int receiver) async {
+    chatRoom.chattingWith = receiver;
+    chatRoom.message.receiverID = receiver;
+    chatRoom.withSex = await MemberModel.getMemberSex(receiver);
+  }
 
-    Map test = chatList.value;
+  Stream<Event> getChatList(String uid) {
+    final chatList = _db.reference().child(CHAT_LIST_TABLE).child(uid).onValue;
 
-    test.forEach((key, value) {
-      final time = DateFormat('MM월 dd일 hh:mm aa')
-          .format(DateTime.fromMillisecondsSinceEpoch(value['timestamp']))
-          .toString();
-
-      list.add(ChatRoomPreview(
-        planetName: 'assets/images/${value['planetName']}',
-        lastMessage: value['lastMessage'],
-        timestamp: time,
-        sex: '여성',
-      ));
-    });
-
-    return list;
+    return chatList;
   }
 }

@@ -1,3 +1,4 @@
+import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/member_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +16,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       drawer: HomeDrawer(),
       appBar: AppBar(
-        title: StreamBuilder(
-            stream: MemberModel.getPossibleMessageOfSend(),
-            builder: (_, AsyncSnapshot<Event> snap) {
+        title: FutureBuilder(
+            future: MemberModel.getPossibleMessageOfSend(),
+            builder: (_, snap) {
               if (!snap.hasData) return CircularProgressIndicator();
-              return Text('남은 메세지: ${snap.data.snapshot.value.toString()}개',
+              return Text('남은 메세지: ${snap.data}개',
                   style: TextStyle(color: Colors.white));
             }),
         centerTitle: true,

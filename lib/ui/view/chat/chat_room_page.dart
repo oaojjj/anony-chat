@@ -1,4 +1,4 @@
-import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/ui/widget/chat/chat_message.dart';
+import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomPage extends StatefulWidget {

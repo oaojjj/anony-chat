@@ -19,11 +19,15 @@ class ChatSendPage extends StatefulWidget {
 }
 
 class _ChatSendPageState extends State<ChatSendPage> {
+  ChatModel _chatModel = ChatModel();
+
   final _messageController = TextEditingController();
 
   String _choiceImage = 'earth.png';
   ChatType _selectedSendType = ChatType.random;
   File _photo;
+
+  bool _flag = false;
 
   final List<Widget> _images = [];
   final List<String> _planetName = [
@@ -120,9 +124,9 @@ class _ChatSendPageState extends State<ChatSendPage> {
                         RaisedButton(
                             child: Text('사진'), onPressed: () => uploadImage()),
                         Spacer(),
-                        StreamBuilder(
-                            stream: MemberModel.getPossibleMessageOfSend(),
-                            builder: (_, AsyncSnapshot<Event> snap) {
+                        FutureBuilder(
+                            future: MemberModel.getPossibleMessageOfSend(),
+                            builder: (_, snap) {
                               if (!snap.hasData)
                                 return Row(children: [
                                   Text('오늘 보낼 수 있는 메시지:',
@@ -130,8 +134,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
                                           fontSize: 16, color: Colors.white)),
                                   CircularProgressIndicator()
                                 ]);
-                              return Text(
-                                  '오늘 보낼 수 있는 메시지: ${snap.data.snapshot.value.toString()}개',
+                              return Text('오늘 보낼 수 있는 메시지: ${snap.data}개',
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white));
                             }),
@@ -143,7 +146,6 @@ class _ChatSendPageState extends State<ChatSendPage> {
                     text: '보내기',
                     onPressed: () async {
                       await sendMessage();
-                      Navigator.pop(context);
                     },
                   ),
                 ],
@@ -157,18 +159,21 @@ class _ChatSendPageState extends State<ChatSendPage> {
 
   Future<void> sendMessage() async {
     await _selectSendType();
-    return ChatModel.createChatRoom(
-      chatRoom: ChatRoom(
-        planetName: _choiceImage,
-        type: _selectedSendType,
-        message: Message(
-          senderID: await SPController.getID(),
-          content: _messageController.text,
-          photo: _photo,
-          time: DateTime.now().millisecondsSinceEpoch,
+    print(_flag);
+    if (_flag) {
+      _chatModel.createChatRoom(
+        chatRoom: ChatRoom(
+          planetImageName: _choiceImage,
+          type: _selectedSendType,
+          message: Message(
+            content: _messageController.text,
+            photo: _photo,
+            time: DateTime.now().millisecondsSinceEpoch,
+          ),
         ),
-      ),
-    );
+      );
+      Navigator.pop(context);
+    }
   }
 
   Future<void> _selectSendType() async {
@@ -216,11 +221,17 @@ class _ChatSendPageState extends State<ChatSendPage> {
             actions: <Widget>[
               FlatButton(
                 child: Text('취소', style: TextStyle(color: Colors.black)),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  _flag = false;
+                  Navigator.of(context).pop();
+                },
               ),
               FlatButton(
                 child: Text('확인', style: TextStyle(color: Colors.black)),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () {
+                  _flag = true;
+                  Navigator.of(context).pop();
+                },
               ),
             ],
           );

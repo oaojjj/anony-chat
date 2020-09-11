@@ -1,7 +1,6 @@
-import 'package:anony_chat/model/chat_model.dart';
+import 'package:anony_chat/model/member_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
-import 'package:intl/intl.dart';
+
 
 class HomeDrawer extends StatelessWidget {
   @override
@@ -34,9 +33,8 @@ class HomeDrawer extends StatelessWidget {
             ),
             ListTile(
               title: Text('테스트', style: TextStyle(fontSize: 20.0)),
-              onTap: ()  async {
-                print(DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now()));
-                print(DateFormat(DateFormat.HOUR_MINUTE).format(DateTime.fromMillisecondsSinceEpoch(DateTime.now().millisecondsSinceEpoch)));
+              onTap: () async {
+                print(await MemberModel.getMemberUid(2));
               },
             )
           ],
