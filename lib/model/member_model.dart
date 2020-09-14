@@ -32,14 +32,14 @@ class MemberModel {
     _db
         .reference()
         .child(USER_IDS_TABLE)
-        .child('id/${member.id}')
-        .set(_mAuth.currentUser.uid);
+        .child('id/${_mAuth.currentUser.uid}')
+        .set(member.id);
 
     _db
         .reference()
         .child(USER_IDS_TABLE)
-        .child('uid/${_mAuth.currentUser.uid}')
-        .set(member.id);
+        .child('uid/${member.id}')
+        .set(_mAuth.currentUser.uid);
 
     // 회원 정보 등록(최종회원가입)
     // TODO join이 안되니까 uid로 관리하는게 맞는듯? 좋은 방법있는지 보류

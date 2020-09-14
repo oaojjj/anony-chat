@@ -1,7 +1,7 @@
 import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/model/member_model.dart';
-import 'package:anony_chat/ui/view/intro/register_page.dart';
+import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/ui/view/intro/auth/register_tap.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:flutter/material.dart';

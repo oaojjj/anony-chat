@@ -1,19 +1,16 @@
 import 'package:anony_chat/api/terms_api.dart';
 import 'package:anony_chat/model/dao/terms_data.dart';
-import 'package:anony_chat/provider/register_state_provider.dart';
-import 'package:anony_chat/ui/view/intro/register_page.dart';
-import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 // 이용약관 동의 페이지
-class TermsOfServicePage extends StatefulWidget {
+class TermsOfServiceTap extends StatefulWidget {
+
   @override
-  _TermsOfServicePageState createState() => _TermsOfServicePageState();
+  _TermsOfServiceTapState createState() => _TermsOfServiceTapState();
 }
 
-class _TermsOfServicePageState extends State<TermsOfServicePage> {
+class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
   TermsDataAPI _tda;
 
   // dummy data
@@ -48,49 +45,22 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
-          title: Text('이용약관 동의', style: TextStyle(color: Colors.white)),
-          centerTitle: true),
-      body: Container(
-        color: Colors.black87,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 60),
+      child: Container(
+        height: 60.0 * (_tda.mItems.length + 1),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Expanded(
-              child: ListView.separated(
-                // 모두 동의하기 넣기위해 길이 +1
-                itemCount: _tda.mItems.length + 1,
-                itemBuilder: (context, index) => _buildTerms(index),
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    height: 0,
-                    endIndent: 16.0,
-                    indent: 16.0,
-                    color: Colors.amberAccent,
-                    thickness: 1.0,
-                  );
-                },
+              child: Card(
+                elevation: 3,
+                child: ListView.builder(
+                  // 모두 동의하기 넣기위해 길이 +1
+                  itemCount: _tda.mItems.length + 1,
+                  itemBuilder: (_, index) => _buildTerms(index),
+                ),
               ),
             ),
-            BottomButton(
-                onPressed: _tda.isRequiredChecked()
-                    ? () => {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ChangeNotifierProvider<
-                                    RegisterStateProvider>.value(
-                                  child: RegisterPage(),
-                                  value: RegisterStateProvider(),
-                                ),
-                              ))
-                        }
-                    : null,
-                text: '확인'),
-            SizedBox(height: size.height * 0.05)
           ],
         ),
       ),
@@ -102,21 +72,15 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
     if (index == _tda.mItems.length) return _buildFooter();
 
     return ListTile(
-      leading: Theme(
-        data: Theme.of(context).copyWith(
-          unselectedWidgetColor: Colors.white,
-        ),
-        child: Checkbox(
-            checkColor: Colors.black,
-            value: _tda.mItems[index].isChecked,
-            onChanged: (value) {
-              setState(() => _tda.onChecked(index, value));
-            }),
-      ),
-      title: Text(_tda.returnRequiredString(index),
-          style: TextStyle(color: Colors.white)),
+      leading: Checkbox(
+          checkColor: Colors.white,
+          value: _tda.mItems[index].isChecked,
+          onChanged: (value) {
+            setState(() => _tda.onChecked(index, value));
+          }),
+      title: Text(_tda.returnRequiredString(index)),
       trailing: IconButton(
-          color: Colors.white,
+          color: Colors.black,
           icon: Icon(Icons.search),
           onPressed: () => _navigateTermsContent(context, index)),
     );
@@ -125,26 +89,24 @@ class _TermsOfServicePageState extends State<TermsOfServicePage> {
   // 모두 동의하기
   Widget _buildFooter() {
     return ListTile(
-      leading: Theme(
-        data: Theme.of(context).copyWith(
-          unselectedWidgetColor: Colors.white,
-        ),
-        child: Checkbox(
-            checkColor: Colors.black,
-            value: _tda.allAgree,
-            onChanged: (value) {
-              setState(() => _tda.onAllAgreeCheckBox(value));
-            }),
-      ),
-      title: Text("모두 동의하기",
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+      leading: Checkbox(
+          checkColor: Colors.white,
+          value: _tda.allAgree,
+          onChanged: (value) {
+            setState(() => onAllAgree(value));
+          }),
+      title: Text("모두 동의하기", style: TextStyle(fontWeight: FontWeight.bold)),
     );
+  }
+
+  onAllAgree(bool value) {
+    _tda.onAllAgreeCheckBox(value);
   }
 
   _navigateTermsContent(BuildContext context, int index) async {
     TermsData result = await Navigator.pushNamed<dynamic>(
-        context, '/terms_content',
+        context, '/terms_content_page',
         arguments: _tda.mItems[index]);
-    setState(() => result.isChecked = true);
+    if (result != null) setState(() => result.isChecked = true);
   }
 }

@@ -20,16 +20,20 @@ class _TermsContentPageState extends State<TermsContentPage> {
         title: Text('이용약관', style: TextStyle(color: Colors.white)),
       ),
       body: Container(
-        color: Colors.black87,
+        color: Colors.black12,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                decoration: BoxDecoration(color: Colors.white),
-                padding: EdgeInsets.all(16.0),
-                margin: EdgeInsets.all(16.0),
-                child: Text(item.content),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Card(
+                  elevation: 2,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(item.content),
+                  ),
+                ),
               ),
               BottomButton(
                   onPressed: () => Navigator.pop(context, item), text: '동의'),

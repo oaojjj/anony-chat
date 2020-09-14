@@ -7,22 +7,19 @@ import 'ui/view/home/main_home_page.dart';
 import 'ui/view/home/profile_page.dart';
 import 'ui/view/home/service_info_page.dart';
 import 'ui/view/intro/intro_page.dart';
-import 'ui/view/intro/register_page.dart';
-import 'ui/view/intro/student_card_certification_page.dart';
-import 'ui/view/intro/terms_content_page.dart';
-import 'ui/view/intro/terms_of_service_page.dart';
+import 'ui/view/intro/auth_and_register.dart';
+import 'ui/view/intro/auth/terms_content_page.dart';
 
 final routes = {
   //'/': (BuildContext context) => IntroPage(),
-  '/intro': (BuildContext context) => IntroPage(),
-  '/terms_of_service': (BuildContext context) => TermsOfServicePage(),
-  '/terms_content': (BuildContext context) => TermsContentPage(),
-  '/register': (BuildContext context) => RegisterPage(),
-  '/std_card_certification': (BuildContext context) => SCCertification(),
+  '/intro_page': (BuildContext context) => IntroPage(),
+  '/auth_and_register_page': (BuildContext context) =>
+      AuthAndRegisterPage(),
+  '/terms_content_page': (BuildContext context) => TermsContentPage(),
   '/main': (BuildContext context) => MainPage(),
-  '/profile': (BuildContext context) => ProfilePage(),
-  '/service_info': (BuildContext context) => ServiceInfoPage(),
-  '/chat': (BuildContext context) => ChatRoomPage(),
-  '/chat_list': (BuildContext context) => ChatListPage(),
-  '/chat_send': (BuildContext context) => ChatSendPage()
+  '/profile_page': (BuildContext context) => ProfilePage(),
+  '/service_info_page': (BuildContext context) => ServiceInfoPage(),
+  '/chat_page': (BuildContext context) => ChatRoomPage(),
+  '/chat_list_page': (BuildContext context) => ChatListPage(),
+  '/chat_send_page': (BuildContext context) => ChatSendPage()
 };

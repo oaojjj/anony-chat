@@ -17,15 +17,18 @@ class AnonymousChat extends StatelessWidget {
     return MaterialApp(
       title: 'Anonymous Chat',
       theme: ThemeData(
-          primarySwatch: Colors.amber, accentColor: Colors.amberAccent),
+          fontFamily: 'Roboto',
+          brightness: Brightness.light,
+          buttonColor: Colors.indigo,
+          primarySwatch: Colors.indigo,
+          accentColor: Colors.indigoAccent),
       home: _route() ? MainPage() : IntroPage(),
       routes: routes,
     );
   }
 
   bool _route() {
-    FirebaseAuth mAuth = FirebaseAuth.instance;
-    User currentUser = mAuth.currentUser;
-    return currentUser != null ? true : false;
+    final FirebaseAuth mAuth = FirebaseAuth.instance;
+    return mAuth.currentUser != null ? true : false;
   }
 }
