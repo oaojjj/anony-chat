@@ -1,14 +1,20 @@
+import 'package:anony_chat/provider/register_provider.dart';
+import 'package:anony_chat/provider/register_step_provider.dart';
 import 'package:anony_chat/routes.dart';
 import 'package:anony_chat/ui/view/home/main_home_page.dart';
 import 'package:anony_chat/ui/view/intro/intro_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(AnonymousChat());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider.value(value: RegisterProvider()),
+    ChangeNotifierProvider.value(value: RegisterStepProvider())
+  ], child: AnonymousChat()));
 }
 
 class AnonymousChat extends StatelessWidget {
@@ -28,7 +34,7 @@ class AnonymousChat extends StatelessWidget {
   }
 
   bool _route() {
-    final FirebaseAuth mAuth = FirebaseAuth.instance;
-    return mAuth.currentUser != null ? true : false;
+    final user = FirebaseAuth.instance.currentUser;
+    return user != null ? true : false;
   }
 }

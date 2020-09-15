@@ -1,11 +1,10 @@
 import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/model/member_model.dart';
 import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/ui/view/intro/auth/register_tap.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -145,9 +144,9 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(width: 8.0),
               Container(
                 child: Switch(
-                    value: member.isNotMeetingPhoneList,
+                    value: member.isNotMeetingSameMajor,
                     onChanged: (value) =>
-                        setState(() => member.isNotMeetingPhoneList = value)),
+                        setState(() => member.isNotMeetingSameMajor = value)),
               ),
             ]),
           ],
@@ -157,7 +156,7 @@ class _ProfilePageState extends State<ProfilePage> {
           onPressed: _fixColor
               ? () {
                   _memberModel.updateProfile(_fixProfile);
-                  _member = Member.fromMap(_fixProfile.toJson());
+                  _member = Member.fromJson(_fixProfile.toJson());
                   setState(() => _fixColor = false);
                 }
               : null,
@@ -208,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
   // TODO 수정 성공시 토스트메시지 띄우기
   _fetchData() async {
     _member = await SPController.loadProfile();
-    _fixProfile = Member.fromMap(_member.toJson());
+    _fixProfile = Member.fromJson(_member.toJson());
     _initUI();
     setState(() => loading = false);
   }

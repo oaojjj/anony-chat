@@ -1,4 +1,4 @@
-import 'package:anony_chat/model/chat_model.dart';
+import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/viewmodel/chat_model.dart';
 import 'package:anony_chat/ui/widget/chat/chat_room_preview.dart';
 import 'package:anony_chat/ui/widget/home/home_drawer.dart';
 import 'package:firebase_auth/firebase_auth.dart';

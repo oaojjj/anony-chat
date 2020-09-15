@@ -13,14 +13,14 @@ class SPController {
     prefs.setString('university', member.university);
     prefs.setBool(
         'isNotMeetingSameUniversity', member.isNotMeetingSameUniversity);
-    prefs.setBool('isNotMeetingPhoneList', member.isNotMeetingPhoneList);
+    prefs.setBool('isNotMeetingPhoneList', member.isNotMeetingSameMajor);
   }
 
   // 프로필 가져오기
   static Future<Member> loadProfile() async {
     final prefs = await SharedPreferences.getInstance();
 
-    return Member.fromMap({
+    return Member.fromJson({
       'id': prefs.get('id') ?? -1,
       'sex': prefs.get('sex') ?? "",
       'birthYear': prefs.get('birthYear') ?? "",

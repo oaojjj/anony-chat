@@ -3,12 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class SCCertificationTap extends StatefulWidget {
+class SCAuthorizationTap extends StatefulWidget {
   @override
-  _SCCertificationTapState createState() => _SCCertificationTapState();
+  _SCAuthorizationTapState createState() => _SCAuthorizationTapState();
 }
 
-class _SCCertificationTapState extends State<SCCertificationTap> {
+class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _universityController = TextEditingController();
   final TextEditingController _studentIDController = TextEditingController();
@@ -76,8 +76,13 @@ class _SCCertificationTapState extends State<SCCertificationTap> {
                   children: [
                     Icon(Icons.error),
                     SizedBox(width: 4),
-                    Text('학생증 인증이 완료된 후 정상적으로 서비스를\n이용할 수 있습니다.',
-                        style: TextStyle(fontSize: 15))
+                    Expanded(
+                      child: Text(
+                        '학생증 인증이 완료된 후 정상적으로 서비스를 이용할 수 있습니다.',
+                        style: TextStyle(fontSize: 12),
+                        overflow: TextOverflow.fade,
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 8),
@@ -85,7 +90,7 @@ class _SCCertificationTapState extends State<SCCertificationTap> {
                   elevation: 3,
                   child: Padding(
                     padding: const EdgeInsets.only(
-                        left: 8, right: 16, top: 8, bottom: 8),
+                        left: 8, right: 16, top: 16, bottom: 16),
                     child: Column(
                       children: [
                         Row(
@@ -223,17 +228,17 @@ class _SCCertificationTapState extends State<SCCertificationTap> {
                         flex: 3,
                         fit: FlexFit.tight,
                         child: Text('같은 학교 학생 안만나기',
-                            style: TextStyle(fontSize: 18.0))),
+                            style: TextStyle(fontSize: 16.0))),
                     Flexible(
                       flex: 1,
-                      fit: FlexFit.tight,
+                      fit: FlexFit.loose,
                       child: Switch(
                         value: isNotMeetingSameUniversity,
                         onChanged: (value) =>
                             setState(() => isNotMeetingSameUniversity = value),
                       ),
                     ),
-                    Flexible(flex: 2, fit: FlexFit.tight, child: Container()),
+                    Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
                   ],
                 ),
                 Row(
@@ -242,17 +247,17 @@ class _SCCertificationTapState extends State<SCCertificationTap> {
                         flex: 3,
                         fit: FlexFit.tight,
                         child: Text('같은 학과 학생 안만나기',
-                            style: TextStyle(fontSize: 18.0))),
+                            style: TextStyle(fontSize: 16.0))),
                     Flexible(
                       flex: 1,
-                      fit: FlexFit.tight,
+                      fit: FlexFit.loose,
                       child: Switch(
                         value: isNotMeetingSameMajor,
                         onChanged: (value) =>
                             setState(() => isNotMeetingSameMajor = value),
                       ),
                     ),
-                    Flexible(flex: 2, fit: FlexFit.tight, child: Container()),
+                    Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
                   ],
                 ),
               ],
@@ -366,7 +371,7 @@ class _SCCertificationTapState extends State<SCCertificationTap> {
             child: Image.file(_image, fit: BoxFit.fill));
   }
 
-  _successCertification(BuildContext context) {
+  _successAuthorization(BuildContext context) {
     if (_formKey.currentState.validate()) {
       // No any error in validation
       Navigator.pop(

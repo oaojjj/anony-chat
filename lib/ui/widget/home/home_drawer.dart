@@ -1,4 +1,3 @@
-import 'package:anony_chat/model/member_model.dart';
 import 'package:flutter/material.dart';
 
 
@@ -34,7 +33,6 @@ class HomeDrawer extends StatelessWidget {
             ListTile(
               title: Text('테스트', style: TextStyle(fontSize: 20.0)),
               onTap: () async {
-                print(await MemberModel.getMemberUid(2));
               },
             )
           ],

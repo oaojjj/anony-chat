@@ -1,6 +1,4 @@
-import 'package:anony_chat/database/shared_preferences_controller.dart';
-import 'package:anony_chat/model/member_model.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
 
 import 'home_drawer.dart';

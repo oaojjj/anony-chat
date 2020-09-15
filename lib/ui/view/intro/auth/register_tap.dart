@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/model/member_model.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'student_card_certification_tap.dart';
+import 'student_card_authorization_tap.dart';
 
 class MyDropDownMenuItem {
   List<String> list;
@@ -82,7 +82,7 @@ class _RegisterTapState extends State<RegisterTap> {
                 Card(
                   elevation: 3,
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
                         Align(
@@ -163,7 +163,14 @@ class _RegisterTapState extends State<RegisterTap> {
                   children: [
                     Icon(Icons.error),
                     SizedBox(width: 4),
-                    Text('회원 정보는 설정에서 언제든 변경 가능합니다.',style: TextStyle(fontSize: 15))
+                    Expanded(
+                      child: Text(
+                        '회원 정보는 설정에서 언제든 변경 가능합니다.',
+                        style: TextStyle(fontSize: 12),
+                        maxLines: 1,
+                        overflow: TextOverflow.fade,
+                      ),
+                    )
                   ],
                 )
               ],
@@ -173,7 +180,7 @@ class _RegisterTapState extends State<RegisterTap> {
 
   _navigateStdCardCertification(BuildContext context) async {
     List<dynamic> result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SCCertificationTap()));
+        context, MaterialPageRoute(builder: (context) => SCAuthorizationTap()));
 
     print(result);
 

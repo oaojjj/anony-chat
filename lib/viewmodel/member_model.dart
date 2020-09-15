@@ -1,11 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:anony_chat/database/firebase_storage_controller.dart';
 import 'package:anony_chat/database/shared_preferences_controller.dart';
+import 'package:anony_chat/model/dao/member.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import 'dao/member.dart';
 
 class MemberModel {
   static final FirebaseAuth _mAuth = FirebaseAuth.instance;
@@ -111,17 +112,8 @@ class MemberModel {
         .child('${_mAuth.currentUser.uid}')
         .once();
 
-    final member = Member.fromMap({
-      'id': snapshot.value['id'],
-      'sex': snapshot.value['sex'],
-      'region': snapshot.value['region'],
-      'university': snapshot.value['university'],
-      'birthYear': snapshot.value['birthYear'],
-      'isNotMeetingSameUniversity':
-          snapshot.value['isNotMeetingSameUniversity'].toString() == 'true',
-      'isNotMeetingPhoneList':
-          snapshot.value['isNotMeetingPhoneList'].toString() == 'true'
-    });
-    return member;
+    final responseData = json.decode(snapshot.value);
+
+    return Member.fromJson(responseData);
   }
 }

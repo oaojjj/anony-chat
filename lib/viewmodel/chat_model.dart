@@ -1,10 +1,10 @@
 import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
-import 'package:anony_chat/model/member_model.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import 'dao/message.dart';
+import '../model/dao/message.dart';
 
 class ChatModel {
   static final FirebaseAuth _mAuth = FirebaseAuth.instance;

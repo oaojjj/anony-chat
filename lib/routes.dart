@@ -8,7 +8,7 @@ import 'ui/view/home/profile_page.dart';
 import 'ui/view/home/service_info_page.dart';
 import 'ui/view/intro/intro_page.dart';
 import 'ui/view/intro/auth_and_register.dart';
-import 'ui/view/intro/auth/terms_content_page.dart';
+import 'ui/view/intro/terms_content_page.dart';
 
 final routes = {
   //'/': (BuildContext context) => IntroPage(),

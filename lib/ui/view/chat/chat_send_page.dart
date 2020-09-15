@@ -1,17 +1,13 @@
 import 'dart:io';
 
-import 'package:anony_chat/database/shared_preferences_controller.dart';
-import 'package:anony_chat/model/chat_model.dart';
+import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/viewmodel/chat_model.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
-import 'package:anony_chat/model/member_model.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatSendPage extends StatefulWidget {
   @override

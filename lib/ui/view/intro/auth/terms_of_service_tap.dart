@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 // 이용약관 동의 페이지
 class TermsOfServiceTap extends StatefulWidget {
-
   @override
   _TermsOfServiceTapState createState() => _TermsOfServiceTapState();
 }
@@ -48,7 +47,7 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 60),
       child: Container(
-        height: 60.0 * (_tda.mItems.length + 1),
+        height: 50.0 * (_tda.mItems.length + 1),
         child: Column(
           children: [
             Expanded(
@@ -68,34 +67,59 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
   }
 
   // 약관동의 리스트
+  // ListTile로 하니까 크기를 마음대로 못정함
   Widget _buildTerms(int index) {
     if (index == _tda.mItems.length) return _buildFooter();
 
-    return ListTile(
-      leading: Checkbox(
-          checkColor: Colors.white,
-          value: _tda.mItems[index].isChecked,
-          onChanged: (value) {
-            setState(() => _tda.onChecked(index, value));
-          }),
-      title: Text(_tda.returnRequiredString(index)),
-      trailing: IconButton(
-          color: Colors.black,
-          icon: Icon(Icons.search),
-          onPressed: () => _navigateTermsContent(context, index)),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Flexible(
+          fit: FlexFit.loose,
+          flex: 1,
+          child: Checkbox(
+              checkColor: Colors.white,
+              value: _tda.mItems[index].isChecked,
+              onChanged: (value) {
+                setState(() => _tda.onChecked(index, value));
+              }),
+        ),
+        Flexible(
+            fit: FlexFit.tight,
+            flex: 4,
+            child: Text(_tda.returnRequiredString(index))),
+        Flexible(
+          fit: FlexFit.loose,
+          flex: 1,
+          child: IconButton(
+              color: Colors.black,
+              icon: Icon(Icons.search),
+              onPressed: () => _navigateTermsContent(context, index)),
+        ),
+      ],
     );
   }
 
   // 모두 동의하기
   Widget _buildFooter() {
-    return ListTile(
-      leading: Checkbox(
-          checkColor: Colors.white,
-          value: _tda.allAgree,
-          onChanged: (value) {
-            setState(() => onAllAgree(value));
-          }),
-      title: Text("모두 동의하기", style: TextStyle(fontWeight: FontWeight.bold)),
+    return Row(
+      children: [
+        Flexible(
+          fit: FlexFit.loose,
+          flex: 1,
+          child: Checkbox(
+              checkColor: Colors.white,
+              value: _tda.allAgree,
+              onChanged: (value) {
+                setState(() => onAllAgree(value));
+              }),
+        ),
+        Flexible(
+            fit: FlexFit.tight,
+            flex: 3,
+            child:
+                Text("모두 동의하기", style: TextStyle(fontWeight: FontWeight.bold))),
+      ],
     );
   }
 

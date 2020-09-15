@@ -35,8 +35,11 @@ class _TermsContentPageState extends State<TermsContentPage> {
                   ),
                 ),
               ),
-              BottomButton(
-                  onPressed: () => Navigator.pop(context, item), text: '동의'),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: BottomButton(
+                    onPressed: () => Navigator.pop(context, item), text: '동의'),
+              ),
               SizedBox(height: size.height * 0.05)
             ],
           ),

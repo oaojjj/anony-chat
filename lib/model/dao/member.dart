@@ -1,87 +1,37 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'member.g.dart';
+
+@JsonSerializable()
 class Member {
   int id;
   String sex;
   String region;
   String university;
+  String major;
   String birthYear;
+  int phoneNumber;
   int studentID;
   int possibleMessageOfSend;
+  bool isAuthorization;
   bool isNotMeetingSameUniversity;
-  bool isNotMeetingPhoneList;
+  bool isNotMeetingSameMajor;
 
   Member(
-      {this.sex = '남성',
+      {this.id,
+      this.sex = '남자',
       this.region,
       this.university,
+      this.major,
       this.birthYear,
+      this.phoneNumber,
       this.studentID,
       this.possibleMessageOfSend = 5,
+      this.isAuthorization = false,
       this.isNotMeetingSameUniversity = false,
-      this.isNotMeetingPhoneList = false});
+      this.isNotMeetingSameMajor = false});
 
-  Member.fromMap(Map<String, dynamic> map)
-      : id = map['id'],
-        sex = map['sex'],
-        region = map['region'],
-        university = map['university'],
-        birthYear = map['birthYear'],
-        studentID = map['studentID'],
-        possibleMessageOfSend = map['possibleMessageOfSend'],
-        isNotMeetingSameUniversity = map['isNotMeetingSameUniversity'],
-        isNotMeetingPhoneList = map['isNotMeetingPhoneList'];
+  factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
 
-  @override
-  String toString() {
-    return 'id:' +
-        id.toString() +
-        'sex:' +
-        sex +
-        '\nbirthYear:' +
-        birthYear +
-        '\nregion:' +
-        region +
-        '\nuniversity:' +
-        university +
-        '\possibleMessageOfSend:' +
-        possibleMessageOfSend.toString() +
-        '\nstudentID:' +
-        studentID.toString() +
-        '\nisNotMeetingSameUniversity:' +
-        isNotMeetingSameUniversity.toString() +
-        '\nisNotMeetingPhoneList:' +
-        isNotMeetingPhoneList.toString();
-  }
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'sex': sex,
-        'region': region,
-        'university': university,
-        'birthYear': birthYear,
-        'studentID': studentID,
-        'possibleMessageOfSend': possibleMessageOfSend,
-        'isNotMeetingSameUniversity': isNotMeetingSameUniversity,
-        'isNotMeetingPhoneList': isNotMeetingPhoneList,
-      };
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Member &&
-          runtimeType == other.runtimeType &&
-          sex == other.sex &&
-          region == other.region &&
-          university == other.university &&
-          birthYear == other.birthYear &&
-          isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
-          isNotMeetingPhoneList == other.isNotMeetingPhoneList;
-
-  @override
-  int get hashCode =>
-      sex.hashCode ^
-      region.hashCode ^
-      university.hashCode ^
-      birthYear.hashCode ^
-      isNotMeetingSameUniversity.hashCode ^
-      isNotMeetingPhoneList.hashCode;
+  Map<String, dynamic> toJson() => _$MemberToJson(this);
 }

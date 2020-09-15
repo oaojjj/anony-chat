@@ -1,4 +1,9 @@
+import 'package:anony_chat/provider/register_provider.dart';
+import 'package:anony_chat/viewmodel/auth/phone_authorization_model.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class PhoneVerificationTap extends StatefulWidget {
   @override
@@ -6,99 +11,238 @@ class PhoneVerificationTap extends StatefulWidget {
 }
 
 class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
+  final _formKey = GlobalKey<FormState>();
+  final _phoneNumberController = TextEditingController();
+  final _smsCodeController = TextEditingController();
+  final PhoneAuthorizationModel fam = PhoneAuthorizationModel();
+
+  Stream<int> _time;
+
   bool _isRequested = false;
-  bool _isSuccessAuth = false;
   String _requestString = '인증요청';
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 300,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 12.0, bottom: 4.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "전화번호",
-                style: TextStyle(fontSize: 20),
-              ),
-            ),
-          ),
-          Form(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return AbsorbPointer(
+      absorbing: Provider.of<RegisterProvider>(context).phoneAuthState ==
+              PhoneAuthState.succeed
+          ? true
+          : false,
+      child: Container(
+        height: 300,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Card(
+              elevation: 3,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
+                child: Column(
                   children: [
-                    Container(
-                      width: 240,
-                      child: TextFormField(
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                            contentPadding:
-                                EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
-                            border: OutlineInputBorder(),
-                            hintText: '전화번호'),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0, bottom: 4.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "전화번호",
+                          style: TextStyle(fontSize: 20),
+                        ),
                       ),
                     ),
-                    RaisedButton(
-                        child: Text(_requestString,
-                            style: TextStyle(color: Colors.white)),
-                        onPressed: () {
-                          requestPhoneAuth();
-                        })
-                  ],
-                ),
-                SizedBox(height: 8),
-                _isRequested
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    Form(
+                      key: _formKey,
+                      child: Column(
                         children: [
-                          Stack(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                width: 240,
+                              Flexible(
+                                flex: 2,
+                                fit: FlexFit.tight,
                                 child: TextFormField(
-                                  keyboardType: TextInputType.phone,
+                                  controller: _phoneNumberController,
+                                  keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                       contentPadding:
                                           EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
                                       border: OutlineInputBorder(),
-                                      hintText: '인증번호'),
+                                      hintText: '전화번호'),
+                                  validator: (value) {
+                                    if (value.isEmpty)
+                                      return '전화번호를 입력하세요.';
+                                    else if (value.contains('-'))
+                                      return '숫자만 입력하세요';
+                                    else
+                                      return null;
+                                  },
                                 ),
                               ),
-                              Positioned(
-                                  top: 16,
-                                  bottom: 16,
-                                  right: 16,
-                                  child: Text(
-                                    '1:59',
-                                    style: TextStyle(color: Colors.indigo),
-                                  ))
+                              SizedBox(width: 4.0),
+                              Flexible(
+                                flex: 1,
+                                fit: FlexFit.loose,
+                                child: RaisedButton(
+                                    child: Text(_requestString,
+                                        style: TextStyle(color: Colors.white)),
+                                    onPressed: () {
+                                      if (checkedValidate()) return;
+                                      requestPhoneAuth();
+                                    }),
+                              ),
                             ],
                           ),
-                          RaisedButton(
-                              child: Text('확인',
-                                  style: TextStyle(color: Colors.white)),
-                              onPressed: _isSuccessAuth ? () {} : null),
+                          SizedBox(height: 8),
+                          _isRequested
+                              ? Stack(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Flexible(
+                                          fit: FlexFit.tight,
+                                          flex: 2,
+                                          child: TextFormField(
+                                            controller: _smsCodeController,
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.fromLTRB(
+                                                        10.0, 0, 10.0, 0),
+                                                border: OutlineInputBorder(),
+                                                hintText: '인증번호'),
+                                          ),
+                                        ),
+                                        SizedBox(width: 4.0),
+                                        Flexible(
+                                          fit: FlexFit.loose,
+                                          flex: 1,
+                                          child: ButtonTheme(
+                                            buttonColor: Colors.grey[800],
+                                            child: RaisedButton(
+                                                child: Text('확인',
+                                                    style: TextStyle(
+                                                        color: Colors.white)),
+                                                onPressed: () {
+                                                  checkPhoneSMSCode();
+                                                }),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    StreamBuilder(
+                                      stream: _time,
+                                      builder: (_, snap) {
+                                        if (snap.hasData)
+                                          return Positioned(
+                                            right: 112,
+                                            top: 16,
+                                            bottom: 16,
+                                            child: Text(
+                                              DateFormat('mm:ss').format(DateTime
+                                                  .fromMillisecondsSinceEpoch(
+                                                      Duration(
+                                                              seconds:
+                                                                  snap.data)
+                                                          .inMilliseconds)),
+                                              style: TextStyle(
+                                                  color: Colors.indigo),
+                                            ),
+                                          );
+                                        else if (snap.hasError)
+                                          return Text('error');
+                                        else
+                                          return Container();
+                                      },
+                                    ),
+                                  ],
+                                )
+                              : Container(),
                         ],
-                      )
-                    : Container(),
-              ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, top: 4.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  resultAuthString(),
+                  style: TextStyle(
+                      color: Colors.indigo, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void requestPhoneAuth() {
+    switch (
+        Provider.of<RegisterProvider>(context, listen: false).phoneAuthState) {
+      case PhoneAuthState.none:
+        _time = fam.timeOutStart();
+        fam.requestSMSCodeAuthorization(
+            phoneNumber: _phoneNumberController.text);
+        break;
+      case PhoneAuthState.failed:
+        fam.resendSMSCodeAuthorization();
+        Fluttertoast.showToast(
+            msg: '인증번호를 재전송 하였습니다.',
+            gravity: ToastGravity.BOTTOM,
+            backgroundColor: Colors.grey[800],
+            toastLength: Toast.LENGTH_SHORT);
+        break;
+      default:
+        break;
+    }
     setState(() {
       _requestString = '재전송';
       _isRequested = true;
     });
+  }
+
+  checkPhoneSMSCode() async {
+    final rp = Provider.of<RegisterProvider>(context, listen: false);
+
+    // 인증 성공
+    if (await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text)) {
+      print('checkPhoneSucceed');
+
+      rp.onPhoneAuthSucceed();
+    } else {
+      print('checkPhoneFailed');
+      rp.onPhoneAuthFailed();
+    }
+  }
+
+  String resultAuthString() {
+    switch (Provider.of<RegisterProvider>(context).phoneAuthState) {
+      case PhoneAuthState.none:
+        return '';
+      case PhoneAuthState.succeed:
+        return '인증이 성공했습니다.';
+      case PhoneAuthState.failed:
+        return '인증번호가 틀렷습니다.';
+      default:
+        return 'error';
+    }
+  }
+
+  bool checkedValidate() {
+    if (_formKey.currentState.validate()) {
+      return false;
+    } else {
+      return true;
+    }
   }
 }

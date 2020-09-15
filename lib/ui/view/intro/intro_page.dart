@@ -25,8 +25,8 @@ class IntroPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: BottomButton(
-                    onPressed: () => Navigator.pushNamed(
-                        context, '/auth_and_register_page'),
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/auth_and_register_page'),
                     text: '시작하기'),
               ),
               SizedBox(height: size.height * 0.25)
