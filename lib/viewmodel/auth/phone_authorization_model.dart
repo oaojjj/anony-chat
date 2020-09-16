@@ -4,13 +4,19 @@ class PhoneAuthorizationModel {
   String _verificationID;
   String _phoneNumber;
   int _forceCodeResendToken;
+
   static const int _TIME_OUT = 120;
+  Stream<int> _time;
+
+  bool _isSucceed = false;
+
+  Stream<int> get time => _time;
 
   Future<void> requestSMSCodeAuthorization({String phoneNumber}) async {
     phoneNumber = '+82$phoneNumber';
     _phoneNumber = phoneNumber;
 
-    print(phoneNumber);
+    _time = timeOutStart();
     await FirebaseAuth.instance.verifyPhoneNumber(
         timeout: Duration(seconds: _TIME_OUT),
         phoneNumber: phoneNumber,
@@ -30,6 +36,7 @@ class PhoneAuthorizationModel {
       return;
     }
 
+    _time = timeOutStart();
     await FirebaseAuth.instance.verifyPhoneNumber(
         timeout: Duration(seconds: _TIME_OUT),
         phoneNumber: _phoneNumber,
@@ -47,14 +54,15 @@ class PhoneAuthorizationModel {
 
   Future<bool> signInWithPhoneNumberAndSMSCode(String smsCode) async {
     smsCode = smsCode.trim();
+
     AuthCredential authCredential = PhoneAuthProvider.credential(
         verificationId: _verificationID, smsCode: smsCode);
-    print('authCredential:$authCredential');
 
     try {
       await FirebaseAuth.instance.signInWithCredential(authCredential);
       return true;
     } catch (e) {
+      print(e.toString());
       return false;
     }
   }
@@ -71,8 +79,11 @@ class PhoneAuthorizationModel {
 
   Stream<int> timeOutStart() async* {
     for (int i = _TIME_OUT; i >= 0; i--) {
+      if (_isSucceed) break;
       yield i;
       await Future.delayed(const Duration(seconds: 1));
     }
   }
+
+  void onSucceed() => _isSucceed = true;
 }

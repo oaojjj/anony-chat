@@ -76,17 +76,18 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
                     .onNextStep(),
             controlsBuilder: (context, {onStepCancel, onStepContinue}) {
               return Center(
-                  child: Consumer<RegisterProvider>(
-                builder: (context, RegisterProvider value, child) =>
-                    BottomButton(
-                  onPressed: value.stepState ? onStepContinue : null,
-                  text:
-                      Provider.of<RegisterStepProvider>(context).currentStep !=
-                              _steps.length - 1
-                          ? '다음'
-                          : '가입하기',
+                child: Consumer<RegisterProvider>(
+                  builder: (context, RegisterProvider value, child) =>
+                      BottomButton(
+                    onPressed: value.stepState ? onStepContinue : null,
+                    text: Provider.of<RegisterStepProvider>(context)
+                                .currentStep !=
+                            _steps.length - 1
+                        ? '다음'
+                        : '가입하기',
+                  ),
                 ),
-              ));
+              );
             },
           ),
         ),

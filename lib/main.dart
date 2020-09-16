@@ -12,8 +12,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider.value(value: RegisterProvider()),
-    ChangeNotifierProvider.value(value: RegisterStepProvider())
+    ChangeNotifierProvider(create: (_) => RegisterProvider()),
+    ChangeNotifierProvider(create: (_) => RegisterStepProvider())
   ], child: AnonymousChat()));
 }
 

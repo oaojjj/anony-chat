@@ -13,7 +13,7 @@ class HomeDrawer extends StatelessWidget {
               leading: Icon(Icons.account_circle, size: 24.0),
               title: Text('내 프로필', style: TextStyle(fontSize: 20.0)),
               dense: true,
-              onTap: () => Navigator.pushNamed(context, '/profile'),
+              onTap: () => Navigator.pushNamed(context, '/profile_page'),
             ),
             ListTile(
               leading: Icon(Icons.report, size: 24.0),
@@ -28,7 +28,7 @@ class HomeDrawer extends StatelessWidget {
             ListTile(
               leading: Icon(Icons.settings, size: 24.0),
               title: Text('서비스 정보', style: TextStyle(fontSize: 20.0)),
-              onTap: () => Navigator.pushNamed(context, '/service_info'),
+              onTap: () => Navigator.pushNamed(context, '/service_info_page'),
             ),
             ListTile(
               title: Text('테스트', style: TextStyle(fontSize: 20.0)),

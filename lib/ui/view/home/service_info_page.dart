@@ -32,8 +32,9 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
               ListTile(
                 title: Text('회원 탈퇴', style: TextStyle(fontSize: 20.0)),
                 onTap: (){
+                  FirebaseAuth.instance.currentUser.delete();
                   FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil('/intro', (route) => false);
+                  Navigator.of(context).pushNamedAndRemoveUntil('/intro_page', (route) => false);
                 },
               ),
               Divider(color: Colors.black, thickness: 1.0),

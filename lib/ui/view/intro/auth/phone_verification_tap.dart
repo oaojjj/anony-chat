@@ -19,7 +19,6 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
   Stream<int> _time;
 
   bool _isRequested = false;
-  String _requestString = '인증요청';
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +83,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                 flex: 1,
                                 fit: FlexFit.loose,
                                 child: RaisedButton(
-                                    child: Text(_requestString,
+                                    child: Text(_isRequested ? '재전송' : '인증번호',
                                         style: TextStyle(color: Colors.white)),
                                     onPressed: () {
                                       if (checkedValidate()) return;
@@ -95,18 +94,17 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                           ),
                           SizedBox(height: 8),
                           _isRequested
-                              ? Stack(
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Flexible(
-                                          fit: FlexFit.tight,
-                                          flex: 2,
-                                          child: TextFormField(
+                                    Flexible(
+                                      fit: FlexFit.tight,
+                                      flex: 2,
+                                      child: Stack(
+                                        children: [
+                                          TextFormField(
                                             controller: _smsCodeController,
                                             keyboardType: TextInputType.number,
                                             decoration: InputDecoration(
@@ -116,48 +114,48 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                                 border: OutlineInputBorder(),
                                                 hintText: '인증번호'),
                                           ),
-                                        ),
-                                        SizedBox(width: 4.0),
-                                        Flexible(
-                                          fit: FlexFit.loose,
-                                          flex: 1,
-                                          child: ButtonTheme(
-                                            buttonColor: Colors.grey[800],
-                                            child: RaisedButton(
-                                                child: Text('확인',
-                                                    style: TextStyle(
-                                                        color: Colors.white)),
-                                                onPressed: () {
-                                                  checkPhoneSMSCode();
-                                                }),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    StreamBuilder(
-                                      stream: _time,
-                                      builder: (_, snap) {
-                                        if (snap.hasData)
-                                          return Positioned(
-                                            right: 112,
+                                          Positioned(
+                                            right: 8,
                                             top: 16,
                                             bottom: 16,
-                                            child: Text(
-                                              DateFormat('mm:ss').format(DateTime
-                                                  .fromMillisecondsSinceEpoch(
-                                                      Duration(
-                                                              seconds:
-                                                                  snap.data)
-                                                          .inMilliseconds)),
-                                              style: TextStyle(
-                                                  color: Colors.indigo),
+                                            child: StreamBuilder(
+                                              stream: fam.time,
+                                              builder: (_, snap) {
+                                                if (snap.hasData)
+                                                  return Text(
+                                                    DateFormat('mm:ss').format(DateTime
+                                                        .fromMillisecondsSinceEpoch(
+                                                            Duration(
+                                                                    seconds: snap
+                                                                        .data)
+                                                                .inMilliseconds)),
+                                                    style: TextStyle(
+                                                        color: Colors.indigo),
+                                                  );
+                                                else if (snap.hasError)
+                                                  return Text('error');
+                                                else
+                                                  return Text('data');
+                                              },
                                             ),
-                                          );
-                                        else if (snap.hasError)
-                                          return Text('error');
-                                        else
-                                          return Container();
-                                      },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 4.0),
+                                    Flexible(
+                                      fit: FlexFit.loose,
+                                      flex: 1,
+                                      child: ButtonTheme(
+                                        buttonColor: Colors.grey[800],
+                                        child: RaisedButton(
+                                            child: Text('확인',
+                                                style: TextStyle(
+                                                    color: Colors.white)),
+                                            onPressed: () {
+                                              checkPhoneSMSCode();
+                                            }),
+                                      ),
                                     ),
                                   ],
                                 )
@@ -190,7 +188,6 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
     switch (
         Provider.of<RegisterProvider>(context, listen: false).phoneAuthState) {
       case PhoneAuthState.none:
-        _time = fam.timeOutStart();
         fam.requestSMSCodeAuthorization(
             phoneNumber: _phoneNumberController.text);
         break;
@@ -205,19 +202,20 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
       default:
         break;
     }
-    setState(() {
-      _requestString = '재전송';
-      _isRequested = true;
-    });
+    setState(() => _isRequested = true);
   }
 
   checkPhoneSMSCode() async {
     final rp = Provider.of<RegisterProvider>(context, listen: false);
+    final result =
+        await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text);
+
+    print(result);
 
     // 인증 성공
-    if (await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text)) {
+    if (result) {
       print('checkPhoneSucceed');
-
+      fam.onSucceed();
       rp.onPhoneAuthSucceed();
     } else {
       print('checkPhoneFailed');

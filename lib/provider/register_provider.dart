@@ -12,15 +12,9 @@ class RegisterProvider extends ChangeNotifier {
 
   PhoneAuthState get phoneAuthState => _phoneAuthState;
 
-  void onSucceedStep() {
-    stepState = true;
-    notifyListeners();
-  }
+  void onSucceedStep() => stepState = true;
 
-  void onEditingStep() {
-    stepState = false;
-    notifyListeners();
-  }
+  void onEditingStep() => stepState = false;
 
   void onPhoneAuthSucceed() {
     _phoneAuthState = PhoneAuthState.succeed;
