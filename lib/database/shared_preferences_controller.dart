@@ -8,9 +8,12 @@ class SPController {
 
     prefs.setInt('id', member.id);
     prefs.setString('sex', member.sex);
-    prefs.setString('birthYear', member.birthYear);
+    prefs.setInt('birthYear', member.birthYear);
     prefs.setString('region', member.region);
     prefs.setString('university', member.university);
+    prefs.setString('major', member.major);
+    prefs.setInt('studentID', member.studentID);
+    prefs.setString('phoneNumber', member.phoneNumber);
     prefs.setBool(
         'isNotMeetingSameUniversity', member.isNotMeetingSameUniversity);
     prefs.setBool('isNotMeetingPhoneList', member.isNotMeetingSameMajor);
@@ -26,6 +29,9 @@ class SPController {
       'birthYear': prefs.get('birthYear') ?? "",
       'region': prefs.get('region') ?? "",
       'university': prefs.get('university') ?? "",
+      'major': prefs.get('major') ?? "",
+      'studentID': prefs.get('studentID') ?? "",
+      'phoneNumber': prefs.get('phoneNumber') ?? "",
       'isNotMeetingSameUniversity':
           prefs.get('isNotMeetingSameUniversity') ?? false,
       'isNotMeetingPhoneList': prefs.get('isNotMeetingPhoneList') ?? false,

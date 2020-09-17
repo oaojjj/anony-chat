@@ -1,10 +1,10 @@
 import 'package:anony_chat/model/dao/terms_data.dart';
 
-class TermsDataAPI {
+class TermsModel {
   List<TermsData> _mItems;
   bool _allAgree;
 
-  TermsDataAPI({List<TermsData> items}) {
+  TermsModel({List<TermsData> items}) {
     _mItems = items;
     _allAgree = false;
   }
@@ -25,15 +25,16 @@ class TermsDataAPI {
     _mItems[index].isChecked = b;
   }
 
-  onAllAgreeCheckBox(bool b) {
+  onAllOfAgreeCheckBox(bool b) {
     _allAgree = b;
     _mItems.forEach((element) {
       element.isChecked = b;
     });
   }
 
-  bool isRequiredChecked() {
+  bool isAllOfRequiredChecked() {
     if (_allAgree) return true;
+
     for (final item in _mItems) {
       if (item.required && !item.isChecked) {
         return false;

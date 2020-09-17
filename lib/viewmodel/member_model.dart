@@ -16,9 +16,7 @@ class MemberModel {
   static const String USER_IDS_TABLE = 'user_ids';
 
   // 가입하기
-  Future<void> register(Member member, File image) async {
-    await _mAuth.signInAnonymously();
-
+  Future<void> register(Member member) async {
     // 회원번호
     member.id = await getTotalMemberCount() + 1;
 
@@ -27,20 +25,11 @@ class MemberModel {
 
     // 프로필 로컬 저장, 학생증 서버에 업로드
     SPController.saveProfileToLocal(member);
-    if (image != null) FSController.uploadStdCardToStorage(image);
+     // await FSController.uploadStdCardToStorage(member.studentCardImage);
 
     // 회원 번호로 관리하기 위해 테이블에 회원번호와 매핑되는 uid 추가
-    _db
-        .reference()
-        .child(USER_IDS_TABLE)
-        .child('id/${_mAuth.currentUser.uid}')
-        .set(member.id);
-
-    _db
-        .reference()
-        .child(USER_IDS_TABLE)
-        .child('uid/${member.id}')
-        .set(_mAuth.currentUser.uid);
+    _db.reference().child(USER_IDS_TABLE).child('id/${_mAuth.currentUser.uid}').set(member.id);
+    _db.reference().child(USER_IDS_TABLE).child('uid/${member.id}').set(_mAuth.currentUser.uid);
 
     // 회원 정보 등록(최종회원가입)
     // TODO join이 안되니까 uid로 관리하는게 맞는듯? 좋은 방법있는지 보류

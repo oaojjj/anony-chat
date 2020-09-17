@@ -1,22 +1,8 @@
-import 'dart:io';
-
-import 'package:anony_chat/model/dao/member.dart';
+import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
-import 'package:anony_chat/viewmodel/member_model.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-
-import 'student_card_authorization_tap.dart';
-
-class MyDropDownMenuItem {
-  List<String> list;
-  String title;
-  String selected;
-
-  MyDropDownMenuItem(this.title, this.list) {
-    selected = list[0];
-  }
-}
+import 'package:provider/provider.dart';
 
 class RegisterTap extends StatefulWidget {
   @override
@@ -24,16 +10,8 @@ class RegisterTap extends StatefulWidget {
 }
 
 class _RegisterTapState extends State<RegisterTap> {
-  MemberModel _memberModel = MemberModel();
-  Member newMember = Member();
-
-  List<MyDropDownMenuItem> _items = [];
-
-  File _stdCardImage;
-
   // true#남성 false#여성
   bool sexBtnColor = true;
-  bool loading = false;
 
   // test data
   List<String> _itemsBirth = List<String>.generate(30, (i) {
@@ -65,17 +43,8 @@ class _RegisterTapState extends State<RegisterTap> {
   ];
 
   @override
-  void initState() {
-    _items.add(MyDropDownMenuItem('태어난해', _itemsBirth));
-    _items.add(MyDropDownMenuItem('지역', _itemsRegion));
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return loading
-        ? Loading()
-        : Container(
+    return Container(
             height: 300,
             child: Column(
               children: [
@@ -95,32 +64,37 @@ class _RegisterTapState extends State<RegisterTap> {
                             Flexible(
                               flex: 1,
                               fit: FlexFit.tight,
-                              child: RaisedButton(
-                                child: Text('남성',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.white)),
-                                onPressed: () {
-                                  newMember.sex = '남성';
-                                  setState(() => sexBtnColor = true);
-                                },
-                                color:
-                                    sexBtnColor ? Colors.indigo : Colors.grey,
+                              child: Consumer<RegisterProvider>(
+                                builder: (_, value, __) => RaisedButton(
+                                  child: Text('남성',
+                                      style: TextStyle(
+                                          fontSize: 20.0, color: Colors.white)),
+                                  onPressed: () {
+                                    value.member.sex = '남성';
+                                    setState(() => sexBtnColor = true);
+                                  },
+                                  color:
+                                      sexBtnColor ? Colors.indigo : Colors.grey,
+                                ),
                               ),
                             ),
                             SizedBox(width: 8),
                             Flexible(
                               flex: 1,
                               fit: FlexFit.tight,
-                              child: RaisedButton(
-                                child: Text('여성',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.white)),
-                                onPressed: () {
-                                  newMember.sex = '여성';
-                                  setState(() => sexBtnColor = false);
-                                },
-                                color:
-                                    !sexBtnColor ? Colors.indigo : Colors.grey,
+                              child: Consumer<RegisterProvider>(
+                                builder: (_, value, __) => RaisedButton(
+                                  child: Text('여성',
+                                      style: TextStyle(
+                                          fontSize: 20.0, color: Colors.white)),
+                                  onPressed: () {
+                                    value.member.sex = '여성';
+                                    setState(() => sexBtnColor = false);
+                                  },
+                                  color: !sexBtnColor
+                                      ? Colors.indigo
+                                      : Colors.grey,
+                                ),
                               ),
                             ),
                           ],
@@ -134,9 +108,44 @@ class _RegisterTapState extends State<RegisterTap> {
                                 child: Text('태어난 해',
                                     style: TextStyle(fontSize: 18.0))),
                             Flexible(
-                                flex: 2,
-                                fit: FlexFit.tight,
-                                child: _buildDropDownButton(_items[0])),
+                              flex: 2,
+                              fit: FlexFit.tight,
+                              child: GestureDetector(
+                                onTap: () => showPicker(context, _itemsBirth),
+                                child: Container(
+                                  height: 40.0,
+                                  width: 100.0,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: Colors.black, width: 1.0),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(4.0))),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                          fit: FlexFit.tight,
+                                          flex: 3,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: Consumer<RegisterProvider>(
+                                              builder: (_, value, __) => Text(
+                                                  value.member.birthYear == null
+                                                      ? "선택"
+                                                      : value.member.birthYear
+                                                          .toString()),
+                                            ),
+                                          )),
+                                      Flexible(
+                                          fit: FlexFit.tight,
+                                          flex: 1,
+                                          child: Icon(Icons.arrow_drop_down))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 16),
@@ -148,9 +157,45 @@ class _RegisterTapState extends State<RegisterTap> {
                                 child: Text('지역',
                                     style: TextStyle(fontSize: 18.0))),
                             Flexible(
-                                flex: 2,
-                                fit: FlexFit.tight,
-                                child: _buildDropDownButton(_items[1])),
+                              flex: 2,
+                              fit: FlexFit.tight,
+                              child: GestureDetector(
+                                onTap: () {
+                                  showPicker(context, _itemsRegion);
+                                },
+                                child: Container(
+                                  height: 40.0,
+                                  width: 100.0,
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: Colors.black, width: 1.0),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(4.0))),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                          fit: FlexFit.tight,
+                                          flex: 3,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0),
+                                            child: Consumer<RegisterProvider>(
+                                              builder: (_, value, __) => Text(
+                                                  value.member.region == null
+                                                      ? "선택"
+                                                      : value.member.region),
+                                            ),
+                                          )),
+                                      Flexible(
+                                          fit: FlexFit.tight,
+                                          flex: 1,
+                                          child: Icon(Icons.arrow_drop_down))
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 16),
@@ -178,88 +223,57 @@ class _RegisterTapState extends State<RegisterTap> {
           );
   }
 
-  _navigateStdCardCertification(BuildContext context) async {
-    List<dynamic> result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => SCAuthorizationTap()));
+  showPicker(
+    context,
+    List<String> item,
+  ) {
+    return showCupertinoModalPopup<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 300,
+            color: Colors.white,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                _canNextStep();
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: CupertinoPicker.builder(
+                  itemExtent: 50,
+                  childCount: item.length,
+                  diameterRatio: 10,
+                  squeeze: 1,
+                  backgroundColor: Colors.grey[100],
+                  onSelectedItemChanged: (index) {
+                    final rp = Provider.of<RegisterProvider>(context,listen: false);
+                    setState(() {
+                      item == _itemsBirth
+                          ? rp.member.birthYear = item[index] == '선택'
+                              ? null
+                              : int.parse(item[index])
+                          : rp.member.region = item[index];
+                    });
+                  },
+                  itemBuilder: (_, index) => Center(
+                    child: Text(item[index],
+                        style: TextStyle(color: Colors.black)),
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
+  }
 
-    print(result);
-
-    // result != null => 인증에 성공한 경우
-    if (result != null) {
-      newMember.university = result[0];
-      newMember.studentID = int.parse(result[1]);
-      _stdCardImage = result[2];
+  _canNextStep() {
+    final rp = Provider.of<RegisterProvider>(context, listen: false);
+    if ((rp.member.region == '선택' || rp.member.region == null) ||
+        (rp.member.birthYear == -1 || rp.member.birthYear == null)) {
+      rp.onCantNextStep();
+    } else{
+      rp.onNextStep();
     }
   }
-
-  Widget _buildDropDownButton(MyDropDownMenuItem item) {
-    return Container(
-      height: 40.0,
-      width: 100.0,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.black, width: 1.0),
-          borderRadius: BorderRadius.all(Radius.circular(4.0))),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: item.selected,
-          items: item.list.map<DropdownMenuItem<String>>((value) {
-            return DropdownMenuItem(
-                value: value,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(value),
-                ));
-          }).toList(),
-          onChanged: (value) {
-            setState(() => item.selected = value);
-            _setDropDownValue(item.title, value);
-          },
-        ),
-      ),
-    );
-  }
-
-  void _setDropDownValue(String title, value) {
-    switch (title) {
-      case '지역':
-        newMember.region = value;
-        break;
-      case '태어난해':
-        newMember.birthYear = value;
-        break;
-      default:
-        throw Exception('set drop_down_value error');
-        break;
-    }
-  }
-
-  Future<void> _registerAndLogin() async {
-    // 예외 처리를 뷰에서 해주는게 맞나?
-    if ((newMember.region == '선택' || newMember.region == null) ||
-        (newMember.university == '선택' || newMember.university == null)) {
-      Fluttertoast.showToast(
-          fontSize: 20.0,
-          textColor: Colors.black,
-          msg: '공란을 채워주세요.',
-          backgroundColor: Colors.white,
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER);
-      return;
-    }
-
-    // 최종 가입을 할 수 있는 상태
-    setState(() => loading = true);
-    await _memberModel
-        .register(newMember, _stdCardImage)
-        .whenComplete(() => Navigator.of(context)
-            .pushNamedAndRemoveUntil('/main', (route) => false))
-        .catchError((onError) {
-      print('register error');
-    });
-  }
-
-// TODO 시간나면 고치기
-// 학생증 인증하고나서 버튼을 누르면 아래의 오류가 뜨는데 왜뜨는지 모르겠음
-// A RenderFlex overflowed by 159 pixels on the bottom.
 }

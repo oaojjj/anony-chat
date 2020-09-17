@@ -1,9 +1,7 @@
 import 'dart:io';
 
-import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class FSController {
   static final _firebaseStorage = FirebaseStorage.instance;
@@ -17,13 +15,24 @@ class FSController {
     _storageReference.putFile(image);
   }
 
-  static Future<String> loadPlanetImageURL(String name) async {
+  static Future<String> loadImageURL(String name) async {
     /*final checkLocal = await SharedPreferences.getInstance();
 
     if (checkLocal.getString('planet') != null) {
       return SPController.loadPlanetImageURL();
     }*/
 
-    return await _firebaseStorage.ref().child('planet/$name').getDownloadURL();
+    return await _firebaseStorage
+        .ref()
+        .child('messageImage/$name')
+        .getDownloadURL();
+  }
+
+  static Future<String> loadStdCardImageURL(String name) async {
+    final uid = FirebaseAuth.instance.currentUser.uid;
+    return await _firebaseStorage
+        .ref()
+        .child('student card/$uid')
+        .getDownloadURL();
   }
 }

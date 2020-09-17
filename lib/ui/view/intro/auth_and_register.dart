@@ -1,7 +1,8 @@
 import 'package:anony_chat/provider/register_provider.dart';
-import 'package:anony_chat/provider/register_step_provider.dart';
 import 'package:anony_chat/ui/view/intro/auth/student_card_authorization_tap.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:anony_chat/ui/widget/loading.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,88 +16,95 @@ class AuthAndRegisterPage extends StatefulWidget {
 }
 
 class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
-  List<Step> _steps;
+  final _memberModel = MemberModel();
 
-  List<Step> makeSteps() {
-    final rsp = Provider.of<RegisterStepProvider>(context);
-    _steps = [
-      Step(
-          title: Container(),
-          content: PhoneVerificationTap(),
-          isActive: rsp.isActive[0],
-          state: rsp.stepState[0]),
-      Step(
-          title: Container(),
-          content: TermsOfServiceTap(),
-          isActive: rsp.isActive[1],
-          state: rsp.stepState[1]),
-      Step(
-          title: Container(),
-          content: RegisterTap(),
-          isActive: rsp.isActive[2],
-          state: rsp.stepState[2]),
-      Step(
-          title: Container(),
-          content: SCAuthorizationTap(),
-          isActive: rsp.isActive[3],
-          state: rsp.stepState[3]),
-    ];
+  bool _loading = false;
+
+  List<Step> _steps = [];
+  final tapList = [
+    PhoneVerificationTap(),
+    TermsOfServiceTap(),
+    RegisterTap(),
+    SCAuthorizationTap()
+  ];
+
+  makeSteps() {
+    _steps.clear();
+    final rsp = Provider.of<RegisterProvider>(context, listen: false);
+
+    for (int i = 0; i < tapList.length; i++) {
+      _steps.add(Step(
+          title: rsp.stepState[i] == StepState.editing
+              ? Text(rsp.isActiveString[i], style: TextStyle(fontSize: 16))
+              : Container(),
+          content: tapList[i],
+          isActive: rsp.isActive[i],
+          state: rsp.stepState[i]));
+    }
     return _steps;
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: WillPopScope(
-        onWillPop: () async => onBackPressed(),
-        child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              color: Colors.black,
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => onBackPressed(),
-            ),
-            backgroundColor: Colors.white,
-            title: Consumer<RegisterStepProvider>(
-              builder: (context, RegisterStepProvider value, _) => Text(
-                value.isActiveString[value.currentStep],
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            elevation: 0,
-            centerTitle: true,
-          ),
-          body: Stepper(
-            type: StepperType.horizontal,
-            currentStep: Provider.of<RegisterStepProvider>(context).currentStep,
-            steps: makeSteps(),
-            onStepTapped: null,
-            onStepContinue: () =>
-                Provider.of<RegisterStepProvider>(context, listen: false)
-                    .onNextStep(),
-            controlsBuilder: (context, {onStepCancel, onStepContinue}) {
-              return Center(
-                child: Consumer<RegisterProvider>(
-                  builder: (context, RegisterProvider value, child) =>
-                      BottomButton(
-                    onPressed: value.stepState ? onStepContinue : null,
-                    text: Provider.of<RegisterStepProvider>(context)
-                                .currentStep !=
-                            _steps.length - 1
-                        ? '다음'
-                        : '가입하기',
+    return _loading
+        ? Loading()
+        : SafeArea(
+            child: WillPopScope(
+              onWillPop: () async => false,
+              child: Scaffold(
+                appBar: AppBar(
+                  leading: IconButton(
+                    color: Colors.black,
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: () => onBackPressed(),
+                  ),
+                  backgroundColor: Colors.white10,
+                  title: Text('회원가입', style: TextStyle(color: Colors.black)),
+                  elevation: 0,
+                  centerTitle: true,
+                ),
+                body: Consumer<RegisterProvider>(
+                  builder: (_, value, __) => Stepper(
+                    type: StepperType.horizontal,
+                    currentStep: value.currentStep,
+                    steps: makeSteps(),
+                    onStepTapped: null,
+                    onStepContinue: () async {
+                      if (!value.canRegister){
+                        value.onContinueStep();
+                      }
+                      else {
+                        setState(() => _loading = true);
+                        await _memberModel.register(value.member).then(
+                            (value) => Navigator.of(context)
+                                .pushNamedAndRemoveUntil(
+                                    '/main', (route) => false));
+                      }
+                    },
+                    controlsBuilder: (context, {onStepCancel, onStepContinue}) {
+                      return Center(
+                        child: BottomButton(
+                          onPressed: value.canNextStep ? onStepContinue : null,
+                          text: value.currentStep != _steps.length - 1
+                              ? '다음'
+                              : '가입하기',
+                        ),
+                      );
+                    },
                   ),
                 ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
+              ),
+            ),
+          );
   }
 
   bool onBackPressed() {
-    final rsp = Provider.of<RegisterStepProvider>(context, listen: false);
+    final rsp = Provider.of<RegisterProvider>(context, listen: false);
     if (rsp.currentStep == 0) {
       Navigator.pop(context);
       return true;

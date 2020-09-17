@@ -1,5 +1,4 @@
 import 'package:anony_chat/provider/register_provider.dart';
-import 'package:anony_chat/provider/register_step_provider.dart';
 import 'package:anony_chat/routes.dart';
 import 'package:anony_chat/ui/view/home/main_home_page.dart';
 import 'package:anony_chat/ui/view/intro/intro_page.dart';
@@ -13,7 +12,6 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (_) => RegisterProvider()),
-    ChangeNotifierProvider(create: (_) => RegisterStepProvider())
   ], child: AnonymousChat()));
 }
 

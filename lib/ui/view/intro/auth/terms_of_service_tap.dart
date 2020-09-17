@@ -1,16 +1,18 @@
-import 'package:anony_chat/api/terms_api.dart';
 import 'package:anony_chat/model/dao/terms_data.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:anony_chat/model/terms_model.dart';
+import 'package:anony_chat/provider/register_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // 이용약관 동의 페이지
+// TODO api가 사실 필요한가?? 구조 바꿀 예정
 class TermsOfServiceTap extends StatefulWidget {
   @override
   _TermsOfServiceTapState createState() => _TermsOfServiceTapState();
 }
 
 class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
-  TermsDataAPI _tda;
+  TermsModel _tm;
 
   // dummy data
   final List<TermsData> dummyItems = [
@@ -38,8 +40,8 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
 
   @override
   void initState() {
-    _tda = TermsDataAPI(items: dummyItems);
     super.initState();
+    _tm = TermsModel(items: dummyItems);
   }
 
   @override
@@ -47,7 +49,7 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 60),
       child: Container(
-        height: 50.0 * (_tda.mItems.length + 1),
+        height: 50.0 * (_tm.mItems.length + 1),
         child: Column(
           children: [
             Expanded(
@@ -55,7 +57,7 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
                 elevation: 3,
                 child: ListView.builder(
                   // 모두 동의하기 넣기위해 길이 +1
-                  itemCount: _tda.mItems.length + 1,
+                  itemCount: _tm.mItems.length + 1,
                   itemBuilder: (_, index) => _buildTerms(index),
                 ),
               ),
@@ -67,29 +69,30 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
   }
 
   // 약관동의 리스트
-  // ListTile로 하니까 크기를 마음대로 못정함
   Widget _buildTerms(int index) {
-    if (index == _tda.mItems.length) return _buildFooter();
+    if (index == _tm.mItems.length) return _buildFooter();
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Flexible(
-          fit: FlexFit.loose,
+          fit: FlexFit.tight,
           flex: 1,
           child: Checkbox(
               checkColor: Colors.white,
-              value: _tda.mItems[index].isChecked,
+              value: _tm.mItems[index].isChecked,
               onChanged: (value) {
-                setState(() => _tda.onChecked(index, value));
+                setState(() {
+                  _tm.onChecked(index, value);
+                  _isAllRequiredChecked();
+                });
               }),
         ),
         Flexible(
             fit: FlexFit.tight,
-            flex: 4,
-            child: Text(_tda.returnRequiredString(index))),
+            flex: 3,
+            child: Text(_tm.returnRequiredString(index))),
         Flexible(
-          fit: FlexFit.loose,
+          fit: FlexFit.tight,
           flex: 1,
           child: IconButton(
               color: Colors.black,
@@ -105,13 +108,16 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
     return Row(
       children: [
         Flexible(
-          fit: FlexFit.loose,
+          fit: FlexFit.tight,
           flex: 1,
           child: Checkbox(
               checkColor: Colors.white,
-              value: _tda.allAgree,
+              value: _tm.allAgree,
               onChanged: (value) {
-                setState(() => onAllAgree(value));
+                setState(() {
+                  _tm.onAllOfAgreeCheckBox(value);
+                  _isAllRequiredChecked();
+                });
               }),
         ),
         Flexible(
@@ -119,18 +125,23 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
             flex: 3,
             child:
                 Text("모두 동의하기", style: TextStyle(fontWeight: FontWeight.bold))),
+        Flexible(fit: FlexFit.tight, flex: 1, child: Container()),
       ],
     );
   }
 
-  onAllAgree(bool value) {
-    _tda.onAllAgreeCheckBox(value);
+  _isAllRequiredChecked() {
+    final rp = Provider.of<RegisterProvider>(context, listen: false);
+    if (_tm.isAllOfRequiredChecked())
+      rp.onNextStep();
+    else
+      rp.onCantNextStep();
   }
 
   _navigateTermsContent(BuildContext context, int index) async {
     TermsData result = await Navigator.pushNamed<dynamic>(
         context, '/terms_content_page',
-        arguments: _tda.mItems[index]);
+        arguments: _tm.mItems[index]);
     if (result != null) setState(() => result.isChecked = true);
   }
 }

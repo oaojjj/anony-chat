@@ -16,8 +16,6 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
   final _smsCodeController = TextEditingController();
   final PhoneAuthorizationModel fam = PhoneAuthorizationModel();
 
-  Stream<int> _time;
-
   bool _isRequested = false;
 
   @override
@@ -135,7 +133,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                                 else if (snap.hasError)
                                                   return Text('error');
                                                 else
-                                                  return Text('data');
+                                                  return Text('loading..');
                                               },
                                             ),
                                           ),
@@ -171,10 +169,12 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
               padding: const EdgeInsets.only(left: 8.0, top: 4.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  resultAuthString(),
-                  style: TextStyle(
-                      color: Colors.indigo, fontWeight: FontWeight.bold),
+                child: Consumer(
+                  builder: (_, RegisterProvider value, __) => Text(
+                    value.stringAccordingToAuthState(),
+                    style: TextStyle(
+                        color: Colors.indigo, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),
@@ -210,29 +210,12 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
     final result =
         await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text);
 
-    print(result);
-
-    // 인증 성공
     if (result) {
       print('checkPhoneSucceed');
-      fam.onSucceed();
-      rp.onPhoneAuthSucceed();
+      rp.onPhoneAuthSucceed(phoneNumber: fam.phoneNumber);
     } else {
       print('checkPhoneFailed');
       rp.onPhoneAuthFailed();
-    }
-  }
-
-  String resultAuthString() {
-    switch (Provider.of<RegisterProvider>(context).phoneAuthState) {
-      case PhoneAuthState.none:
-        return '';
-      case PhoneAuthState.succeed:
-        return '인증이 성공했습니다.';
-      case PhoneAuthState.failed:
-        return '인증번호가 틀렷습니다.';
-      default:
-        return 'error';
     }
   }
 

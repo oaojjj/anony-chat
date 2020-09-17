@@ -31,10 +31,11 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
               Divider(color: Colors.black, thickness: 1.0),
               ListTile(
                 title: Text('회원 탈퇴', style: TextStyle(fontSize: 20.0)),
-                onTap: (){
-                  FirebaseAuth.instance.currentUser.delete();
-                  FirebaseAuth.instance.signOut();
-                  Navigator.of(context).pushNamedAndRemoveUntil('/intro_page', (route) => false);
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
+
+                  Navigator.of(context)
+                      .pushNamedAndRemoveUntil('/intro_page', (route) => false);
                 },
               ),
               Divider(color: Colors.black, thickness: 1.0),

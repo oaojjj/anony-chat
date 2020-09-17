@@ -1,6 +1,8 @@
 import 'package:anony_chat/ui/view/chat/chat_list_page.dart';
+import 'package:anony_chat/ui/widget/home/home_drawer.dart';
 import 'package:anony_chat/ui/widget/home/home_page.dart';
 import 'package:anony_chat/ui/widget/home/notification_page.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -9,42 +11,61 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final List<Widget> _navigationPage = [
-    HomePage(),
-    ChatListPage(),
-    Container(),
-    NotificationPage()
-  ];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  int _selectedBottom = 0;
-
-  void _onItemTapped(int index) {
-    setState(() => _selectedBottom = index);
-    if (_selectedBottom == 2) {
-      Navigator.pushNamed(context, '/chat_send');
-      _selectedBottom = 0;
-    }
-  }
+  final String _messageCountImagePath = 'assets/icons/message_count.png';
+  final String _menuImagePath = 'assets/icons/menu.png';
+  final String _adImagePath = 'assets/icons/adPlusChat.png';
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: _navigationPage[_selectedBottom],
-        bottomNavigationBar: BottomNavigationBar(
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('홈')),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.chat), title: Text('채팅')),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.send), title: Text('보내기')),
-              BottomNavigationBarItem(
-                  icon: Icon(Icons.notifications), title: Text('알림')),
-            ],
-            currentIndex: _selectedBottom,
-            onTap: _onItemTapped,
-            selectedItemColor: Colors.black,
-            unselectedItemColor: Colors.grey),
+        key: _scaffoldKey,
+        drawer: HomeDrawer(),
+        body: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  height: 35,
+                  child: IconButton(
+                    icon: Image.asset('$_menuImagePath'),
+                    onPressed: () => _scaffoldKey.currentState.openDrawer(),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Container(
+                        height: 25,
+                        child: Image.asset('$_messageCountImagePath')),
+                    FutureBuilder(
+                        future: MemberModel.getPossibleMessageOfSend(),
+                        builder: (_, snap) {
+                          if (!snap.hasData)
+                            return Container(
+                                width: 25,
+                                height: 25,
+                                child: CircularProgressIndicator());
+                          return Text('${snap.data}',
+                              style: TextStyle(
+                                  color: Colors.indigo, fontSize: 25));
+                        }),
+                    SizedBox(width: 16),
+                    Container(
+                      width: 60,
+                      child: IconButton(
+                        icon: Image.asset('$_adImagePath'),
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

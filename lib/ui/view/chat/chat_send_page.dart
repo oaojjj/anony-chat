@@ -155,7 +155,6 @@ class _ChatSendPageState extends State<ChatSendPage> {
 
   Future<void> sendMessage() async {
     await _selectSendType();
-    print(_flag);
     if (_flag) {
       _chatModel.createChatRoom(
         chatRoom: ChatRoom(

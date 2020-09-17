@@ -1,6 +1,5 @@
 import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
-import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/ui/view/intro/auth/register_tap.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
@@ -16,7 +15,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Member _member;
   Member _fixProfile;
 
-  List<MyDropDownMenuItem> _items = [];
+  List<String> _items = [];
 
   // true#남성 false#여성
   bool sexBtnColor = true;
@@ -33,22 +32,18 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     _fetchData();
-    _items.add(MyDropDownMenuItem('태어난해', _itemsBirth));
-    _items.add(MyDropDownMenuItem('지역', _itemsRegion));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     _fixColor = !(_member == _fixProfile);
-    return loading
-        ? Loading()
-        : SafeArea(
-            child: Scaffold(
-              appBar: AppBar(title: Text('프로필'), centerTitle: true),
-              body: _profileForm(_fixProfile),
-            ),
-          );
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(title: Text('프로필'), centerTitle: true),
+        body: _profileForm(_fixProfile),
+      ),
+    );
   }
 
   Widget _profileForm(Member member) {
@@ -166,8 +161,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildDropDownButton(
-      MyDropDownMenuItem item, String selectedValue, Member member) {
+  Widget _buildDropDownButton(item, dynamic selectedValue, Member member) {
     return Container(
       height: 40.0,
       width: 100.0,
@@ -196,7 +190,7 @@ class _ProfilePageState extends State<ProfilePage> {
         member.region = value;
         break;
       case '태어난해':
-        member.birthYear = value;
+        member.birthYear = int.parse(value);
         break;
       default:
         throw Exception('set drop_down_value error');
@@ -214,10 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   _initUI() {
     sexBtnColor = _member.sex == '남성';
-    _items[0].selected = _member.birthYear;
-    _items[1].selected = _member.region;
   }
-}
 
-// hint => https://idlecomputer.tistory.com/326
-// 20.09.08 #FutureBuilder는 setstate를 실행하면 다시 build가 돌면서 FutureBuilder의 future 부분을 실행한다. 그래서 계속 쓸데없는 초기화가 일어나서 일단 이렇게함
+
+}

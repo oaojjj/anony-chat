@@ -12,14 +12,15 @@ class PhoneAuthorizationModel {
 
   Stream<int> get time => _time;
 
+  String get phoneNumber => _phoneNumber;
+
   Future<void> requestSMSCodeAuthorization({String phoneNumber}) async {
-    phoneNumber = '+82$phoneNumber';
     _phoneNumber = phoneNumber;
 
     _time = timeOutStart();
     await FirebaseAuth.instance.verifyPhoneNumber(
         timeout: Duration(seconds: _TIME_OUT),
-        phoneNumber: phoneNumber,
+        phoneNumber: '+82$phoneNumber',
         verificationCompleted: (AuthCredential phoneAuthCredential) =>
             _completed(phoneAuthCredential),
         verificationFailed: (FirebaseAuthException authException) =>
@@ -39,7 +40,7 @@ class PhoneAuthorizationModel {
     _time = timeOutStart();
     await FirebaseAuth.instance.verifyPhoneNumber(
         timeout: Duration(seconds: _TIME_OUT),
-        phoneNumber: _phoneNumber,
+        phoneNumber: '+82$_phoneNumber',
         verificationCompleted: (AuthCredential phoneAuthCredential) =>
             _completed(phoneAuthCredential),
         verificationFailed: (FirebaseAuthException authException) =>
@@ -60,6 +61,7 @@ class PhoneAuthorizationModel {
 
     try {
       await FirebaseAuth.instance.signInWithCredential(authCredential);
+      onSucceed();
       return true;
     } catch (e) {
       print(e.toString());

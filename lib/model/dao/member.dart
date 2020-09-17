@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'member.g.dart';
@@ -9,13 +11,14 @@ class Member {
   String region;
   String university;
   String major;
-  String birthYear;
-  int phoneNumber;
+  int birthYear;
+  String phoneNumber;
   int studentID;
   int possibleMessageOfSend;
   bool isAuthorization;
   bool isNotMeetingSameUniversity;
   bool isNotMeetingSameMajor;
+  File studentCardImage;
 
   Member(
       {this.id,
@@ -29,9 +32,16 @@ class Member {
       this.possibleMessageOfSend = 5,
       this.isAuthorization = false,
       this.isNotMeetingSameUniversity = false,
-      this.isNotMeetingSameMajor = false});
+      this.isNotMeetingSameMajor = false,
+      this.studentCardImage
+      });
 
   factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
 
   Map<String, dynamic> toJson() => _$MemberToJson(this);
+
+  @override
+  String toString() {
+    return 'Member{sex: $sex, region: $region, university: $university, major: $major, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, isNotMeetingSameUniversity: $isNotMeetingSameUniversity, isNotMeetingSameMajor: $isNotMeetingSameMajor, studentCardImage: $studentCardImage}';
+  }
 }

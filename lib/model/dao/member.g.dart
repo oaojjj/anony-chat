@@ -13,13 +13,14 @@ Member _$MemberFromJson(Map<String, dynamic> json) {
     region: json['region'] as String,
     university: json['university'] as String,
     major: json['major'] as String,
-    birthYear: json['birthYear'] as String,
-    phoneNumber: json['phoneNumber'] as int,
+    birthYear: json['birthYear'] as int,
+    phoneNumber: json['phoneNumber'] as String,
     studentID: json['studentID'] as int,
     possibleMessageOfSend: json['possibleMessageOfSend'] as int,
     isAuthorization: json['isAuthorization'] as bool,
     isNotMeetingSameUniversity: json['isNotMeetingSameUniversity'] as bool,
     isNotMeetingSameMajor: json['isNotMeetingSameMajor'] as bool,
+    studentCardImage: json['studentCardImage'] as File,
   );
 }
 
@@ -36,4 +37,5 @@ Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
       'isAuthorization': instance.isAuthorization,
       'isNotMeetingSameUniversity': instance.isNotMeetingSameUniversity,
       'isNotMeetingSameMajor': instance.isNotMeetingSameMajor,
+      'studentCardImage': instance.studentCardImage,
     };
