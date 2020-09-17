@@ -15,7 +15,7 @@ class Member {
   String phoneNumber;
   int studentID;
   int possibleMessageOfSend;
-  bool isAuthorization;
+  String authorization;
   bool isNotMeetingSameUniversity;
   bool isNotMeetingSameMajor;
   File studentCardImage;
@@ -30,7 +30,7 @@ class Member {
       this.phoneNumber,
       this.studentID,
       this.possibleMessageOfSend = 5,
-      this.isAuthorization = false,
+      this.authorization = 'authorizationsWaiting',
       this.isNotMeetingSameUniversity = false,
       this.isNotMeetingSameMajor = false,
       this.studentCardImage

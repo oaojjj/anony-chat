@@ -272,7 +272,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                       Row(
                         children: [
                           Flexible(
-                              flex: 3,
+                              flex: 2,
                               fit: FlexFit.tight,
                               child: Text('같은 학교 학생 안만나기',
                                   style: TextStyle(fontSize: 16.0))),
@@ -280,10 +280,13 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                             flex: 1,
                             fit: FlexFit.loose,
                             child: Consumer<RegisterProvider>(
-                              builder: (_, rp, __) => Switch(
-                                value: rp.member.isNotMeetingSameUniversity,
-                                onChanged: (value) => setState(() => rp
-                                    .member.isNotMeetingSameUniversity = value),
+                              builder: (_, rp, __) => Container(
+                                height: 30,
+                                child: Switch(
+                                  value: rp.member.isNotMeetingSameUniversity,
+                                  onChanged: (value) => setState(() => rp
+                                      .member.isNotMeetingSameUniversity = value),
+                                ),
                               ),
                             ),
                           ),
@@ -294,7 +297,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                       Row(
                         children: [
                           Flexible(
-                              flex: 3,
+                              flex: 2,
                               fit: FlexFit.tight,
                               child: Text('같은 학과 학생 안만나기',
                                   style: TextStyle(fontSize: 16.0))),
@@ -302,10 +305,13 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                             flex: 1,
                             fit: FlexFit.loose,
                             child: Consumer<RegisterProvider>(
-                              builder: (_, rp, __) => Switch(
-                                value: rp.member.isNotMeetingSameMajor,
-                                onChanged: (value) => setState(() =>
-                                    rp.member.isNotMeetingSameMajor = value),
+                              builder: (_, rp, __) => Container(
+                                height: 30,
+                                child: Switch(
+                                  value: rp.member.isNotMeetingSameMajor,
+                                  onChanged: (value) => setState(() =>
+                                      rp.member.isNotMeetingSameMajor = value),
+                                ),
                               ),
                             ),
                           ),

@@ -1,4 +1,5 @@
 import 'package:anony_chat/provider/register_provider.dart';
+import 'package:anony_chat/provider/student_card_authorization_provider.dart';
 import 'package:anony_chat/routes.dart';
 import 'package:anony_chat/ui/view/home/main_home_page.dart';
 import 'package:anony_chat/ui/view/intro/intro_page.dart';
@@ -10,9 +11,15 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (_) => RegisterProvider()),
-  ], child: AnonymousChat()));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => RegisterProvider()),
+        ChangeNotifierProvider(create: (_) => SCAuthorizationProvider()),
+      ],
+      child: AnonymousChat(),
+    ),
+  );
 }
 
 class AnonymousChat extends StatelessWidget {
@@ -26,13 +33,19 @@ class AnonymousChat extends StatelessWidget {
           buttonColor: Colors.indigo,
           primarySwatch: Colors.indigo,
           accentColor: Colors.indigoAccent),
-      home: _route() ? MainPage() : IntroPage(),
+      home: _route(context) ? MainPage() : IntroPage(),
       routes: routes,
     );
   }
 
-  bool _route() {
+  bool _route(context) {
     final user = FirebaseAuth.instance.currentUser;
-    return user != null ? true : false;
+    if (user == null) {
+      // 회원가입
+      return false;
+    } else {
+      Provider.of<SCAuthorizationProvider>(context).checkAuthorization();
+      return true;
+    }
   }
 }

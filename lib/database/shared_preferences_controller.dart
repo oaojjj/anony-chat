@@ -14,6 +14,7 @@ class SPController {
     prefs.setString('major', member.major);
     prefs.setInt('studentID', member.studentID);
     prefs.setString('phoneNumber', member.phoneNumber);
+    prefs.setString('authorization', member.authorization);
     prefs.setBool(
         'isNotMeetingSameUniversity', member.isNotMeetingSameUniversity);
     prefs.setBool('isNotMeetingPhoneList', member.isNotMeetingSameMajor);
@@ -30,11 +31,12 @@ class SPController {
       'region': prefs.get('region') ?? "",
       'university': prefs.get('university') ?? "",
       'major': prefs.get('major') ?? "",
-      'studentID': prefs.get('studentID') ?? "",
-      'phoneNumber': prefs.get('phoneNumber') ?? "",
+      'studentID': prefs.get('studentID') ?? -1,
+      'phoneNumber': prefs.get('phoneNumber') ?? -1,
+      'authorization': prefs.get('authorization') ?? "wait",
       'isNotMeetingSameUniversity':
           prefs.get('isNotMeetingSameUniversity') ?? false,
-      'isNotMeetingPhoneList': prefs.get('isNotMeetingPhoneList') ?? false,
+      'isNotMeetingSameMajor': prefs.get('isNotMeetingSameMajor') ?? false,
     });
   }
 
@@ -43,8 +45,13 @@ class SPController {
     return prefs.getInt('id');
   }
 
+  static Future<bool> getAuthorization() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('authorization');
+  }
+
   // test
-  static Future<String> loadPlanetImageURL() async {
+  static Future<String> loadImageURL() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('planet');
   }

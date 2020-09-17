@@ -70,6 +70,20 @@ class MemberModel {
     return snapshot.value;
   }
 
+  static Future<String> getMemberAuthorization(int id) async {
+    final snapshot = await _db
+        .reference()
+        .child(USERS_TABLE)
+        .child('$id')
+        .child('authorization')
+        .once();
+
+    print(snapshot.value);
+
+    return snapshot.value;
+  }
+
+
   // 회원 프로필 수정하기
   Future<void> updateProfile(Member fixProfile) async {
     SPController.saveProfileToLocal(fixProfile);

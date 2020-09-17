@@ -66,11 +66,11 @@ class _RegisterTapState extends State<RegisterTap> {
                               fit: FlexFit.tight,
                               child: Consumer<RegisterProvider>(
                                 builder: (_, value, __) => RaisedButton(
-                                  child: Text('남성',
+                                  child: Text('남자',
                                       style: TextStyle(
                                           fontSize: 20.0, color: Colors.white)),
                                   onPressed: () {
-                                    value.member.sex = '남성';
+                                    value.member.sex = '남자';
                                     setState(() => sexBtnColor = true);
                                   },
                                   color:
@@ -84,11 +84,11 @@ class _RegisterTapState extends State<RegisterTap> {
                               fit: FlexFit.tight,
                               child: Consumer<RegisterProvider>(
                                 builder: (_, value, __) => RaisedButton(
-                                  child: Text('여성',
+                                  child: Text('여자',
                                       style: TextStyle(
                                           fontSize: 20.0, color: Colors.white)),
                                   onPressed: () {
-                                    value.member.sex = '여성';
+                                    value.member.sex = '여자';
                                     setState(() => sexBtnColor = false);
                                   },
                                   color: !sexBtnColor

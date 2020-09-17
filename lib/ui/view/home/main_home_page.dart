@@ -13,9 +13,9 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final String _messageCountImagePath = 'assets/icons/message_count.png';
-  final String _menuImagePath = 'assets/icons/menu.png';
-  final String _adImagePath = 'assets/icons/adPlusChat.png';
+  final String _messageCountIconPath = 'assets/icons/message_count.png';
+  final String _menuIconPath = 'assets/icons/menu.png';
+  final String _adIconPath = 'assets/icons/adPlusChat.png';
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class _MainPageState extends State<MainPage> {
                 Container(
                   height: 35,
                   child: IconButton(
-                    icon: Image.asset('$_menuImagePath'),
+                    icon: Image.asset('$_menuIconPath'),
                     onPressed: () => _scaffoldKey.currentState.openDrawer(),
                   ),
                 ),
@@ -39,7 +39,7 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     Container(
                         height: 25,
-                        child: Image.asset('$_messageCountImagePath')),
+                        child: Image.asset('$_messageCountIconPath')),
                     FutureBuilder(
                         future: MemberModel.getPossibleMessageOfSend(),
                         builder: (_, snap) {
@@ -56,7 +56,7 @@ class _MainPageState extends State<MainPage> {
                     Container(
                       width: 60,
                       child: IconButton(
-                        icon: Image.asset('$_adImagePath'),
+                        icon: Image.asset('$_adIconPath'),
                         onPressed: () {},
                       ),
                     ),
