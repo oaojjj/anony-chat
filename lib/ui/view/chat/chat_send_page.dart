@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/viewmodel/chat_model.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:anony_chat/viewmodel/chat_model.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

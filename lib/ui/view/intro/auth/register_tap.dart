@@ -1,5 +1,4 @@
 import 'package:anony_chat/provider/register_provider.dart';
-import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

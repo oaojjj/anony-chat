@@ -2,6 +2,7 @@ import 'package:anony_chat/provider/student_card_authorization_provider.dart';
 import 'package:anony_chat/ui/widget/home/home_drawer.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
@@ -14,7 +15,9 @@ class _MainPageState extends State<MainPage> {
 
   final String _messageCountIconPath = 'assets/icons/message_count.png';
   final String _menuIconPath = 'assets/icons/menu.png';
-  final String _adIconPath = 'assets/icons/adPlusChat.png';
+  final String _adIconPath = 'assets/icons/ad_plus_chat.png';
+  final String _sendMsgIconPath = 'assets/icons/send_messageIcon.png';
+  final String _chatListIconPath = 'assets/icons/chat_list.png';
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +35,14 @@ class _MainPageState extends State<MainPage> {
                 Container(
                   height: 35,
                   child: IconButton(
-                    icon: Image.asset('$_menuIconPath'),
+                    icon: Image.asset(_menuIconPath),
                     onPressed: () => _scaffoldKey.currentState.openDrawer(),
                   ),
                 ),
                 Row(
                   children: [
                     Container(
-                        height: 25,
-                        child: Image.asset('$_messageCountIconPath')),
+                        height: 25, child: Image.asset(_messageCountIconPath)),
                     FutureBuilder(
                         future: MemberModel.getPossibleMessageOfSend(),
                         builder: (_, snap) {
@@ -57,13 +59,44 @@ class _MainPageState extends State<MainPage> {
                     Container(
                       width: 60,
                       child: IconButton(
-                        icon: Image.asset('$_adIconPath'),
+                        icon: Image.asset(_adIconPath),
                         onPressed: () {},
                       ),
                     ),
                   ],
                 ),
               ],
+            ),
+            Expanded(
+              child: Stack(
+                children: [Center(child: Text('메세지'))],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              child: Stack(
+                children: [
+                  Center(
+                    child: IconButton(
+                      iconSize: 56,
+                      // 크기때문에 아이콘 버튼보다는 container 로 감싸는게 나은듯?
+                      icon: Image.asset(_sendMsgIconPath),
+                      onPressed: () =>
+                          Navigator.pushNamed(context, '/chat_send_page'),
+                    ),
+                  ),
+                  Positioned(
+                    right: 4,
+                    bottom: 0,
+                    child: IconButton(
+                      iconSize: 40,
+                      // 크기때문에 아이콘 버튼보다는 container 로 감싸는게 나은듯?
+                      icon: Image.asset(_chatListIconPath),
+                      onPressed: () {},
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ),
