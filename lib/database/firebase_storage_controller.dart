@@ -6,14 +6,12 @@ import 'package:firebase_storage/firebase_storage.dart';
 class FSController {
   static final _firebaseStorage = FirebaseStorage.instance;
 
-  static Future<void> uploadStdCardToStorage(File image) async {
-    final uid = FirebaseAuth.instance.currentUser.uid;
-
-    final _storageReference = _firebaseStorage.ref().child('student card/$uid');
-
-    // 파일 업로드
-    _storageReference.putFile(image);
-  }
+// 파일 업로드
+  static void uploadStdCardToStorage(File image) =>
+      _firebaseStorage
+      .ref()
+      .child('student card/${FirebaseAuth.instance.currentUser.uid}')
+      .putFile(image);
 
   static Future<String> loadImageURL(String name) async {
     /*final checkLocal = await SharedPreferences.getInstance();

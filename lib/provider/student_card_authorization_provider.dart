@@ -21,10 +21,8 @@ class SCAuthorizationProvider extends ChangeNotifier {
   }
 
   checkAuthorization() async {
-    final auth =
-        await MemberModel.getMemberAuthorization(await SPController.getID());
-
-    print(auth);
+    final auth = await MemberModel.getMemberAuthorization(await SPController.getID());
+    print('authState: $auth');
 
     switch (auth) {
       case 'authorizations':

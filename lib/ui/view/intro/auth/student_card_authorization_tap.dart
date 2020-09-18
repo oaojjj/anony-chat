@@ -272,7 +272,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                       Row(
                         children: [
                           Flexible(
-                              flex: 2,
+                              flex: 3,
                               fit: FlexFit.tight,
                               child: Text('같은 학교 학생 안만나기',
                                   style: TextStyle(fontSize: 16.0))),
@@ -281,8 +281,9 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                             fit: FlexFit.loose,
                             child: Consumer<RegisterProvider>(
                               builder: (_, rp, __) => Container(
-                                height: 30,
+                                height: 35,
                                 child: Switch(
+                                  activeColor: Colors.indigo,
                                   value: rp.member.isNotMeetingSameUniversity,
                                   onChanged: (value) => setState(() => rp
                                       .member.isNotMeetingSameUniversity = value),
@@ -297,7 +298,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                       Row(
                         children: [
                           Flexible(
-                              flex: 2,
+                              flex: 3,
                               fit: FlexFit.tight,
                               child: Text('같은 학과 학생 안만나기',
                                   style: TextStyle(fontSize: 16.0))),
@@ -306,8 +307,9 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                             fit: FlexFit.loose,
                             child: Consumer<RegisterProvider>(
                               builder: (_, rp, __) => Container(
-                                height: 30,
+                                height: 35,
                                 child: Switch(
+                                  activeColor: Colors.indigo,
                                   value: rp.member.isNotMeetingSameMajor,
                                   onChanged: (value) => setState(() =>
                                       rp.member.isNotMeetingSameMajor = value),

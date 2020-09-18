@@ -44,4 +44,39 @@ class Member {
   String toString() {
     return 'Member{sex: $sex, region: $region, university: $university, major: $major, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, isNotMeetingSameUniversity: $isNotMeetingSameUniversity, isNotMeetingSameMajor: $isNotMeetingSameMajor, studentCardImage: $studentCardImage}';
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Member &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          sex == other.sex &&
+          region == other.region &&
+          university == other.university &&
+          major == other.major &&
+          birthYear == other.birthYear &&
+          phoneNumber == other.phoneNumber &&
+          studentID == other.studentID &&
+          possibleMessageOfSend == other.possibleMessageOfSend &&
+          authorization == other.authorization &&
+          isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
+          isNotMeetingSameMajor == other.isNotMeetingSameMajor &&
+          studentCardImage == other.studentCardImage;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      sex.hashCode ^
+      region.hashCode ^
+      university.hashCode ^
+      major.hashCode ^
+      birthYear.hashCode ^
+      phoneNumber.hashCode ^
+      studentID.hashCode ^
+      possibleMessageOfSend.hashCode ^
+      authorization.hashCode ^
+      isNotMeetingSameUniversity.hashCode ^
+      isNotMeetingSameMajor.hashCode ^
+      studentCardImage.hashCode;
 }

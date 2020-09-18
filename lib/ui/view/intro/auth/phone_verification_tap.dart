@@ -188,8 +188,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
     switch (
         Provider.of<RegisterProvider>(context, listen: false).phoneAuthState) {
       case PhoneAuthState.none:
-        fam.requestSMSCodeAuthorization(
-            phoneNumber: _phoneNumberController.text);
+        fam.requestSMSCodeAuthorization(phoneNumber: _phoneNumberController.text);
         break;
       case PhoneAuthState.failed:
         fam.resendSMSCodeAuthorization();
@@ -207,8 +206,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
 
   checkPhoneSMSCode() async {
     final rp = Provider.of<RegisterProvider>(context, listen: false);
-    final result =
-        await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text);
+    final result = await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text);
 
     if (result) {
       print('checkPhoneSucceed');

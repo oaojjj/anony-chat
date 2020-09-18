@@ -14,8 +14,8 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => RegisterProvider()),
-        ChangeNotifierProvider(create: (_) => SCAuthorizationProvider()),
+        ChangeNotifierProvider.value(value: RegisterProvider()),
+        ChangeNotifierProvider.value(value: SCAuthorizationProvider()),
       ],
       child: AnonymousChat(),
     ),
@@ -44,7 +44,6 @@ class AnonymousChat extends StatelessWidget {
       // 회원가입
       return false;
     } else {
-      Provider.of<SCAuthorizationProvider>(context).checkAuthorization();
       return true;
     }
   }

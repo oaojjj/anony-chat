@@ -13,6 +13,7 @@ class SPController {
     prefs.setString('university', member.university);
     prefs.setString('major', member.major);
     prefs.setInt('studentID', member.studentID);
+    prefs.setInt('possibleMessageOfSend', member.possibleMessageOfSend);
     prefs.setString('phoneNumber', member.phoneNumber);
     prefs.setString('authorization', member.authorization);
     prefs.setBool(
@@ -32,8 +33,9 @@ class SPController {
       'university': prefs.get('university') ?? "",
       'major': prefs.get('major') ?? "",
       'studentID': prefs.get('studentID') ?? -1,
+      'possibleMessageOfSend': prefs.get('possibleMessageOfSend') ?? -1,
       'phoneNumber': prefs.get('phoneNumber') ?? -1,
-      'authorization': prefs.get('authorization') ?? "wait",
+      'authorization': prefs.get('authorization') ?? "authorizationsWaiting",
       'isNotMeetingSameUniversity':
           prefs.get('isNotMeetingSameUniversity') ?? false,
       'isNotMeetingSameMajor': prefs.get('isNotMeetingSameMajor') ?? false,

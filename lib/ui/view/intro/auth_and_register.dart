@@ -75,9 +75,7 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
                     steps: makeSteps(),
                     onStepTapped: null,
                     onStepContinue: () async {
-                      if (!value.canRegister){
-                        value.onContinueStep();
-                      }
+                      if (!value.canRegister) value.onContinueStep();
                       else {
                         setState(() => _loading = true);
                         await _memberModel.register(value.member).then(

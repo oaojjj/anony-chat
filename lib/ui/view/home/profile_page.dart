@@ -2,9 +2,11 @@ import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/provider/student_card_authorization_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -13,6 +15,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  static const double CARD_SIZED_BOX_HEIGHT = 4;
+
   final String _profileIconPath = 'assets/icons/profile2.png';
   MemberModel _memberModel = MemberModel();
   Member _member;
@@ -51,48 +55,72 @@ class _ProfilePageState extends State<ProfilePage> {
     '제주',
   ];
 
-  bool _fixColor = false;
+  bool _isFix = false;
 
   @override
   void initState() {
-    _fetchData();
     super.initState();
+    _fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
-    _fixColor = !(_member == _fixProfile);
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(title: Text('프로필'), centerTitle: true),
-        body: _profileForm(_fixProfile),
-      ),
-    );
+    _isFix = !(_member == _fixProfile);
+    print('isFixProfile: $_isFix');
+    return loading
+        ? Loading()
+        : SafeArea(
+            child: Scaffold(
+              appBar: AppBar(title: Text('프로필'), centerTitle: true),
+              body: _profileForm(_fixProfile),
+            ),
+          );
   }
 
   Widget _profileForm(Member member) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 16, bottom: 4),
-          child: Container(
-              width: 30, height: 30, child: Image.asset('$_profileIconPath')),
-        ),
-        Container(
-          decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.all(Radius.circular(32.0))),
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 4.0, horizontal: 24.0),
-            child: Text('회원번호 ${member.id}',
-                style: TextStyle(color: Colors.white)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 4),
+            child: Container(
+                width: 30, height: 30, child: Image.asset('$_profileIconPath')),
           ),
-        ),
-        SizedBox(height: 8),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Card(
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Text('회원번호 ${member.id}',
+                  style: TextStyle(color: Colors.white, fontSize: 13)),
+            ),
+          ),
+          SizedBox(height: CARD_SIZED_BOX_HEIGHT),
+          Card(
+            elevation: 3,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('전화번호'),
+                Text(member.phoneNumber),
+                ButtonTheme(
+                    height: 30,
+                    minWidth: 70,
+                    buttonColor: Colors.black,
+                    child: RaisedButton(
+                        child:
+                            Text('변경', style: TextStyle(color: Colors.white)),
+                        onPressed: () {
+                          //TODO 프로필 폰번호 변경
+                        }))
+              ],
+            ),
+          ),
+          SizedBox(height: CARD_SIZED_BOX_HEIGHT),
+          Card(
             elevation: 3,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -180,7 +208,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 8),
                   Row(
                     children: [
                       Flexible(
@@ -229,14 +257,12 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 24),
-          child: Consumer<SCAuthorizationProvider>(
+          SizedBox(height: CARD_SIZED_BOX_HEIGHT),
+          Consumer<SCAuthorizationProvider>(
             builder: (_, sca, __) => Card(
               elevation: 3,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: Column(
                   children: [
                     Row(
@@ -251,19 +277,24 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Flexible(
                           fit: FlexFit.tight,
-                          flex: 1,
+                          flex: 2,
                           child: Center(
-                            child: Text('${member.university}',
-                                style: getStateTextStyle(sca)),
+                            child: Text(
+                              '${member.university}',
+                              style: getStateTextStyle(sca),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                         Flexible(
-                            fit: FlexFit.tight,
-                            flex: 1,
-                            child: Text(sca.authorizationStateString()))
+                          fit: FlexFit.tight,
+                          flex: 2,
+                          child: Text(sca.authorizationStateString()),
+                        )
                       ],
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -276,17 +307,21 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Flexible(
                           fit: FlexFit.tight,
-                          flex: 1,
+                          flex: 2,
                           child: Center(
-                            child: Text('${member.major}',
-                                style: getStateTextStyle(sca)),
+                            child: Text(
+                              '${member.major}',
+                              style: getStateTextStyle(sca),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ),
                         Flexible(
-                            fit: FlexFit.tight, flex: 1, child: Container()),
+                            fit: FlexFit.tight, flex: 2, child: Container()),
                       ],
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -299,14 +334,14 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Flexible(
                           fit: FlexFit.tight,
-                          flex: 1,
+                          flex: 2,
                           child: Center(
                             child: Text('${member.studentID}',
                                 style: getStateTextStyle(sca)),
                           ),
                         ),
                         Flexible(
-                            fit: FlexFit.tight, flex: 1, child: Container()),
+                            fit: FlexFit.tight, flex: 2, child: Container()),
                       ],
                     )
                   ],
@@ -314,68 +349,94 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 32.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Flexible(
-                      flex: 2,
-                      fit: FlexFit.tight,
-                      child: Text('같은 학교 학생 안만나기',
-                          style: TextStyle(fontSize: 16.0))),
-                  Flexible(
-                    flex: 1,
-                    fit: FlexFit.loose,
-                    child: Container(
-                      height: 30,
-                      child: Switch(
-                        value: member.isNotMeetingSameUniversity,
-                        onChanged: (value) => setState(
-                            () => member.isNotMeetingSameUniversity = value),
+          SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Flexible(
+                        flex: 2,
+                        fit: FlexFit.tight,
+                        child: Text('같은 학교 학생 안만나기',
+                            style: TextStyle(
+                                fontSize: 15.0,
+                                color: member.isNotMeetingSameUniversity
+                                    ? Colors.indigo
+                                    : null))),
+                    Flexible(
+                      flex: 1,
+                      fit: FlexFit.loose,
+                      child: Container(
+                        height: 30,
+                        child: Switch(
+                          activeColor: Colors.indigo,
+                          value: member.isNotMeetingSameUniversity,
+                          onChanged: (value) => setState(
+                              () => member.isNotMeetingSameUniversity = value),
+                        ),
                       ),
                     ),
-                  ),
-                  Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
-                ],
-              ),
-              Row(
-                children: [
-                  Flexible(
-                      flex: 2,
-                      fit: FlexFit.tight,
-                      child: Text('같은 학과 학생 안만나기',
-                          style: TextStyle(fontSize: 16.0))),
-                  Flexible(
-                    flex: 1,
-                    fit: FlexFit.loose,
-                    child: Container(
-                      height: 30,
-                      child: Switch(
-                        value: member.isNotMeetingSameMajor,
-                        onChanged: (value) => setState(
-                            () => member.isNotMeetingSameMajor = value),
+                    Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Flexible(
+                        flex: 2,
+                        fit: FlexFit.tight,
+                        child: Text('같은 학과 학생 안만나기',
+                            style: TextStyle(
+                                fontSize: 15.0,
+                                color: member.isNotMeetingSameMajor
+                                    ? Colors.indigo
+                                    : null))),
+                    Flexible(
+                      flex: 1,
+                      fit: FlexFit.loose,
+                      child: Container(
+                        height: 30,
+                        child: Switch(
+                          activeColor: Colors.indigo,
+                          value: member.isNotMeetingSameMajor,
+                          onChanged: (value) => setState(
+                              () => member.isNotMeetingSameMajor = value),
+                        ),
                       ),
                     ),
-                  ),
-                  Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
-                ],
-              ),
-            ],
+                    Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: 16.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: BottomButton(
+          SizedBox(height: 24.0),
+          BottomButton(
             text: '수정',
-            onPressed: () {},
+            onPressed: _isFix ? () async => await updateProfile() : null,
           ),
-        )
-      ],
+          SizedBox(height: 16.0),
+        ],
+      ),
     );
+  }
+
+  Future updateProfile() async {
+    try {
+      _member = await _memberModel.updateProfile(_fixProfile);
+      _fixProfile = Member.fromJson(_member.toJson());
+      setState(() => _isFix = false);
+      Fluttertoast.showToast(
+          msg: '수정되었습니다.',
+          fontSize: 15,
+          backgroundColor: Colors.black87,
+          textColor: Colors.white,
+          gravity: ToastGravity.CENTER,
+          toastLength: Toast.LENGTH_SHORT);
+    } catch (e) {
+      print('profileUpdateError');
+    }
   }
 
   TextStyle getStateTextStyle(SCAuthorizationProvider sca) {
@@ -386,16 +447,11 @@ class _ProfilePageState extends State<ProfilePage> {
             : Colors.grey);
   }
 
-  // TODO 수정 성공시 토스트메시지 띄우기
   _fetchData() async {
     _member = await SPController.loadProfile();
     _fixProfile = Member.fromJson(_member.toJson());
-    _initUI();
+    sexBtnColor = _member.sex == '남자';
     setState(() => loading = false);
-  }
-
-  _initUI() {
-    sexBtnColor = _member.sex == '남성';
   }
 
   showPicker(
@@ -415,19 +471,21 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 child: CupertinoPicker.builder(
+                  scrollController: FixedExtentScrollController(
+                      initialItem: getInitialItemIndex(item)),
                   itemExtent: 50,
                   childCount: item.length,
                   diameterRatio: 10,
                   squeeze: 1,
                   backgroundColor: Colors.grey[100],
                   onSelectedItemChanged: (index) {
-//                    setState(() {
-//                      item == _itemsBirth
-//                          ? member.birthYear = item[index] == '선택'
-//                              ? null
-//                              : int.parse(item[index])
-//                          : member.region = item[index];
-//                    });
+                    setState(() {
+                      item == _itemsBirth
+                          ? _fixProfile.birthYear = item[index] == '선택'
+                              ? null
+                              : int.parse(item[index])
+                          : _fixProfile.region = item[index];
+                    });
                   },
                   itemBuilder: (_, index) => Center(
                     child: Text(item[index],
@@ -438,5 +496,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           );
         });
+  }
+
+  int getInitialItemIndex(List<String> item) {
+    if (item == _itemsBirth)
+      return item.indexOf('${_fixProfile.birthYear}');
+    else
+      return item.indexOf('${_fixProfile.region}');
   }
 }

@@ -81,7 +81,7 @@ class RegisterProvider extends ChangeNotifier {
       case PhoneAuthState.succeed:
         return '인증이 성공했습니다.';
       case PhoneAuthState.failed:
-        return '인증번호가 틀렷습니다.';
+        return '인증번호가 일치하지 않습니다.';
       default:
         return 'error';
     }

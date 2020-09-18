@@ -14,6 +14,7 @@ class PhoneAuthorizationModel {
 
   String get phoneNumber => _phoneNumber;
 
+  // 휴대폰 sms 인증
   Future<void> requestSMSCodeAuthorization({String phoneNumber}) async {
     _phoneNumber = phoneNumber;
 
@@ -32,6 +33,7 @@ class PhoneAuthorizationModel {
         codeAutoRetrievalTimeout: (id) => _timeOut(id));
   }
 
+  // 재전송
   Future<void> resendSMSCodeAuthorization() async {
     if (_phoneNumber == null) {
       return;

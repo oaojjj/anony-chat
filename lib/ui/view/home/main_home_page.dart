@@ -1,9 +1,8 @@
-import 'package:anony_chat/ui/view/chat/chat_list_page.dart';
+import 'package:anony_chat/provider/student_card_authorization_provider.dart';
 import 'package:anony_chat/ui/widget/home/home_drawer.dart';
-import 'package:anony_chat/ui/widget/home/home_page.dart';
-import 'package:anony_chat/ui/widget/home/notification_page.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -19,6 +18,8 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<SCAuthorizationProvider>(context, listen: false)
+        .checkAuthorization();
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
