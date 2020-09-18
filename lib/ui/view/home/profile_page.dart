@@ -178,30 +178,27 @@ class _ProfilePageState extends State<ProfilePage> {
                         child: GestureDetector(
                           onTap: () => showPicker(context, _itemsBirth),
                           child: Container(
-                            height: 40.0,
-                            width: 100.0,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border:
-                                    Border.all(color: Colors.black, width: 1.0),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0))),
-                            child: Row(
-                              children: [
-                                Flexible(
-                                    fit: FlexFit.tight,
-                                    flex: 3,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(member.birthYear == null
-                                          ? "선택"
-                                          : member.birthYear.toString()),
-                                    )),
-                                Flexible(
-                                    fit: FlexFit.tight,
-                                    flex: 1,
-                                    child: Icon(Icons.arrow_drop_down))
-                              ],
+                            height: 40,
+                            child: Card(
+                              elevation: 3,
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                      fit: FlexFit.tight,
+                                      flex: 3,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(member.birthYear == null
+                                            ? "선택"
+                                            : member.birthYear.toString()),
+                                      )),
+                                  Flexible(
+                                      fit: FlexFit.tight,
+                                      flex: 1,
+                                      child: Icon(Icons.arrow_drop_down))
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -223,30 +220,27 @@ class _ProfilePageState extends State<ProfilePage> {
                             showPicker(context, _itemsRegion);
                           },
                           child: Container(
-                            height: 40.0,
-                            width: 100.0,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                border:
-                                    Border.all(color: Colors.black, width: 1.0),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4.0))),
-                            child: Row(
-                              children: [
-                                Flexible(
-                                    fit: FlexFit.tight,
-                                    flex: 3,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: Text(member.region == null
-                                          ? "선택"
-                                          : member.region),
-                                    )),
-                                Flexible(
-                                    fit: FlexFit.tight,
-                                    flex: 1,
-                                    child: Icon(Icons.arrow_drop_down))
-                              ],
+                            height: 40,
+                            child: Card(
+                              elevation: 3,
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                      fit: FlexFit.tight,
+                                      flex: 3,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Text(member.region == null
+                                            ? "선택"
+                                            : member.region),
+                                      )),
+                                  Flexible(
+                                      fit: FlexFit.tight,
+                                      flex: 1,
+                                      child: Icon(Icons.arrow_drop_down))
+                                ],
+                              ),
                             ),
                           ),
                         ),

@@ -7,7 +7,6 @@ import 'package:anony_chat/viewmodel/chat_model.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ChatSendPage extends StatefulWidget {
   @override
@@ -15,32 +14,33 @@ class ChatSendPage extends StatefulWidget {
 }
 
 class _ChatSendPageState extends State<ChatSendPage> {
-  ChatModel _chatModel = ChatModel();
+  static const double DIALOG_CONTAINER_HEIGHT = 450;
+  final String _messageCountIconPath = 'assets/icons/message_count.png';
 
+  ChatModel _chatModel = ChatModel();
   final _messageController = TextEditingController();
 
-  String _choiceImage = 'earth.png';
+  String _choiceIcon = 'messageIcon1.png';
   ChatType _selectedSendType = ChatType.random;
-  File _photo;
 
   bool _flag = false;
 
-  final List<Widget> _images = [];
-  final List<String> _planetName = [
-    'earth.png',
-    'moon.png',
-    'planet1.png',
-    'planet2.png',
-    'planet3.png',
-    'planet4.png',
-    'planet5.png',
-    'planet6.png',
+  final List<Widget> _icons = [];
+  final List<String> _iconName = [
+    'messageIcon1.png',
+    'messageIcon2.png',
+    'messageIcon3.png',
+    'messageIcon4.png',
+    'messageIcon5.png',
+    'messageIcon6.png',
+    'messageIcon7.png',
+    'messageIcon8.png',
   ];
 
   @override
   void initState() {
     super.initState();
-    initData();
+    // initData();
   }
 
   @override
@@ -48,17 +48,20 @@ class _ChatSendPageState extends State<ChatSendPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-            title: Text('메시지 보내기', style: TextStyle(color: Colors.white)),
-            centerTitle: true,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            iconTheme: IconThemeData(color: Colors.white)),
-        backgroundColor: Colors.grey[900],
+          backgroundColor: Colors.white10,
+          title: Text('메시지 보내기', style: TextStyle(color: Colors.black)),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          iconTheme: IconThemeData(color: Colors.black),
+          elevation: 0,
+        ),
         body: Container(
-          child: SingleChildScrollView(
-            child: Container(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: SingleChildScrollView(
               child: Column(
                 children: [
                   SizedBox(height: 40.0),
@@ -68,27 +71,21 @@ class _ChatSendPageState extends State<ChatSendPage> {
                       child: Stack(
                         children: [
                           Container(
-                            width: 120.0,
-                            height: 120.0,
-                            child: GestureDetector(
-                              onTap: () => _choicePlanet(),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Image(
-                                    image: AssetImage(
-                                        'assets/images/$_choiceImage')),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            right: 0,
-                            bottom: 0,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white,
+                              width: 120.0,
+                              height: 120.0,
                               child: IconButton(
-                                  icon: Icon(Icons.settings,
-                                      color: Colors.grey[700]),
-                                  onPressed: () => _choicePlanet()),
+                                  icon:
+                                      Image.asset('assets/icons/$_choiceIcon'),
+                                  onPressed: () => _buildImageGridView())),
+                          Positioned(
+                            top: 8,
+                            right: 4,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.indigo,
+                              child: IconButton(
+                                  icon: Icon(Icons.autorenew,
+                                      color: Colors.white),
+                                  onPressed: () => _buildImageGridView()),
                             ),
                           ),
                         ],
@@ -96,13 +93,35 @@ class _ChatSendPageState extends State<ChatSendPage> {
                     ),
                   ),
                   SizedBox(height: 40.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Container(
-                      color: Colors.white,
-                      height: 240,
+                  Row(
+                    children: [
+                      Container(
+                          height: 25,
+                          child: Image.asset(_messageCountIconPath)),
+                      SizedBox(width: 8),
+                      FutureBuilder(
+                        future: MemberModel.getPossibleMessageOfSend(),
+                        builder: (_, snap) {
+                          if (!snap.hasData)
+                            return Container(
+                                width: 25,
+                                height: 25,
+                                child: CircularProgressIndicator());
+                          return Text('${snap.data}',
+                              style: TextStyle(
+                                  color: Colors.indigo, fontSize: 25));
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    color: Colors.white,
+                    height: 150,
+                    child: Card(
+                      elevation: 5,
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: TextField(
                             controller: _messageController,
                             keyboardType: TextInputType.multiline,
@@ -112,36 +131,11 @@ class _ChatSendPageState extends State<ChatSendPage> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
-                    child: Row(
-                      children: [
-                        RaisedButton(
-                            child: Text('사진'), onPressed: () => uploadImage()),
-                        Spacer(),
-                        FutureBuilder(
-                            future: MemberModel.getPossibleMessageOfSend(),
-                            builder: (_, snap) {
-                              if (!snap.hasData)
-                                return Row(children: [
-                                  Text('오늘 보낼 수 있는 메시지:',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.white)),
-                                  CircularProgressIndicator()
-                                ]);
-                              return Text('오늘 보낼 수 있는 메시지: ${snap.data}개',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.white));
-                            }),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
+                  SizedBox(height: 24.0),
                   BottomButton(
                     text: '보내기',
                     onPressed: () async {
-                      await sendMessage();
+                      //await sendMessage();
                     },
                   ),
                 ],
@@ -158,11 +152,10 @@ class _ChatSendPageState extends State<ChatSendPage> {
     if (_flag) {
       _chatModel.createChatRoom(
         chatRoom: ChatRoom(
-          planetImageName: _choiceImage,
+          planetImageName: _choiceIcon,
           type: _selectedSendType,
           message: Message(
             content: _messageController.text,
-            photo: _photo,
             time: DateTime.now().millisecondsSinceEpoch,
           ),
         ),
@@ -235,42 +228,71 @@ class _ChatSendPageState extends State<ChatSendPage> {
     );
   }
 
-  Future<void> _choicePlanet() async {
+  Future<void> _buildImageGridView() async {
     return showDialog(
       context: context,
       builder: (_) => Material(
         type: MaterialType.transparency,
         child: Center(
-          child: Container(
-              color: Colors.white30,
-              padding: EdgeInsets.all(32),
-              child: GridView.count(crossAxisCount: 3, children: _images)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Container(
+              color: Colors.white,
+              width: double.infinity,
+              height: DIALOG_CONTAINER_HEIGHT,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text('메시지 아이콘을 선택해 주세요',
+                        style: TextStyle(fontSize: 15)),
+                  ),
+                  Container(
+                    height: DIALOG_CONTAINER_HEIGHT - 70,
+                    child: GridView.count(
+                        padding: EdgeInsets.all(8),
+                        crossAxisCount: 3,
+                        children: createGridItem()),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  Widget createPlanet(String path) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pop(context);
-        setState(() => _choiceImage = path);
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Image(image: AssetImage('assets/images/$path')),
+  Widget createIcon(String path) {
+    bool flag = path == _choiceIcon;
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: ClipOval(
+        child: Material(
+          color: flag ? Colors.indigo : Colors.white,
+          child: InkWell(
+            highlightColor: Colors.indigo,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Image.asset('assets/icons/$path'),
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              setState(() => _choiceIcon = path);
+            },
+          ),
+        ),
       ),
     );
   }
 
   void initData() {
-    _planetName.forEach((element) {
-      _images.add(createPlanet(element));
-    });
+    _iconName.forEach((element) => _icons.add(createIcon(element)));
   }
 
-  Future uploadImage() async {
-    var image = await ImagePicker().getImage(source: ImageSource.gallery);
-    _photo = File(image.path);
+  createGridItem() {
+    _icons.clear();
+    _iconName.forEach((element) => _icons.add(createIcon(element)));
+    return _icons;
   }
 }

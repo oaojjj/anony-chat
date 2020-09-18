@@ -112,35 +112,30 @@ class _RegisterTapState extends State<RegisterTap> {
                               child: GestureDetector(
                                 onTap: () => showPicker(context, _itemsBirth),
                                 child: Container(
-                                  height: 40.0,
-                                  width: 100.0,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          color: Colors.black, width: 1.0),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(4.0))),
-                                  child: Row(
-                                    children: [
-                                      Flexible(
-                                          fit: FlexFit.tight,
-                                          flex: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0),
-                                            child: Consumer<RegisterProvider>(
-                                              builder: (_, value, __) => Text(
-                                                  value.member.birthYear == null
-                                                      ? "선택"
-                                                      : value.member.birthYear
-                                                          .toString()),
-                                            ),
-                                          )),
-                                      Flexible(
-                                          fit: FlexFit.tight,
-                                          flex: 1,
-                                          child: Icon(Icons.arrow_drop_down))
-                                    ],
+                                  height: 40,
+                                  child: Card(
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                            fit: FlexFit.tight,
+                                            flex: 3,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Consumer<RegisterProvider>(
+                                                builder: (_, value, __) => Text(
+                                                    value.member.birthYear == null
+                                                        ? "선택"
+                                                        : value.member.birthYear
+                                                            .toString()),
+                                              ),
+                                            )),
+                                        Flexible(
+                                            fit: FlexFit.tight,
+                                            flex: 1,
+                                            child: Icon(Icons.arrow_drop_down))
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -164,33 +159,28 @@ class _RegisterTapState extends State<RegisterTap> {
                                 },
                                 child: Container(
                                   height: 40.0,
-                                  width: 100.0,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                          color: Colors.black, width: 1.0),
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(4.0))),
-                                  child: Row(
-                                    children: [
-                                      Flexible(
-                                          fit: FlexFit.tight,
-                                          flex: 3,
-                                          child: Padding(
-                                            padding: const EdgeInsets.only(
-                                                left: 8.0),
-                                            child: Consumer<RegisterProvider>(
-                                              builder: (_, value, __) => Text(
-                                                  value.member.region == null
-                                                      ? "선택"
-                                                      : value.member.region),
-                                            ),
-                                          )),
-                                      Flexible(
-                                          fit: FlexFit.tight,
-                                          flex: 1,
-                                          child: Icon(Icons.arrow_drop_down))
-                                    ],
+                                  child: Card(
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                            fit: FlexFit.tight,
+                                            flex: 3,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Consumer<RegisterProvider>(
+                                                builder: (_, value, __) => Text(
+                                                    value.member.region == null
+                                                        ? "선택"
+                                                        : value.member.region),
+                                              ),
+                                            )),
+                                        Flexible(
+                                            fit: FlexFit.tight,
+                                            flex: 1,
+                                            child: Icon(Icons.arrow_drop_down))
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
