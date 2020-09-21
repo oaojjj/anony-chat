@@ -29,7 +29,6 @@ class AnonymousChat extends StatelessWidget {
       title: 'Anonymous Chat',
       theme: ThemeData(
           fontFamily: 'Roboto',
-          brightness: Brightness.light,
           buttonColor: Colors.indigo,
           primarySwatch: Colors.indigo,
           accentColor: Colors.indigoAccent),

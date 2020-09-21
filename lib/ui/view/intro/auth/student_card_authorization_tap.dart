@@ -334,7 +334,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
 
   Future uploadImage() async {
     var image = await ImagePicker().getImage(source: ImageSource.gallery);
-    Provider.of<RegisterProvider>(context).member.studentCardImage = File(image.path);
+    //Provider.of<RegisterProvider>(context).member.studentCardImage = File(image.path);
   }
 
   Future<void> _dialogList(List item, String text) async {

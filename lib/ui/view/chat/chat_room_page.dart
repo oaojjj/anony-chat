@@ -12,15 +12,18 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   final _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
 
+  final chatAppBarName = '익명의 상대방';
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         endDrawer: _buildEndDrawer(),
         appBar: AppBar(
-          title: Text('채팅방', style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.white,
+          title: Text(chatAppBarName, style: TextStyle(color: Colors.black)),
           centerTitle: true,
-          iconTheme: IconThemeData(color: Colors.white),
+          iconTheme: IconThemeData(color: Colors.black),
           actions: [
             // hint => https://www.freewebmentor.com/questions/how-to-change-the-enddrawer-icon-in-flutter
             // endDrawer 아이콘 바꾸기
@@ -33,7 +36,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           ],
         ),
         body: Container(
-          color: Colors.black87,
           child: Column(
             children: [
               Expanded(
@@ -58,7 +60,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.grey.withOpacity(0.5),
             spreadRadius: 1,
             blurRadius: 1,
           ),
@@ -135,12 +137,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   Widget _buildEndDrawer() {
     return Container(
-      width: 200.0,
+      width: 240.0,
       child: Drawer(
         child: ListView(
           children: [
             ListTile(
               dense: true,
+              leading: Image.asset(
+                'assets/icons/report.png',
+                width: 30,
+                height: 30,
+              ),
               title: Text('신고하기', style: TextStyle(fontSize: 18.0)),
               onTap: () {},
             ),
@@ -150,7 +157,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             ),
             ListTile(
               dense: true,
-              title: Text('채팅방 나가기', style: TextStyle(fontSize: 18.0)),
+              leading: Image.asset(
+                'assets/icons/exit.png',
+                width: 40,
+                height: 40,
+              ),
+              title: Text('나가기', style: TextStyle(fontSize: 18.0)),
               onTap: () {
                 _showMyDialog();
               },

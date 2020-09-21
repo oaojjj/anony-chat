@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 class ChatRoomPreview extends StatefulWidget {
   final String lastMessage;
-  final String sex;
   final String timestamp;
-  final String planetName;
+  final String previewIcon;
 
-  ChatRoomPreview({this.lastMessage, this.sex, this.timestamp, this.planetName});
+  ChatRoomPreview({this.lastMessage, this.timestamp, this.previewIcon});
 
   @override
   _ChatRoomPreviewState createState() => _ChatRoomPreviewState();
@@ -24,7 +23,7 @@ class _ChatRoomPreviewState extends State<ChatRoomPreview> {
                 padding: const EdgeInsets.only(
                     left: 16, right: 24, top: 16, bottom: 8),
                 child: Image(
-                    height: 64.0, image: AssetImage('${widget.planetName}')),
+                    height: 64.0, image: AssetImage('${widget.previewIcon}')),
               ),
               Expanded(
                 child: Padding(
@@ -33,16 +32,14 @@ class _ChatRoomPreviewState extends State<ChatRoomPreview> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(widget.lastMessage,
-                          style: TextStyle(color: Colors.white, fontSize: 16.0),
+                          style: TextStyle(color: Colors.black, fontSize: 16.0),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis),
-                      Text(widget.sex,
-                          style: TextStyle(color: Colors.amberAccent)),
                       Row(
                         children: [
                           Spacer(),
                           Text(widget.timestamp,
-                              style: TextStyle(color: Colors.white)),
+                              style: TextStyle(color: Colors.black)),
                         ],
                       )
                     ],
@@ -52,7 +49,7 @@ class _ChatRoomPreviewState extends State<ChatRoomPreview> {
             ],
           ),
           Divider(
-              height: 1, indent: 104, thickness: 0.4, color: Colors.amberAccent)
+              height: 1, indent: 104, thickness: 0.4, color: Colors.black)
         ],
       ),
     );

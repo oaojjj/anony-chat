@@ -1,10 +1,10 @@
 import 'package:anony_chat/database/shared_preferences_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
+import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import '../model/dao/message.dart';
 
 class ChatModel {
   static final FirebaseAuth _mAuth = FirebaseAuth.instance;
@@ -39,7 +39,7 @@ class ChatModel {
             .set(chatRoom.toJson());
 
         // 나의 채팅방 만들기
-        _db
+          _db
             .reference()
             .child(CHAT_ROOM_TABLE)
             .child('${_mAuth.currentUser.uid}')
@@ -48,30 +48,31 @@ class ChatModel {
             .set(chatRoom.message.toJson());
 
         //TODO 리팩토링은 나중에 하자
-        // swap
+/*        // swap
         int temp = chatRoom.message.receiverID;
         _initChatReceiver(chatRoom, chatRoom.message.senderID);
         chatRoom.message.senderID = temp;
+*/
 
         // 너의 채팅 리스트 만들기
-        _db
+        /*_db
             .reference()
             .child(CHAT_LIST_TABLE)
             .child(
                 '${await MemberModel.getMemberUid(chatRoom.message.senderID)}')
             .child(
                 '${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
-            .set(chatRoom.toJson());
+            .set(chatRoom.toJson());*/
 
         // 너의 채팅방 만들기
-        _db
+        /* _db
             .reference()
             .child(CHAT_ROOM_TABLE)
             .child(
                 '${await MemberModel.getMemberUid(chatRoom.message.senderID)}')
             .child(
                 '${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
-            .set(chatRoom.message.toJson());
+            .set(chatRoom.message.toJson());*/
 
         break;
       case ChatType.onlyMan:
@@ -82,9 +83,8 @@ class ChatModel {
   }
 
   _initChatReceiver(ChatRoom chatRoom, int receiver) async {
-    chatRoom.chattingWith = receiver;
+    chatRoom.withWho = receiver;
     chatRoom.message.receiverID = receiver;
-    chatRoom.withSex = await MemberModel.getMemberSex(receiver);
   }
 
   Stream<Event> getChatList(String uid) {

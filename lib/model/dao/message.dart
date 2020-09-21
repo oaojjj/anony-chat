@@ -1,5 +1,10 @@
 import 'dart:io';
 
+import 'package:json_annotation/json_annotation.dart';
+
+part 'message.g.dart';
+
+@JsonSerializable()
 class Message {
   int senderID;
   int receiverID;
@@ -9,24 +14,11 @@ class Message {
   File photo;
 
   Message(
-      {this.senderID, this.receiverID, this.content, this.time, this.photo});
+      {this.senderID, this.receiverID, this.content, this.time});
 
-  Message.fromMap(Map<String, dynamic> map)
-      : senderID = map['sender'],
-        receiverID = map['receiver'],
-        content = map['content'],
-        isRead = map['isRead'].toString() == 'true',
-        time = map['time'],
-        photo = map['photo'];
+  factory Message.fromJson(Map<String, dynamic> json) => _$MessageFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        '$time': {
-          'sender': senderID,
-          'receiver': receiverID,
-          'content': content,
-          'isRead': isRead.toString(),
-          'time': time,
-          'photo': photo ?? 'null',
-        }
-      };
+  Map<String, dynamic> toJson() => _$MessageToJson(this);
+
+
 }

@@ -18,7 +18,7 @@ class Member {
   String authorization;
   bool isNotMeetingSameUniversity;
   bool isNotMeetingSameMajor;
-  File studentCardImage;
+ // File studentCardImage;
 
   Member(
       {this.id,
@@ -33,7 +33,7 @@ class Member {
       this.authorization = 'authorizationsWaiting',
       this.isNotMeetingSameUniversity = false,
       this.isNotMeetingSameMajor = false,
-      this.studentCardImage
+      //this.studentCardImage
       });
 
   factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
@@ -42,7 +42,7 @@ class Member {
 
   @override
   String toString() {
-    return 'Member{sex: $sex, region: $region, university: $university, major: $major, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, isNotMeetingSameUniversity: $isNotMeetingSameUniversity, isNotMeetingSameMajor: $isNotMeetingSameMajor, studentCardImage: $studentCardImage}';
+    return 'Member{sex: $sex, region: $region, university: $university, major: $major, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, isNotMeetingSameUniversity: $isNotMeetingSameUniversity, isNotMeetingSameMajor: $isNotMeetingSameMajor}';
   }
 
   @override
@@ -58,11 +58,8 @@ class Member {
           birthYear == other.birthYear &&
           phoneNumber == other.phoneNumber &&
           studentID == other.studentID &&
-          possibleMessageOfSend == other.possibleMessageOfSend &&
-          authorization == other.authorization &&
           isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
-          isNotMeetingSameMajor == other.isNotMeetingSameMajor &&
-          studentCardImage == other.studentCardImage;
+          isNotMeetingSameMajor == other.isNotMeetingSameMajor;
 
   @override
   int get hashCode =>
@@ -74,9 +71,6 @@ class Member {
       birthYear.hashCode ^
       phoneNumber.hashCode ^
       studentID.hashCode ^
-      possibleMessageOfSend.hashCode ^
-      authorization.hashCode ^
       isNotMeetingSameUniversity.hashCode ^
-      isNotMeetingSameMajor.hashCode ^
-      studentCardImage.hashCode;
+      isNotMeetingSameMajor.hashCode;
 }

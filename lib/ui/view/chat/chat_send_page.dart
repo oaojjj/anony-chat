@@ -23,8 +23,6 @@ class _ChatSendPageState extends State<ChatSendPage> {
   String _choiceIcon = 'messageIcon1.png';
   ChatType _selectedSendType = ChatType.random;
 
-  bool _flag = false;
-
   final List<Widget> _icons = [];
   final List<String> _iconName = [
     'messageIcon1.png',
@@ -135,7 +133,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
                   BottomButton(
                     text: '보내기',
                     onPressed: () async {
-                      //await sendMessage();
+                      sendMessage();
                     },
                   ),
                 ],
@@ -147,85 +145,18 @@ class _ChatSendPageState extends State<ChatSendPage> {
     );
   }
 
-  Future<void> sendMessage() async {
-    await _selectSendType();
-    if (_flag) {
-      _chatModel.createChatRoom(
-        chatRoom: ChatRoom(
-          planetImageName: _choiceIcon,
-          type: _selectedSendType,
-          message: Message(
-            content: _messageController.text,
-            time: DateTime.now().millisecondsSinceEpoch,
-          ),
+  sendMessage() {
+    _chatModel.createChatRoom(
+      chatRoom: ChatRoom(
+        imageIcon: _choiceIcon,
+        type: _selectedSendType,
+        message: Message(
+          content: _messageController.text,
+          time: DateTime.now().millisecondsSinceEpoch,
         ),
-      );
-      Navigator.pop(context);
-    }
-  }
-
-  Future<void> _selectSendType() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (_) {
-        return StatefulBuilder(builder: (_, setState) {
-          return AlertDialog(
-            title: Text('누구에게 보낼까요?'),
-            content: Container(
-              height: 170,
-              child: Column(
-                children: [
-                  ListTile(
-                    title: const Text('랜덤'),
-                    leading: Radio(
-                      value: ChatType.random,
-                      groupValue: _selectedSendType,
-                      onChanged: (value) =>
-                          setState(() => _selectedSendType = value),
-                    ),
-                  ),
-                  ListTile(
-                    title: const Text('남성'),
-                    leading: Radio(
-                      value: ChatType.onlyMan,
-                      groupValue: _selectedSendType,
-                      onChanged: (value) =>
-                          setState(() => _selectedSendType = value),
-                    ),
-                  ),
-                  ListTile(
-                    title: const Text('여성'),
-                    leading: Radio(
-                      value: ChatType.onlyWoman,
-                      groupValue: _selectedSendType,
-                      onChanged: (value) =>
-                          setState(() => _selectedSendType = value),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('취소', style: TextStyle(color: Colors.black)),
-                onPressed: () {
-                  _flag = false;
-                  Navigator.of(context).pop();
-                },
-              ),
-              FlatButton(
-                child: Text('확인', style: TextStyle(color: Colors.black)),
-                onPressed: () {
-                  _flag = true;
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-      },
+      ),
     );
+    Navigator.pop(context);
   }
 
   Future<void> _buildImageGridView() async {
@@ -252,7 +183,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
                     child: GridView.count(
                         padding: EdgeInsets.all(8),
                         crossAxisCount: 3,
-                        children: createGridItem()),
+                        children: _buildGridItem()),
                   ),
                 ],
               ),
@@ -263,7 +194,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
     );
   }
 
-  Widget createIcon(String path) {
+  Widget _createIcon(String path) {
     bool flag = path == _choiceIcon;
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -286,13 +217,13 @@ class _ChatSendPageState extends State<ChatSendPage> {
     );
   }
 
-  void initData() {
-    _iconName.forEach((element) => _icons.add(createIcon(element)));
+  void _initData() {
+    _iconName.forEach((element) => _icons.add(_createIcon(element)));
   }
 
-  createGridItem() {
+  _buildGridItem() {
     _icons.clear();
-    _iconName.forEach((element) => _icons.add(createIcon(element)));
+    _iconName.forEach((element) => _icons.add(_createIcon(element)));
     return _icons;
   }
 }

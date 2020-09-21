@@ -20,7 +20,6 @@ Member _$MemberFromJson(Map<String, dynamic> json) {
     authorization: json['authorization'] as String,
     isNotMeetingSameUniversity: json['isNotMeetingSameUniversity'] as bool,
     isNotMeetingSameMajor: json['isNotMeetingSameMajor'] as bool,
-    studentCardImage: json['studentCardImage'] as File,
   );
 }
 
@@ -37,5 +36,4 @@ Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
       'authorization': instance.authorization,
       'isNotMeetingSameUniversity': instance.isNotMeetingSameUniversity,
       'isNotMeetingSameMajor': instance.isNotMeetingSameMajor,
-      'studentCardImage': instance.studentCardImage,
     };

@@ -1,6 +1,5 @@
-import 'file:///C:/Users/Oseong/AndroidStudioProjects/anony_chat/lib/viewmodel/chat_model.dart';
 import 'package:anony_chat/ui/widget/chat/chat_room_preview.dart';
-import 'package:anony_chat/ui/widget/home/home_drawer.dart';
+import 'package:anony_chat/viewmodel/chat_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -19,14 +18,13 @@ class _ChatListPageState extends State<ChatListPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        drawer: HomeDrawer(),
         appBar: AppBar(
-          title: Text('채팅 목록', style: TextStyle(color: Colors.white)),
+          backgroundColor: Colors.white,
+          title: Text('채팅', style: TextStyle(color: Colors.black)),
           centerTitle: true,
-          iconTheme: new IconThemeData(color: Colors.white),
+          iconTheme: new IconThemeData(color: Colors.black),
         ),
         body: Container(
-          color: Colors.black87,
           child: StreamBuilder(
             stream:
                 _chatModel.getChatList(FirebaseAuth.instance.currentUser.uid),
@@ -39,7 +37,9 @@ class _ChatListPageState extends State<ChatListPage> {
                   itemCount: _chatRooms.length,
                   itemBuilder: (_, index) => InkWell(
                       highlightColor: Colors.amber,
-                      onTap: () {},
+                      onTap: () {
+
+                      },
                       child: _chatRooms[index]),
                 );
               }
@@ -55,14 +55,13 @@ class _ChatListPageState extends State<ChatListPage> {
       _chatRooms.clear();
       data.forEach((key, value) {
         final time = DateFormat('MM월 dd일 hh:mm aa')
-            .format(DateTime.fromMillisecondsSinceEpoch(value['timestamp']))
+            .format(DateTime.fromMillisecondsSinceEpoch(value['lastMessageTime']))
             .toString();
 
         _chatRooms.add(ChatRoomPreview(
-          planetName: 'assets/images/${value['planetImageName']}',
+          previewIcon: 'assets/icons/${value['imageIcon']}',
           lastMessage: value['lastMessage'],
           timestamp: time,
-          sex: value['withSex'],
         ));
       });
     }

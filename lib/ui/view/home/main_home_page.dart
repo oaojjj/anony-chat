@@ -69,7 +69,15 @@ class _MainPageState extends State<MainPage> {
             ),
             Expanded(
               child: Stack(
-                children: [Center(child: Text('메세지'))],
+                children: [
+                  Center(
+                      child: IconButton(
+                          iconSize: 80,
+                          icon: Image.asset('assets/icons/messageIcon3.png'),
+                          onPressed: (){
+                            Navigator.pushNamed(context, '/chat_page');
+                          }))
+                ],
               ),
             ),
             Container(
@@ -92,7 +100,9 @@ class _MainPageState extends State<MainPage> {
                       iconSize: 40,
                       // 크기때문에 아이콘 버튼보다는 container 로 감싸는게 나은듯?
                       icon: Image.asset(_chatListIconPath),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/chat_list_page');
+                      },
                     ),
                   )
                 ],
