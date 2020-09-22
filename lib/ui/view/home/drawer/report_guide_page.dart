@@ -27,8 +27,8 @@ class ReportGuidePage extends StatelessWidget {
         elevation: 0,
         bottom: PreferredSize(
           child: Divider(
-            endIndent: 40,
-            indent: 40,
+            endIndent: 20,
+            indent: 20,
             height: 1,
             thickness: 5,
             color: Colors.black,
@@ -36,7 +36,7 @@ class ReportGuidePage extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 40.0, right: 40.0, top: 40),
+        padding: const EdgeInsets.all(20),
         child: Container(
           child: Text(content),
         ),

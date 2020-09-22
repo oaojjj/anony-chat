@@ -3,6 +3,7 @@ import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/provider/student_card_authorization_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +72,15 @@ class _ProfilePageState extends State<ProfilePage> {
         ? Loading()
         : SafeArea(
             child: Scaffold(
-              appBar: AppBar(title: Text('프로필'), centerTitle: true),
+              appBar: AppBar(
+                title: Text(
+                  '프로필',
+                  style: TextStyle(color: Colors.black),
+                ),
+                centerTitle: true,
+                backgroundColor: CupertinoColors.white,
+                iconTheme: IconThemeData(color: Colors.black),
+              ),
               body: _profileForm(_fixProfile),
             ),
           );
@@ -144,7 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             member.sex = '남자';
                             setState(() => sexBtnColor = true);
                           },
-                          color: sexBtnColor ? Colors.indigo : Colors.grey,
+                          color: sexBtnColor ? chatPrimaryColor : Colors.grey,
                         ),
                       ),
                       SizedBox(width: 8),
@@ -159,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             member.sex = '여자';
                             setState(() => sexBtnColor = false);
                           },
-                          color: !sexBtnColor ? Colors.indigo : Colors.grey,
+                          color: !sexBtnColor ? chatPrimaryColor : Colors.grey,
                         ),
                       ),
                     ],
@@ -357,7 +366,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(
                                 fontSize: 15.0,
                                 color: member.isNotMeetingSameUniversity
-                                    ? Colors.indigo
+                                    ? chatPrimaryColor
                                     : null))),
                     Flexible(
                       flex: 1,
@@ -365,7 +374,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Container(
                         height: 30,
                         child: Switch(
-                          activeColor: Colors.indigo,
+                          activeColor: chatPrimaryColor,
                           value: member.isNotMeetingSameUniversity,
                           onChanged: (value) => setState(
                               () => member.isNotMeetingSameUniversity = value),
@@ -384,7 +393,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             style: TextStyle(
                                 fontSize: 15.0,
                                 color: member.isNotMeetingSameMajor
-                                    ? Colors.indigo
+                                    ? chatPrimaryColor
                                     : null))),
                     Flexible(
                       flex: 1,
@@ -392,7 +401,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Container(
                         height: 30,
                         child: Switch(
-                          activeColor: Colors.indigo,
+                          activeColor: chatPrimaryColor,
                           value: member.isNotMeetingSameMajor,
                           onChanged: (value) => setState(
                               () => member.isNotMeetingSameMajor = value),
