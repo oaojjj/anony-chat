@@ -149,7 +149,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 height: 30,
               ),
               title: Text('신고하기', style: TextStyle(fontSize: 18.0)),
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/report_chat_page');
+              },
             ),
             Divider(
               height: 0,
@@ -157,11 +159,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             ),
             ListTile(
               dense: true,
-              leading: Image.asset(
-                'assets/icons/exit.png',
-                width: 40,
-                height: 40,
-              ),
+              leading: IconButton(icon:Icon(Icons.exit_to_app), onPressed: () {  },),
               title: Text('나가기', style: TextStyle(fontSize: 18.0)),
               onTap: () {
                 _showMyDialog();
@@ -172,4 +170,5 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ),
     );
   }
+
 }

@@ -1,4 +1,5 @@
 import 'package:anony_chat/utils/utill.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ServiceInfoPage extends StatefulWidget {
@@ -68,9 +69,9 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
               ListTile(
                 title: Text('회원 탈퇴', style: TextStyle(fontSize: 20.0)),
                 onTap: () async {
-                  /*await FirebaseAuth.instance.signOut();
+                  await FirebaseAuth.instance.signOut();
                   Navigator.of(context)
-                      .pushNamedAndRemoveUntil('/intro_page', (route) => false);*/
+                      .pushNamedAndRemoveUntil('/intro_page', (route) => false);
                 },
                 trailing: Icon(Icons.arrow_forward_ios),
               ),

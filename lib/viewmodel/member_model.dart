@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:anony_chat/database/shared_preferences_controller.dart';
+import 'package:anony_chat/database/hive_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -24,7 +24,7 @@ class MemberModel {
     await _db.reference().child(USER_IDS_TABLE).update({'lastNumber': member.id});
 
     // 프로필 로컬 저장, 학생증 서버에 업로드
-    SPController.saveProfileToLocal(member);
+    HiveController.saveProfileToLocal(member);
     //FSController.uploadStdCardToStorage(member.studentCardImage);
 
     // 회원 번호로 관리하기 위해 테이블에 회원번호와 매핑되는 uid 추가
@@ -33,6 +33,7 @@ class MemberModel {
         .child(USER_IDS_TABLE)
         .child('id/${_mAuth.currentUser.uid}')
         .set(member.id);
+
     _db
         .reference()
         .child(USER_IDS_TABLE)
@@ -46,6 +47,8 @@ class MemberModel {
         .child(USERS_TABLE)
         .child('${member.id}')
         .set(member.toJson());
+
+    HiveController.onRegisterCompleted();
   }
 
   // 전체 회원 수 가져오기
@@ -96,7 +99,7 @@ class MemberModel {
 
   // 회원 프로필 수정하기
   Future<Member> updateProfile(Member fixProfile) async {
-    SPController.saveProfileToLocal(fixProfile);
+    HiveController.saveProfileToLocal(fixProfile);
 
     await _db
         .reference()

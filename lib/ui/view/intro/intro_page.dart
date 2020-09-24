@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class IntroPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final deviceSize = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -21,7 +21,7 @@ class IntroPage extends StatelessWidget {
                             color: Colors.black, fontWeight: FontWeight.bold)),
                     backgroundColor: Colors.black12,
                   )),
-              SizedBox(height: size.height * 0.25),
+              SizedBox(height: deviceSize.height * 0.25),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: BottomButton(
@@ -29,7 +29,7 @@ class IntroPage extends StatelessWidget {
                         Navigator.pushNamed(context, '/auth_and_register_page'),
                     text: '시작하기'),
               ),
-              SizedBox(height: size.height * 0.25)
+              SizedBox(height: deviceSize.height * 0.25)
             ],
           ),
         ),

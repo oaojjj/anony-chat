@@ -16,11 +16,11 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
-      '${instance.time}': {
-        'senderID': instance.senderID,
-        'receiverID': instance.receiverID,
-        'time': instance.time,
-        'content': instance.content,
-        'isRead': instance.isRead,
-      }
-    };
+  '${instance.time}': {
+    'senderID': instance.senderID,
+    'receiverID': instance.receiverID,
+    'time': instance.time,
+    'content': instance.content,
+    'isRead': instance.isRead,
+  }
+};

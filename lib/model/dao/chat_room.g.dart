@@ -18,17 +18,17 @@ ChatRoom _$ChatRoomFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$ChatRoomToJson(ChatRoom instance) => <String, dynamic>{
-      'imageIcon': instance.imageIcon,
-      'withWho': instance.withWho,
-      'lastMessageTime': instance.message.time,
-      'lastMessage': instance.message.content,
-    };
+  'imageIcon': instance.imageIcon,
+  'withWho': instance.withWho,
+  'lastMessageTime': instance.message.time,
+  'lastMessage': instance.message.content,
+};
 
 T _$enumDecode<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
+    Map<T, dynamic> enumValues,
+    dynamic source, {
+      T unknownValue,
+    }) {
   if (source == null) {
     throw ArgumentError('A value must be provided. Supported values: '
         '${enumValues.values.join(', ')}');
@@ -46,10 +46,10 @@ T _$enumDecode<T>(
 }
 
 T _$enumDecodeNullable<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
+    Map<T, dynamic> enumValues,
+    dynamic source, {
+      T unknownValue,
+    }) {
   if (source == null) {
     return null;
   }

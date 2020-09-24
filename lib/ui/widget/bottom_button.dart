@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:anony_chat/utils/utill.dart';
 
 class BottomButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -23,6 +24,5 @@ class BottomButton extends StatelessWidget {
       ),
     );
   }
-
-  BottomButton({this.onPressed, this.text, this.color = Colors.indigo});
+  BottomButton({this.onPressed, this.text, this.color = chatPrimaryColor});
 }

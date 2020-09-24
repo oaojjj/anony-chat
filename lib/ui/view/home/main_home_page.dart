@@ -1,5 +1,6 @@
-import 'package:anony_chat/provider/student_card_authorization_provider.dart';
+import 'package:anony_chat/provider/member_auth_provider.dart';
 import 'package:anony_chat/ui/widget/home/home_drawer.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,7 +22,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<SCAuthorizationProvider>(context, listen: false)
+    Provider.of<MemberAuthProvider>(context, listen: false)
         .checkAuthorization();
     return SafeArea(
       child: Scaffold(
@@ -53,14 +54,16 @@ class _MainPageState extends State<MainPage> {
                                 child: CircularProgressIndicator());
                           return Text('${snap.data}',
                               style: TextStyle(
-                                  color: Colors.indigo, fontSize: 25));
+                                  color: chatPrimaryColor, fontSize: 25));
                         }),
                     SizedBox(width: 16),
                     Container(
                       width: 60,
                       child: IconButton(
                         icon: Image.asset(_adIconPath),
-                        onPressed: () {},
+                        onPressed: () {
+                          // TODO 광고 보기 작성
+                        },
                       ),
                     ),
                   ],

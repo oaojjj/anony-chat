@@ -1,3 +1,4 @@
+import 'package:anony_chat/utils/utill.dart';
 import 'package:flutter/material.dart';
 
 class ChatMessage extends StatefulWidget {
@@ -26,7 +27,7 @@ class _MessageState extends State<ChatMessage> {
             padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
             child: Container(
                 decoration: BoxDecoration(
-                  color: isSendByMe ? Colors.black : Colors.indigo,
+                  color: isSendByMe ? Colors.black : chatPrimaryColor,
                   borderRadius: isSendByMe
                       ? BorderRadius.only(
                           topLeft: Radius.circular(32.0),

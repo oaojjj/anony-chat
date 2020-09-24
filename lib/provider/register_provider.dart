@@ -5,10 +5,16 @@ import 'package:flutter/material.dart';
 enum RegisterState { canNotRegister, canRegister }
 enum PhoneAuthState { none, failed, succeed }
 
+
+/* 회원가입 단계 수
+   1. 폰인증
+   2. 약관동의
+   3. 회원정보입력
+   4. 학생증 인증
+   */
 class RegisterProvider extends ChangeNotifier {
   final Member member = Member();
 
-  // 회원가입 단계 수
   int _stepLength = 4;
 
   // 회원가입 진행 상황

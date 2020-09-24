@@ -24,16 +24,16 @@ Member _$MemberFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
-      'id': instance.id,
-      'sex': instance.sex,
-      'region': instance.region,
-      'university': instance.university,
-      'major': instance.major,
-      'birthYear': instance.birthYear,
-      'phoneNumber': instance.phoneNumber,
-      'studentID': instance.studentID,
-      'possibleMessageOfSend': instance.possibleMessageOfSend,
-      'authorization': instance.authorization,
-      'isNotMeetingSameUniversity': instance.isNotMeetingSameUniversity,
-      'isNotMeetingSameMajor': instance.isNotMeetingSameMajor,
-    };
+  'id': instance.id,
+  'sex': instance.sex,
+  'region': instance.region,
+  'university': instance.university,
+  'major': instance.major,
+  'birthYear': instance.birthYear,
+  'phoneNumber': instance.phoneNumber,
+  'studentID': instance.studentID,
+  'possibleMessageOfSend': instance.possibleMessageOfSend,
+  'authorization': instance.authorization,
+  'isNotMeetingSameUniversity': instance.isNotMeetingSameUniversity,
+  'isNotMeetingSameMajor': instance.isNotMeetingSameMajor,
+};

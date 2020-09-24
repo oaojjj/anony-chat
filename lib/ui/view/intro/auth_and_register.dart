@@ -20,33 +20,29 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
 
   bool _loading = false;
 
+  // 휴대폰 인증, 약관동의, 회원정보입력, 학생증 인증
   List<Step> _steps = [];
-  final tapList = [
+  final _tapList = [
     PhoneVerificationTap(),
     TermsOfServiceTap(),
     RegisterTap(),
     SCAuthorizationTap()
   ];
 
-  makeSteps() {
+  _makeSteps() {
     _steps.clear();
     final rsp = Provider.of<RegisterProvider>(context, listen: false);
 
-    for (int i = 0; i < tapList.length; i++) {
+    for (int i = 0; i < _tapList.length; i++) {
       _steps.add(Step(
           title: rsp.stepState[i] == StepState.editing
               ? Text(rsp.isActiveString[i], style: TextStyle(fontSize: 16))
               : Container(),
-          content: tapList[i],
+          content: _tapList[i],
           isActive: rsp.isActive[i],
           state: rsp.stepState[i]));
     }
     return _steps;
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -69,26 +65,24 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
                   centerTitle: true,
                 ),
                 body: Consumer<RegisterProvider>(
-                  builder: (_, value, __) => Stepper(
+                  builder: (_, rp, __) => Stepper(
                     type: StepperType.horizontal,
-                    currentStep: value.currentStep,
-                    steps: makeSteps(),
+                    currentStep: rp.currentStep,
+                    steps: _makeSteps(),
                     onStepTapped: null,
                     onStepContinue: () async {
-                      if (!value.canRegister) value.onContinueStep();
+                      if (!rp.canRegister)
+                        rp.onContinueStep();
                       else {
                         setState(() => _loading = true);
-                        await _memberModel.register(value.member).then(
-                            (value) => Navigator.of(context)
-                                .pushNamedAndRemoveUntil(
-                                    '/main', (route) => false));
+                        await _register(rp, context);
                       }
                     },
                     controlsBuilder: (context, {onStepCancel, onStepContinue}) {
                       return Center(
                         child: BottomButton(
-                          onPressed: value.canNextStep ? onStepContinue : null,
-                          text: value.currentStep != _steps.length - 1
+                          onPressed: rp.canNextStep ? onStepContinue : null,
+                          text: rp.currentStep != _steps.length - 1
                               ? '다음'
                               : '가입하기',
                         ),
@@ -99,6 +93,12 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
               ),
             ),
           );
+  }
+
+  // TODO 모든 예외처리 하기
+  Future _register(RegisterProvider rp, BuildContext context) async {
+    await _memberModel.register(rp.member).then((value) => Navigator.of(context)
+        .pushNamedAndRemoveUntil('/main', (route) => false));
   }
 
   bool onBackPressed() {

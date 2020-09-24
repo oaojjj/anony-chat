@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:anony_chat/provider/register_provider.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -69,7 +70,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                       child: Text(
                         '학생증 인증이 완료된 후 정상적으로 서비스를 이용할 수 있습니다.',
                         style: TextStyle(fontSize: 12),
-                        overflow: TextOverflow.fade,
+                        overflow: TextOverflow.visible,
                       ),
                     ),
                   ],
@@ -283,7 +284,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                               builder: (_, rp, __) => Container(
                                 height: 35,
                                 child: Switch(
-                                  activeColor: Colors.indigo,
+                                  activeColor: chatPrimaryColor,
                                   value: rp.member.isNotMeetingSameUniversity,
                                   onChanged: (value) => setState(() => rp
                                       .member.isNotMeetingSameUniversity = value),
@@ -309,7 +310,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                               builder: (_, rp, __) => Container(
                                 height: 35,
                                 child: Switch(
-                                  activeColor: Colors.indigo,
+                                  activeColor: chatPrimaryColor,
                                   value: rp.member.isNotMeetingSameMajor,
                                   onChanged: (value) => setState(() =>
                                       rp.member.isNotMeetingSameMajor = value),
@@ -409,13 +410,13 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                                   children: <Widget>[
                                     Icon(Icons.check,
                                         color: _selected[index]
-                                            ? Colors.indigo
+                                            ? chatPrimaryColor
                                             : Colors.transparent),
                                     SizedBox(width: 5),
                                     Text(_searchResult[index],
                                         style: TextStyle(
                                             color: _selected[index]
-                                                ? Colors.indigo
+                                                ? chatPrimaryColor
                                                 : Colors.black))
                                   ],
                                 ),

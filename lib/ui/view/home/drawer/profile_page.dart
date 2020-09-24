@@ -1,6 +1,6 @@
-import 'package:anony_chat/database/shared_preferences_controller.dart';
+import 'package:anony_chat/database/hive_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/provider/student_card_authorization_provider.dart';
+import 'package:anony_chat/provider/member_auth_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/utils/utill.dart';
@@ -81,7 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 backgroundColor: CupertinoColors.white,
                 iconTheme: IconThemeData(color: Colors.black),
               ),
-              body: _profileForm(_fixProfile),
+              body: SingleChildScrollView(child: _profileForm(_fixProfile)),
             ),
           );
   }
@@ -123,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         child:
                             Text('변경', style: TextStyle(color: Colors.white)),
                         onPressed: () {
-                          //TODO 프로필 폰번호 변경
+                          //TODO 프로필 폰번호 변경 작성
                         }))
               ],
             ),
@@ -261,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           SizedBox(height: CARD_SIZED_BOX_HEIGHT),
-          Consumer<SCAuthorizationProvider>(
+          Consumer<MemberAuthProvider>(
             builder: (_, sca, __) => Card(
               elevation: 3,
               child: Padding(
@@ -442,16 +442,16 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  TextStyle getStateTextStyle(SCAuthorizationProvider sca) {
+  TextStyle getStateTextStyle(MemberAuthProvider authProvider) {
     return TextStyle(
         fontSize: 16,
-        color: sca.scaState == SCAState.authorizations
+        color: authProvider.scaState == StdCardAuthState.authorizations
             ? Colors.black
             : Colors.grey);
   }
 
-  _fetchData() async {
-    _member = await SPController.loadProfile();
+  _fetchData() {
+    _member = HiveController.loadProfileToLocal();
     _fixProfile = Member.fromJson(_member.toJson());
     sexBtnColor = _member.sex == '남자';
     setState(() => loading = false);

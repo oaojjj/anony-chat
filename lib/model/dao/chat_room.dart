@@ -14,8 +14,6 @@ enum ChatType {
 
 @JsonSerializable()
 class ChatRoom {
-  // TODO 행성이미지를 파이어베이스 스토리지에 저장하고 url로 관리할지 어플에서 관리할지 고민
-  // 일단 이미지 폴더에서 관리
   String imageIcon;
   int withWho;
   int createdTime;
@@ -24,9 +22,9 @@ class ChatRoom {
 
   ChatRoom(
       {this.imageIcon,
-      this.withWho,
-      this.type,
-      this.message}) {
+        this.withWho,
+        this.type,
+        this.message}) {
     createdTime = message.time;
   }
 

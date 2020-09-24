@@ -18,22 +18,22 @@ class Member {
   String authorization;
   bool isNotMeetingSameUniversity;
   bool isNotMeetingSameMajor;
- // File studentCardImage;
+  // File studentCardImage;
 
   Member(
       {this.id,
-      this.sex = '남자',
-      this.region,
-      this.university,
-      this.major,
-      this.birthYear,
-      this.phoneNumber,
-      this.studentID,
-      this.possibleMessageOfSend = 5,
-      this.authorization = 'authorizationsWaiting',
-      this.isNotMeetingSameUniversity = false,
-      this.isNotMeetingSameMajor = false,
-      //this.studentCardImage
+        this.sex = '남자',
+        this.region,
+        this.university,
+        this.major,
+        this.birthYear,
+        this.phoneNumber,
+        this.studentID,
+        this.possibleMessageOfSend = 5,
+        this.authorization = 'authorizationsWaiting',
+        this.isNotMeetingSameUniversity = false,
+        this.isNotMeetingSameMajor = false,
+        //this.studentCardImage
       });
 
   factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
@@ -48,18 +48,18 @@ class Member {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Member &&
-          runtimeType == other.runtimeType &&
-          id == other.id &&
-          sex == other.sex &&
-          region == other.region &&
-          university == other.university &&
-          major == other.major &&
-          birthYear == other.birthYear &&
-          phoneNumber == other.phoneNumber &&
-          studentID == other.studentID &&
-          isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
-          isNotMeetingSameMajor == other.isNotMeetingSameMajor;
+          other is Member &&
+              runtimeType == other.runtimeType &&
+              id == other.id &&
+              sex == other.sex &&
+              region == other.region &&
+              university == other.university &&
+              major == other.major &&
+              birthYear == other.birthYear &&
+              phoneNumber == other.phoneNumber &&
+              studentID == other.studentID &&
+              isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
+              isNotMeetingSameMajor == other.isNotMeetingSameMajor;
 
   @override
   int get hashCode =>

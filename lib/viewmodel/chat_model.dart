@@ -1,4 +1,4 @@
-import 'package:anony_chat/database/shared_preferences_controller.dart';
+import 'package:anony_chat/database/hive_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
@@ -21,7 +21,7 @@ class ChatModel {
   // TODO 랜덤으로 상대방을 찾을 때 이미 채팅이 생선된 방은 제외하는 로직 추가해야함
   Future<void> createChatRoom({ChatRoom chatRoom}) async {
     int totalMember = await MemberModel.getTotalMemberCount();
-    chatRoom.message.senderID = await SPController.getID();
+    chatRoom.message.senderID = HiveController.getMemberID();
 
     switch (chatRoom.type) {
       case ChatType.random:

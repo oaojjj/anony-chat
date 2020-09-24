@@ -1,4 +1,5 @@
 import 'package:anony_chat/provider/register_provider.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +74,7 @@ class _RegisterTapState extends State<RegisterTap> {
                                     setState(() => sexBtnColor = true);
                                   },
                                   color:
-                                      sexBtnColor ? Colors.indigo : Colors.grey,
+                                      sexBtnColor ? chatPrimaryColor: Colors.grey,
                                 ),
                               ),
                             ),
@@ -91,7 +92,7 @@ class _RegisterTapState extends State<RegisterTap> {
                                     setState(() => sexBtnColor = false);
                                   },
                                   color: !sexBtnColor
-                                      ? Colors.indigo
+                                      ? chatPrimaryColor
                                       : Colors.grey,
                                 ),
                               ),
@@ -202,7 +203,7 @@ class _RegisterTapState extends State<RegisterTap> {
                         '회원 정보는 설정에서 언제든 변경 가능합니다.',
                         style: TextStyle(fontSize: 12),
                         maxLines: 1,
-                        overflow: TextOverflow.fade,
+                        overflow: TextOverflow.visible,
                       ),
                     )
                   ],

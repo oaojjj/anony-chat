@@ -1,4 +1,5 @@
 import 'package:anony_chat/provider/register_provider.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/auth/phone_authorization_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -14,8 +15,10 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
   final _formKey = GlobalKey<FormState>();
   final _phoneNumberController = TextEditingController();
   final _smsCodeController = TextEditingController();
+
   final PhoneAuthorizationModel fam = PhoneAuthorizationModel();
 
+  // 인증번호 전송 여부
   bool _isRequested = false;
 
   @override
@@ -34,7 +37,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
               elevation: 3,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16.0, horizontal: 4.0),
+                    const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
                 child: Column(
                   children: [
                     Padding(
@@ -128,7 +131,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                                                         .data)
                                                                 .inMilliseconds)),
                                                     style: TextStyle(
-                                                        color: Colors.indigo),
+                                                        color: chatPrimaryColor),
                                                   );
                                                 else if (snap.hasError)
                                                   return Text('error');
@@ -173,7 +176,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                   builder: (_, RegisterProvider value, __) => Text(
                     value.stringAccordingToAuthState(),
                     style: TextStyle(
-                        color: Colors.indigo, fontWeight: FontWeight.bold),
+                        color: chatPrimaryColor, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

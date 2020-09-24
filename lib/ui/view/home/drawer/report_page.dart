@@ -21,16 +21,23 @@ class _ReportPageState extends State<ReportPage> {
   ];
 
   final reportedList0 = [
-    Report.fromJson({'opponentID': 2245, 'processed': false, 'reportType': '신고사유 2'}),
-    Report.fromJson({'opponentID': 12, 'processed': true, 'reportType': '신고사유 1'})
+    Report.fromJson(
+        {'opponentID': 2245, 'processed': false, 'reportType': '신고사유 2'}),
+    Report.fromJson(
+        {'opponentID': 12, 'processed': true, 'reportType': '신고사유 1'})
   ];
 
   final reportedList1 = [
-    Report.fromJson({'opponentID': 12345, 'processed': true, 'reportType': '신고사유 1'}),
-    Report.fromJson({'opponentID': 1245, 'processed': true, 'reportType': '신고사유 1'}),
-    Report.fromJson({'opponentID': 1, 'processed': false, 'reportType': '신고사유 5'}),
-    Report.fromJson({'opponentID': 2, 'processed': false, 'reportType': '신고사유 5'}),
-    Report.fromJson({'opponentID': 3, 'processed': false, 'reportType': '신고사유 5'}),
+    Report.fromJson(
+        {'opponentID': 12345, 'processed': true, 'reportType': '신고사유 1'}),
+    Report.fromJson(
+        {'opponentID': 1245, 'processed': true, 'reportType': '신고사유 1'}),
+    Report.fromJson(
+        {'opponentID': 1, 'processed': false, 'reportType': '신고사유 5'}),
+    Report.fromJson(
+        {'opponentID': 2, 'processed': false, 'reportType': '신고사유 5'}),
+    Report.fromJson(
+        {'opponentID': 3, 'processed': false, 'reportType': '신고사유 5'}),
   ];
 
   @override
@@ -77,22 +84,21 @@ class _ReportPageState extends State<ReportPage> {
                 ),
               ),
             ),
-            SingleChildScrollView(
-              child: DefaultTabController(
-                length: tabs.length,
-                child: Column(
-                  children: [
-                    TabBar(
-                      indicator: BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(width: 5, color: chatPrimaryColor))),
-                      tabs: tabs,
-                      labelColor: Colors.black,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      height: deviceSize.height - 250,
+            DefaultTabController(
+              length: tabs.length,
+              child: Column(
+                children: [
+                  TabBar(
+                    indicator: BoxDecoration(
+                        border: Border(
+                            bottom:
+                                BorderSide(width: 5, color: chatPrimaryColor))),
+                    tabs: tabs,
+                    labelColor: Colors.black,
+                  ),
+                  SingleChildScrollView(
+                    child: Container(
+                      height: deviceSize.height - 203,
                       child: TabBarView(
                         children: tabs.map((Tab tab) {
                           int index = tabs.indexOf(tab);
@@ -103,10 +109,10 @@ class _ReportPageState extends State<ReportPage> {
                         }).toList(),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            )
+            ),
           ],
         ),
       ),

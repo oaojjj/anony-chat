@@ -1,14 +1,14 @@
-import 'package:anony_chat/database/shared_preferences_controller.dart';
+import 'package:anony_chat/database/hive_controller.dart';
 import 'package:anony_chat/model/dao/report.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:flutter/material.dart';
 
-class ReportChatPage extends StatefulWidget {
+class ChatReportPage extends StatefulWidget {
   @override
-  _ReportChatPageState createState() => _ReportChatPageState();
+  _ChatReportPageState createState() => _ChatReportPageState();
 }
 
-class _ReportChatPageState extends State<ReportChatPage> {
+class _ChatReportPageState extends State<ChatReportPage> {
   int memberID = 5463;
   ReportType _selectedType = ReportType.FourLetterWord;
 
@@ -18,8 +18,8 @@ class _ReportChatPageState extends State<ReportChatPage> {
     initID();
   }
 
-  Future<void> initID() async {
-    memberID = await SPController.getID();
+  initID() {
+    memberID = HiveController.getMemberID();
   }
 
   List<ReportType> reportType = Report.getList();

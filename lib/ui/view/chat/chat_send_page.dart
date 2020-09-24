@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/chat_model.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
@@ -79,7 +80,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
                             top: 8,
                             right: 4,
                             child: CircleAvatar(
-                              backgroundColor: Colors.indigo,
+                              backgroundColor: chatPrimaryColor,
                               child: IconButton(
                                   icon: Icon(Icons.autorenew,
                                       color: Colors.white),
@@ -107,7 +108,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
                                 child: CircularProgressIndicator());
                           return Text('${snap.data}',
                               style: TextStyle(
-                                  color: Colors.indigo, fontSize: 25));
+                                  color: chatPrimaryColor, fontSize: 25));
                         },
                       ),
                     ],
@@ -200,9 +201,9 @@ class _ChatSendPageState extends State<ChatSendPage> {
       padding: const EdgeInsets.all(4.0),
       child: ClipOval(
         child: Material(
-          color: flag ? Colors.indigo : Colors.white,
+          color: flag ? chatPrimaryColor : Colors.white,
           child: InkWell(
-            highlightColor: Colors.indigo,
+            highlightColor: chatPrimaryColor,
             child: Padding(
               padding: const EdgeInsets.all(4.0),
               child: Image.asset('assets/icons/$path'),

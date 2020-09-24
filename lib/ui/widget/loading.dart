@@ -1,3 +1,4 @@
+import 'package:anony_chat/utils/utill.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -9,7 +10,7 @@ class Loading extends StatelessWidget {
         color: Colors.white,
         child: Center(
           child: SpinKitThreeBounce(
-            color: Colors.indigo,
+            color: chatPrimaryColor,
             size: 64.0,
           ),
         ),

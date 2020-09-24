@@ -11,7 +11,6 @@ class Message {
   int time;
   String content;
   bool isRead = false;
-  File photo;
 
   Message(
       {this.senderID, this.receiverID, this.content, this.time});
