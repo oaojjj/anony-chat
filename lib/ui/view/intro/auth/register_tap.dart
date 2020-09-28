@@ -111,7 +111,7 @@ class _RegisterTapState extends State<RegisterTap> {
                               flex: 2,
                               fit: FlexFit.tight,
                               child: GestureDetector(
-                                onTap: () => showPicker(context, _itemsBirth),
+                                onTap: () => _showPicker(context, _itemsBirth),
                                 child: Container(
                                   height: 40,
                                   child: Card(
@@ -156,7 +156,7 @@ class _RegisterTapState extends State<RegisterTap> {
                               fit: FlexFit.tight,
                               child: GestureDetector(
                                 onTap: () {
-                                  showPicker(context, _itemsRegion);
+                                  _showPicker(context, _itemsRegion);
                                 },
                                 child: Container(
                                   height: 40.0,
@@ -213,10 +213,7 @@ class _RegisterTapState extends State<RegisterTap> {
           );
   }
 
-  showPicker(
-    context,
-    List<String> item,
-  ) {
+  _showPicker(context, List<String> item,) {
     return showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) {

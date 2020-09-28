@@ -1,20 +1,26 @@
+import 'package:anony_chat/database/hive_controller.dart';
+import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessage extends StatefulWidget {
-  ChatMessage({this.text, this.image});
+  ChatMessage({this.message});
 
-  final String text;
-  final Image image;
+  final Message message;
 
   @override
   _MessageState createState() => _MessageState();
 }
 
 class _MessageState extends State<ChatMessage> {
-  bool isSendByMe = true;
+  bool isSendByMe;
 
-  bool isRead = false;
+  @override
+  void initState() {
+    super.initState();
+    isSendByMe = widget.message.senderID == HiveController.getMemberID();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +48,8 @@ class _MessageState extends State<ChatMessage> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text(widget.text,
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          color:  Colors.white)),
+                  child: Text(widget.message.content,
+                      style: TextStyle(fontSize: 16.0, color: Colors.white)),
                 )),
           ),
           Padding(
@@ -58,12 +62,12 @@ class _MessageState extends State<ChatMessage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 4.0),
-                  child: Text('오후 7:00',
+                  child: Text(formatTime(widget.message.time),
                       style: TextStyle(fontSize: 12.0, color: Colors.black)),
                 ),
                 isSendByMe
                     ? Container()
-                    : Text(isRead ? '읽음' : '안읽음',
+                    : Text(isSendByMe ? (widget.message.isRead ? '읽음' : '안읽음') : '',
                         style: TextStyle(fontSize: 12.0)),
               ],
             ),
@@ -71,5 +75,11 @@ class _MessageState extends State<ChatMessage> {
         ],
       ),
     );
+  }
+
+  String formatTime(int time) {
+    return DateFormat('hh:mm aa')
+        .format(DateTime.fromMillisecondsSinceEpoch(time))
+        .toString();
   }
 }

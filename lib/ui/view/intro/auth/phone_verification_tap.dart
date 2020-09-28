@@ -36,8 +36,8 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
             Card(
               elevation: 3,
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 16.0, horizontal: 16.0),
                 child: Column(
                   children: [
                     Padding(
@@ -87,8 +87,8 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                     child: Text(_isRequested ? '재전송' : '인증번호',
                                         style: TextStyle(color: Colors.white)),
                                     onPressed: () {
-                                      if (checkedValidate()) return;
-                                      requestPhoneAuth();
+                                      if (_checkedValidate()) return;
+                                      _requestPhoneAuth();
                                     }),
                               ),
                             ],
@@ -131,7 +131,8 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                                                         .data)
                                                                 .inMilliseconds)),
                                                     style: TextStyle(
-                                                        color: chatPrimaryColor),
+                                                        color:
+                                                            chatPrimaryColor),
                                                   );
                                                 else if (snap.hasError)
                                                   return Text('error');
@@ -154,7 +155,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                                 style: TextStyle(
                                                     color: Colors.white)),
                                             onPressed: () {
-                                              checkPhoneSMSCode();
+                                              _checkPhoneSMSCode();
                                             }),
                                       ),
                                     ),
@@ -172,12 +173,11 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
               padding: const EdgeInsets.only(left: 8.0, top: 4.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Consumer(
-                  builder: (_, RegisterProvider value, __) => Text(
-                    value.stringAccordingToAuthState(),
-                    style: TextStyle(
-                        color: chatPrimaryColor, fontWeight: FontWeight.bold),
-                  ),
+                child: Text(
+                  Provider.of<RegisterProvider>(context)
+                      .stringAccordingToAuthState(),
+                  style: TextStyle(
+                      color: chatPrimaryColor, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -187,11 +187,12 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
     );
   }
 
-  void requestPhoneAuth() {
+  void _requestPhoneAuth() {
     switch (
         Provider.of<RegisterProvider>(context, listen: false).phoneAuthState) {
       case PhoneAuthState.none:
-        fam.requestSMSCodeAuthorization(phoneNumber: _phoneNumberController.text);
+        fam.requestSMSCodeAuthorization(
+            phoneNumber: _phoneNumberController.text);
         break;
       case PhoneAuthState.failed:
         fam.resendSMSCodeAuthorization();
@@ -202,14 +203,16 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
             toastLength: Toast.LENGTH_SHORT);
         break;
       default:
+        // TODO 인증성공
         break;
     }
     setState(() => _isRequested = true);
   }
 
-  checkPhoneSMSCode() async {
+  _checkPhoneSMSCode() async {
     final rp = Provider.of<RegisterProvider>(context, listen: false);
-    final result = await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text);
+    final result =
+        await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text);
 
     if (result) {
       print('checkPhoneSucceed');
@@ -220,7 +223,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
     }
   }
 
-  bool checkedValidate() {
+  bool _checkedValidate() {
     if (_formKey.currentState.validate()) {
       return false;
     } else {

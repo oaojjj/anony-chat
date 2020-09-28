@@ -116,7 +116,7 @@ class RegisterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void registerReady() {
+  void onRegisterReady() {
     canRegister = true;
     onNextStep();
   }

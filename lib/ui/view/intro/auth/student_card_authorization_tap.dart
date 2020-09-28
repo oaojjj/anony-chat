@@ -13,7 +13,6 @@ class SCAuthorizationTap extends StatefulWidget {
 }
 
 class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _studentIDController = TextEditingController();
 
@@ -339,7 +338,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
   }
 
   Future<void> _dialogList(List item, String text) async {
-    resetDialogData();
+    _resetDialogData();
     return showDialog(
       context: context,
       builder: (_) => StatefulBuilder(
@@ -384,7 +383,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                             border: OutlineInputBorder(),
                             hintText: '$text 검색'),
                         onChanged: (text) {
-                          onSearchTextChanged(text, item, setState);
+                          _onSearchTextChanged(text, item, setState);
                         }),
                   ),
                   SizedBox(height: 16.0),
@@ -404,7 +403,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                           itemCount: _searchResult.length,
                           itemBuilder: (_, index) {
                             return GestureDetector(
-                              onTap: () => checkOnlyOneLogic(setState, index),
+                              onTap: () => _checkOnlyOneItem(setState, index),
                               child: ListTile(
                                 title: Row(
                                   children: <Widget>[
@@ -460,7 +459,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
     );
   }
 
-  void resetDialogData() {
+  _resetDialogData() {
     _searchResult.clear();
     _textController.clear();
     _checkFlag = false;
@@ -468,7 +467,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
   }
 
   // 다이어로그창때 학교, 학과를 하나만 선택할 수 있는 메소드
-  void checkOnlyOneLogic(StateSetter ss, int index) {
+  _checkOnlyOneItem(StateSetter ss, int index) {
     if (!_checkFlag) {
       ss(() => _selected[index] = !_selected[index]);
       _checkedPrev = index;
@@ -482,7 +481,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
     }
   }
 
-  onSearchTextChanged(String text, item, ss) {
+  _onSearchTextChanged(String text, item, ss) {
     _searchResult.clear();
     _selected.clear();
     if (text.isEmpty) {
@@ -505,7 +504,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
         (rp.member.studentID == null)) {
       rp.onCantNextStep();
     } else{
-      rp.registerReady();
+      rp.onRegisterReady();
     }
 
   }

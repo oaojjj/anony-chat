@@ -1,4 +1,7 @@
+import 'package:anony_chat/database/hive_controller.dart';
+import 'package:anony_chat/ui/view/chat/chat_room_page.dart';
 import 'package:anony_chat/ui/widget/chat/chat_room_preview.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/chat_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -14,6 +17,8 @@ class _ChatListPageState extends State<ChatListPage> {
   List<ChatRoomPreview> _chatRooms = [];
   ChatModel _chatModel = ChatModel();
 
+  final receiverID = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -26,8 +31,8 @@ class _ChatListPageState extends State<ChatListPage> {
         ),
         body: Container(
           child: StreamBuilder(
-            stream:
-                _chatModel.getChatList(FirebaseAuth.instance.currentUser.uid),
+            stream: _chatModel
+                .getChatRoomList(FirebaseAuth.instance.currentUser.uid),
             builder: (_, AsyncSnapshot<Event> snap) {
               if (!snap.hasData || snap.hasError)
                 return Center(child: CircularProgressIndicator());
@@ -36,9 +41,14 @@ class _ChatListPageState extends State<ChatListPage> {
                 return ListView.builder(
                   itemCount: _chatRooms.length,
                   itemBuilder: (_, index) => InkWell(
-                      highlightColor: Colors.amber,
+                      highlightColor: chatAccentColor,
                       onTap: () {
-
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ChatRoomPage(
+                                    senderID: HiveController.getMemberID(),
+                                    receiverID: receiverID[index])));
                       },
                       child: _chatRooms[index]),
                 );
@@ -55,9 +65,10 @@ class _ChatListPageState extends State<ChatListPage> {
       _chatRooms.clear();
       data.forEach((key, value) {
         final time = DateFormat('MM월 dd일 hh:mm aa')
-            .format(DateTime.fromMillisecondsSinceEpoch(value['lastMessageTime']))
+            .format(
+                DateTime.fromMillisecondsSinceEpoch(value['lastMessageTime']))
             .toString();
-
+        receiverID.add(value['withWho']);
         _chatRooms.add(ChatRoomPreview(
           previewIcon: 'assets/icons/${value['imageIcon']}',
           lastMessage: value['lastMessage'],

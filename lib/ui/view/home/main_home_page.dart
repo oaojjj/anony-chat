@@ -21,9 +21,13 @@ class _MainPageState extends State<MainPage> {
   final String _chatListIconPath = 'assets/icons/chat_list.png';
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<MemberAuthProvider>(context, listen: false).checkAuthorization();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Provider.of<MemberAuthProvider>(context, listen: false)
-        .checkAuthorization();
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -77,7 +81,7 @@ class _MainPageState extends State<MainPage> {
                       child: IconButton(
                           iconSize: 80,
                           icon: Image.asset('assets/icons/messageIcon3.png'),
-                          onPressed: (){
+                          onPressed: () {
                             Navigator.pushNamed(context, '/chat_page');
                           }))
                 ],

@@ -30,7 +30,8 @@ class _RoutePageState extends State<RoutePage> {
   Widget _route() {
     final user = FirebaseAuth.instance.currentUser;
     print('user: $user\nauthStatus: $_authStatus');
-    if (user != null && _authStatus == AuthStatus.registered) {
+    
+    if (user != null || _authStatus == AuthStatus.registered) {
       return MainPage();
     } else {
       // 회원가입 진행

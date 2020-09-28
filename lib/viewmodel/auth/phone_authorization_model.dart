@@ -71,10 +71,12 @@ class PhoneAuthorizationModel {
     }
   }
 
-  _completed(AuthCredential phoneAuthCredential) {}
+  _completed(AuthCredential phoneAuthCredential) {
+    print('phoneAuthCredential completed: $phoneAuthCredential');
+  }
 
   _failed(FirebaseAuthException authException) {
-    print('error: ${authException.message}');
+    print('authException error: ${authException.message}');
   }
 
   _timeOut(String id) {

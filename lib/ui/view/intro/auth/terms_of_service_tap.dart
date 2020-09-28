@@ -4,8 +4,6 @@ import 'package:anony_chat/provider/register_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// 이용약관 동의 페이지
-// TODO api가 사실 필요한가?? 구조 바꿀 예정
 class TermsOfServiceTap extends StatefulWidget {
   @override
   _TermsOfServiceTapState createState() => _TermsOfServiceTapState();

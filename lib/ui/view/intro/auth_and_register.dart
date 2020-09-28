@@ -82,9 +82,7 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
                       return Center(
                         child: BottomButton(
                           onPressed: rp.canNextStep ? onStepContinue : null,
-                          text: rp.currentStep != _steps.length - 1
-                              ? '다음'
-                              : '가입하기',
+                          text: rp.currentStep != _steps.length - 1 ? '다음' : '가입하기',
                         ),
                       );
                     },
@@ -97,8 +95,8 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
 
   // TODO 모든 예외처리 하기
   Future _register(RegisterProvider rp, BuildContext context) async {
-    await _memberModel.register(rp.member).then((value) => Navigator.of(context)
-        .pushNamedAndRemoveUntil('/main', (route) => false));
+    await _memberModel.register(rp.member).then((value) =>
+        Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false));
   }
 
   bool onBackPressed() {
