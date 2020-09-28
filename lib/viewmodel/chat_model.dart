@@ -15,7 +15,6 @@ class ChatModel {
   static const String CHAT_LIST_TABLE = 'chat_list';
 
   Future<void> sendMessage({Message message}) async {
-    print('test');
     String receiverUid = await MemberModel.getMemberUid(message.receiverID);
 
     _db
@@ -114,16 +113,14 @@ class ChatModel {
     return chatList;
   }
 
-  Future<dynamic> getChatMessageList(int receiverID) async {
+  Query getChatMessageList(int receiverID) {
     final senderID = HiveController.getMemberID();
-    final messages = await _db
+
+    return _db
         .reference()
         .child(CHAT_ROOM_TABLE)
         .child(_mAuth.currentUser.uid)
         .child('${senderID}_$receiverID')
-        .orderByKey()
-        .once();
-
-    return messages.value;
+        .orderByKey();
   }
 }

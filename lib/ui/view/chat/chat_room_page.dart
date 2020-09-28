@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:anony_chat/viewmodel/chat_model.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class ChatRoomPage extends StatefulWidget {
@@ -21,28 +25,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   final FocusNode _focusNode = FocusNode();
 
   final chatAppBarName = '익명의 상대방';
-
-  Future<void> initChatMessages() async {
-    final Map chat = await _chatModel.getChatMessageList(widget.receiverID);
-    chat.forEach((key, value) {
-      print(value);
-      ChatMessage message = ChatMessage(
-        message: Message(
-          time: value['time'],
-          content: value['content'],
-          senderID: value['senderID'],
-          receiverID: value['receiverID'],
-        ),
-      );
-      setState(() => _messages.insert(_messages.length, message));
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    initChatMessages();
-  }
+  bool _isSubmit = true;
 
   @override
   Widget build(BuildContext context) {
@@ -69,13 +52,31 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           child: Column(
             children: [
               Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: EdgeInsets.all(8.0),
-                  itemBuilder: (_, index) => _messages[index],
-                  itemCount: _messages.length,
-                ),
-              ),
+                  child: FirebaseAnimatedList(
+                      controller: _scrollController,
+                      query: _chatModel.getChatMessageList(widget.receiverID),
+                      itemBuilder: (context, DataSnapshot snapshot,
+                          Animation<double> animation, _) {
+                        if (_isSubmit) {
+                          Timer(
+                              Duration(microseconds: 1),
+                              () => _scrollController.animateTo(
+                                  _scrollController.position.maxScrollExtent +
+                                      100,
+                                  duration: Duration(milliseconds: 100),
+                                  curve: Curves.easeOut));
+                          _isSubmit = false;
+                        }
+
+                        print(snapshot.value);
+                        return ChatMessage(
+                          message: Message(
+                              senderID: snapshot.value['senderID'],
+                              receiverID: snapshot.value['receiverID'],
+                              time: snapshot.value['time'],
+                              content: snapshot.value['content']),
+                        );
+                      })),
               _buildTextComposer(),
             ],
           ),
@@ -104,7 +105,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             child: FlatButton(
                 child: Icon(Icons.photo, size: 24.0),
                 //Text('사진', style: TextStyle(fontWeight: FontWeight.bold)),
-                onPressed: () {}),
+                onPressed: () {
+                  //TODO 사진 보내기 작성
+                }),
           ),
           Flexible(
             child: TextField(
@@ -119,7 +122,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             height: 48.0,
             child: FlatButton(
                 child: Icon(Icons.send, size: 24.0),
-                //Text('사진', style: TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () => _handleSubmitted(_messageController.text)),
           ),
         ],
@@ -137,14 +139,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         receiverID: widget.receiverID,
         senderID: widget.senderID);
 
-    ChatMessage message = ChatMessage(message: msg,);
-    setState(() => _messages.insert(_messages.length, message));
-
-    _focusNode.requestFocus();
-    _scrollController.animateTo(_scrollController.position.maxScrollExtent + 56,
-        duration: Duration(milliseconds: 100), curve: Curves.easeIn);
-
     _chatModel.sendMessage(message: msg);
+    _focusNode.requestFocus();
+    _isSubmit = true;
   }
 
   Future<void> _showMyDialog() async {
