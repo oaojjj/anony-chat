@@ -6,6 +6,7 @@ import 'package:anony_chat/viewmodel/chat_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class ChatRoomPage extends StatefulWidget {
   final receiverID;
@@ -58,13 +59,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       itemBuilder: (context, DataSnapshot snapshot,
                           Animation<double> animation, _) {
                         if (_isSubmit) {
-                          Timer(
-                              Duration(microseconds: 1),
-                              () => _scrollController.animateTo(
-                                  _scrollController.position.maxScrollExtent +
-                                      100,
-                                  duration: Duration(milliseconds: 100),
-                                  curve: Curves.easeOut));
+                          SchedulerBinding.instance.addPostFrameCallback((_) {
+                            _scrollController.animateTo(
+                                _scrollController.position.maxScrollExtent +
+                                    100,
+                                duration: Duration(milliseconds: 100),
+                                curve: Curves.easeOut);
+                          });
                           _isSubmit = false;
                         }
 
@@ -141,7 +142,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
     _chatModel.sendMessage(message: msg);
     _focusNode.requestFocus();
-    _isSubmit = true;
+    _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent + 100,
+        duration: Duration(milliseconds: 100),
+        curve: Curves.easeOut);
   }
 
   Future<void> _showMyDialog() async {
