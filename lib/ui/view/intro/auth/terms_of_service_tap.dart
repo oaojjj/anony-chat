@@ -130,8 +130,10 @@ class _TermsOfServiceTapState extends State<TermsOfServiceTap> {
 
   _isAllRequiredChecked() {
     final rp = Provider.of<RegisterProvider>(context, listen: false);
-    if (_tm.isAllOfRequiredChecked())
+    if (_tm.isAllOfRequiredChecked()){
+      // 필수 약관 동의는 모두 체크되야 다음 스텝으로 이동
       rp.onNextStep();
+    }
     else
       rp.onCantNextStep();
   }

@@ -7,6 +7,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PhoneVerificationTap extends StatefulWidget {
+  final List<FocusNode> _focusNode;
+
+  PhoneVerificationTap(this._focusNode);
+
   @override
   _PhoneVerificationTapState createState() => _PhoneVerificationTapState();
 }
@@ -20,6 +24,12 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
 
   // 인증번호 전송 여부
   bool _isRequested = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    fam.setProvider(Provider.of<RegisterProvider>(context));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +72,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                 flex: 2,
                                 fit: FlexFit.tight,
                                 child: TextFormField(
+                                  focusNode: widget._focusNode[0],
                                   controller: _phoneNumberController,
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
@@ -70,11 +81,15 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                       border: OutlineInputBorder(),
                                       hintText: '전화번호'),
                                   validator: (value) {
+                                    RegExp regExp = RegExp(
+                                        r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$');
                                     if (value.isEmpty)
                                       return '전화번호를 입력하세요.';
-                                    else if (value.contains('-'))
+                                    else if (!regExp.hasMatch(value))
                                       return '숫자만 입력하세요';
-                                    else
+                                    else if (value.length != 11) {
+                                      return '전화번호를 다시 확인해주세요.';
+                                    } else
                                       return null;
                                   },
                                 ),
@@ -106,6 +121,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                       child: Stack(
                                         children: [
                                           TextFormField(
+                                            focusNode: widget._focusNode[1],
                                             controller: _smsCodeController,
                                             keyboardType: TextInputType.number,
                                             decoration: InputDecoration(
@@ -122,7 +138,13 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                             child: StreamBuilder(
                                               stream: fam.time,
                                               builder: (_, snap) {
-                                                if (snap.hasData)
+                                                if (snap.hasData) {
+                                                  if (Provider.of<RegisterProvider>(
+                                                              context)
+                                                          .phoneAuthState ==
+                                                      PhoneAuthState.timeout)
+                                                    toast(
+                                                        '인증 제한시간이 지났습니다.\n재전송 부탁드립니다.');
                                                   return Text(
                                                     DateFormat('mm:ss').format(DateTime
                                                         .fromMillisecondsSinceEpoch(
@@ -134,7 +156,7 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                                         color:
                                                             chatPrimaryColor),
                                                   );
-                                                else if (snap.hasError)
+                                                } else if (snap.hasError)
                                                   return Text('error');
                                                 else
                                                   return Text('loading..');
@@ -155,7 +177,13 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
                                                 style: TextStyle(
                                                     color: Colors.white)),
                                             onPressed: () {
-                                              _checkPhoneSMSCode();
+                                              fam.signInWithPhoneNumberWithSMSCode(
+                                                  _smsCodeController.text);
+                                              print(
+                                                  Provider.of<RegisterProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .phoneAuthState);
                                             }),
                                       ),
                                     ),
@@ -191,42 +219,36 @@ class _PhoneVerificationTapState extends State<PhoneVerificationTap> {
     switch (
         Provider.of<RegisterProvider>(context, listen: false).phoneAuthState) {
       case PhoneAuthState.none:
+        toast('인증번호를 전송 하였습니다.');
         fam.requestSMSCodeAuthorization(
             phoneNumber: _phoneNumberController.text);
         break;
-      case PhoneAuthState.failed:
-        fam.resendSMSCodeAuthorization();
-        Fluttertoast.showToast(
-            msg: '인증번호를 재전송 하였습니다.',
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.grey[800],
-            toastLength: Toast.LENGTH_SHORT);
+      case PhoneAuthState.succeed:
+        // TODO 인증성공
         break;
       default:
-        // TODO 인증성공
+        // 타임아웃, 인증실패, 재전송
+        toast('인증번호를 재전송 하였습니다.');
+        fam.resendSMSCodeAuthorization();
         break;
     }
     setState(() => _isRequested = true);
   }
 
-  _checkPhoneSMSCode() async {
-    final rp = Provider.of<RegisterProvider>(context, listen: false);
-    final result =
-        await fam.signInWithPhoneNumberAndSMSCode(_smsCodeController.text);
-
-    if (result) {
-      print('checkPhoneSucceed');
-      rp.onPhoneAuthSucceed(phoneNumber: fam.phoneNumber);
-    } else {
-      print('checkPhoneFailed');
-      rp.onPhoneAuthFailed();
-    }
+  void toast(String text) {
+    Fluttertoast.showToast(
+        msg: text,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.black,
+        toastLength: Toast.LENGTH_SHORT);
   }
 
   bool _checkedValidate() {
     if (_formKey.currentState.validate()) {
+      // success
       return false;
     } else {
+      // fail
       return true;
     }
   }

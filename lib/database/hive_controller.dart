@@ -23,6 +23,9 @@ class HiveController {
   static void onRegisterCompleted() =>
       Hive.box('auth').put('authStatus', AuthStatus.registered);
 
+  static void onRegisterSecession() =>
+      Hive.box('auth').put('authStatus', AuthStatus.nonRegistered);
+
   static AuthStatus getAuthStatus() =>
       Hive.box('auth').get('authStatus') ?? AuthStatus.nonRegistered;
 

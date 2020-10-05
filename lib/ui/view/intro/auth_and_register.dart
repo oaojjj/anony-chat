@@ -16,6 +16,7 @@ class AuthAndRegisterPage extends StatefulWidget {
 }
 
 class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
+  static final _focusNode = [FocusNode(), FocusNode()];
   final _memberModel = MemberModel();
 
   bool _loading = false;
@@ -23,7 +24,7 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
   // 휴대폰 인증, 약관동의, 회원정보입력, 학생증 인증
   List<Step> _steps = [];
   final _tapList = [
-    PhoneVerificationTap(),
+    PhoneVerificationTap(_focusNode),
     TermsOfServiceTap(),
     RegisterTap(),
     SCAuthorizationTap()
@@ -46,12 +47,18 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    Provider.of<RegisterProvider>(context, listen: false).reset();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _loading
         ? Loading()
         : SafeArea(
             child: WillPopScope(
-              onWillPop: () async => false,
+              onWillPop: () => onBackPressed(),
               child: Scaffold(
                 appBar: AppBar(
                   leading: IconButton(
@@ -71,9 +78,9 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
                     steps: _makeSteps(),
                     onStepTapped: null,
                     onStepContinue: () async {
-                      if (!rp.canRegister)
+                      if (!rp.canRegister) {
                         rp.onContinueStep();
-                      else {
+                      } else {
                         setState(() => _loading = true);
                         await _register(rp, context);
                       }
@@ -82,7 +89,9 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
                       return Center(
                         child: BottomButton(
                           onPressed: rp.canNextStep ? onStepContinue : null,
-                          text: rp.currentStep != _steps.length - 1 ? '다음' : '가입하기',
+                          text: rp.currentStep != _steps.length - 1
+                              ? '다음'
+                              : '가입하기',
                         ),
                       );
                     },
@@ -95,18 +104,47 @@ class _AuthAndRegisterPageState extends State<AuthAndRegisterPage> {
 
   // TODO 모든 예외처리 하기
   Future _register(RegisterProvider rp, BuildContext context) async {
-    await _memberModel.register(rp.member).then((value) =>
-        Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false));
+    await _memberModel.register(rp.member).then((value) => Navigator.of(context)
+        .pushNamedAndRemoveUntil('/main', (route) => false));
   }
 
-  bool onBackPressed() {
+  onBackPressed() {
     final rsp = Provider.of<RegisterProvider>(context, listen: false);
-    if (rsp.currentStep == 0) {
-      Navigator.pop(context);
-      return true;
+    if (rsp.currentStep <= 2) {
+      _focusNode[0].unfocus();
+      _focusNode[1].unfocus();
+      _showDialogAllDataDelete();
     } else {
       rsp.onPrevStep();
-      return false;
     }
+  }
+
+  // 첫 페이지에서 뒤로가기 하면 모든 데이터가 삭제된다고 알림 띄우기
+  Future<void> _showDialogAllDataDelete() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (_) {
+        return AlertDialog(
+          title: Text('주의'),
+          content: Text('처음부터 다시 작성하셔야 합니다. \n그래도 뒤로가겠습니까?'),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('취소', style: TextStyle(color: Colors.black)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('확인', style: TextStyle(color: Colors.black)),
+              onPressed: () {
+                Navigator.popUntil(
+                    context, ModalRoute.withName(Navigator.defaultRouteName));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

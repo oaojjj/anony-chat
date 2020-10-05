@@ -13,11 +13,12 @@ class SCAuthorizationTap extends StatefulWidget {
 }
 
 class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
+  final _focusNode = [FocusNode(), FocusNode()];
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _studentIDController = TextEditingController();
 
   bool _checkFlag = false;
-  int _checkedPrev;
+  int _checkedPrev = -1;
 
   List<bool> _selected = [];
 
@@ -97,7 +98,8 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                               flex: 3,
                               fit: FlexFit.tight,
                               child: GestureDetector(
-                                onTap: () => _dialogList(_universityList, '학교'),
+                                onTap: () => _dialogList(
+                                    _universityList, '학교', _focusNode[0]),
                                 child: Container(
                                   height: 50.0,
                                   width: 100.0,
@@ -157,7 +159,8 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                               flex: 3,
                               fit: FlexFit.tight,
                               child: GestureDetector(
-                                onTap: () => _dialogList(_majorList, '학과'),
+                                onTap: () => _dialogList(
+                                    _majorList, '학과', _focusNode[0]),
                                 child: Container(
                                   height: 50.0,
                                   width: 100.0,
@@ -285,8 +288,8 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                                 child: Switch(
                                   activeColor: chatPrimaryColor,
                                   value: rp.member.isNotMeetingSameUniversity,
-                                  onChanged: (value) => setState(() => rp
-                                      .member.isNotMeetingSameUniversity = value),
+                                  onChanged: (value) => setState(() => rp.member
+                                      .isNotMeetingSameUniversity = value),
                                 ),
                               ),
                             ),
@@ -337,7 +340,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
     //Provider.of<RegisterProvider>(context).member.studentCardImage = File(image.path);
   }
 
-  Future<void> _dialogList(List item, String text) async {
+  Future<void> _dialogList(List item, String text, FocusNode focusNode) async {
     _resetDialogData();
     return showDialog(
       context: context,
@@ -375,6 +378,7 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: TextFormField(
+                        focusNode: focusNode,
                         controller: _textController,
                         keyboardType: TextInputType.name,
                         decoration: InputDecoration(
@@ -403,7 +407,10 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                           itemCount: _searchResult.length,
                           itemBuilder: (_, index) {
                             return GestureDetector(
-                              onTap: () => _checkOnlyOneItem(setState, index),
+                              onTap: () {
+                                focusNode.unfocus();
+                                _checkOnlyOneItem(setState, index);
+                              },
                               child: ListTile(
                                 title: Row(
                                   children: <Widget>[
@@ -468,22 +475,13 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
 
   // 다이어로그창때 학교, 학과를 하나만 선택할 수 있는 메소드
   _checkOnlyOneItem(StateSetter ss, int index) {
-    if (!_checkFlag) {
-      ss(() => _selected[index] = !_selected[index]);
-      _checkedPrev = index;
-      _checkFlag = true;
-    } else {
-      if (_checkedPrev == index) {
-        ss(() => _selected[index] = !_selected[index]);
-        _checkFlag = false;
-        _checkedPrev = -1;
-      }
-    }
+
   }
 
   _onSearchTextChanged(String text, item, ss) {
     _searchResult.clear();
     _selected.clear();
+    _checkFlag = false;
     if (text.isEmpty) {
       ss(() {});
       return;
@@ -503,9 +501,8 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
     if ((rp.member.university == null || rp.member.major == null) ||
         (rp.member.studentID == null)) {
       rp.onCantNextStep();
-    } else{
+    } else {
       rp.onRegisterReady();
     }
-
   }
 }

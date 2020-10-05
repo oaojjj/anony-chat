@@ -3,8 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 enum RegisterState { canNotRegister, canRegister }
-enum PhoneAuthState { none, failed, succeed }
-
+enum PhoneAuthState { none, requested, timeout, failed, succeed }
 
 /* 회원가입 단계 수
    1. 폰인증
@@ -13,13 +12,13 @@ enum PhoneAuthState { none, failed, succeed }
    4. 학생증 인증
    */
 class RegisterProvider extends ChangeNotifier {
-  final Member member = Member();
+  Member member = Member();
 
   int _stepLength = 4;
 
   // 회원가입 진행 상황
-  List<bool> _isActive = [true, false, false, false];
   List<String> _isActiveString = ['전화번호 인증', '이용약관 동의', '회원정보', '학생증 인증'];
+  List<bool> _isActive = [true, false, false, false];
   List<StepState> _stepState = [
     StepState.editing,
     StepState.disabled,
@@ -83,6 +82,8 @@ class RegisterProvider extends ChangeNotifier {
   String stringAccordingToAuthState() {
     switch (_phoneAuthState) {
       case PhoneAuthState.none:
+      case PhoneAuthState.requested:
+      case PhoneAuthState.timeout:
         return '';
       case PhoneAuthState.succeed:
         return '인증이 성공했습니다.';
@@ -105,6 +106,16 @@ class RegisterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void onPhoneAuthTimeout() {
+    _phoneAuthState = PhoneAuthState.timeout;
+    notifyListeners();
+  }
+
+  void onPhoneRequestSMSCode() {
+    _phoneAuthState = PhoneAuthState.requested;
+    notifyListeners();
+  }
+
   void onNextStep() {
     onSucceedStep();
     notifyListeners();
@@ -119,5 +130,22 @@ class RegisterProvider extends ChangeNotifier {
   void onRegisterReady() {
     canRegister = true;
     onNextStep();
+  }
+
+  void reset() {
+    print('register provider reset');
+    _isActive = [true, false, false, false];
+    _stepState = [
+      StepState.editing,
+      StepState.disabled,
+      StepState.disabled,
+      StepState.disabled
+    ];
+    _currentStep = 0;
+    _phoneAuthState = PhoneAuthState.none;
+    canRegister = false;
+    canNextStep = false;
+    canRegister = false;
+    member = Member();
   }
 }

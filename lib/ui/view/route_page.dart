@@ -30,8 +30,10 @@ class _RoutePageState extends State<RoutePage> {
   Widget _route() {
     final user = FirebaseAuth.instance.currentUser;
     print('user: $user\nauthStatus: $_authStatus');
-    
-    if (user != null || _authStatus == AuthStatus.registered) {
+
+    // 파이어베이스에 인증되어 있는지 체크
+    if (user != null && _authStatus == AuthStatus.registered) {
+      // Todo 서버로 회원번호를 넘겨서 회원정보(신고상태, 회원가입상태 등)를 받아야함
       return MainPage();
     } else {
       // 회원가입 진행
