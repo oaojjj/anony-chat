@@ -1,4 +1,4 @@
-import 'package:anony_chat/database/hive_controller.dart';
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/ui/view/route_page.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -72,7 +72,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
                 title: Text('회원 탈퇴', style: TextStyle(fontSize: 20.0)),
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();
-                  HiveController.onRegisterSecession();
+                  HiveController.instance.onRegisterSecession();
                   Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(builder: (context) => RoutePage()),
                           (route) => false);

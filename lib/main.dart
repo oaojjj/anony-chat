@@ -1,19 +1,23 @@
+import 'package:anony_chat/controller/notification_controller.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/provider/member_auth_provider.dart';
 import 'package:anony_chat/routes.dart';
-import 'package:anony_chat/ui/view/route_page.dart';
+import 'package:anony_chat/ui/view/join/intro_page.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Hive.initFlutter();
-   Hive.registerAdapter(AuthStatusAdapter());
+  Hive.registerAdapter(AuthStatusAdapter());
   await Hive.openBox('member');
   await Hive.openBox('auth');
   runApp(
@@ -34,15 +38,25 @@ class AnonymousChat extends StatefulWidget {
 
 class _AnonymousChatState extends State<AnonymousChat> {
   @override
+  void initState() {
+    super.initState();
+    NotificationController.instance.takeFCMTokenWhenAppLaunch();
+    NotificationController.instance.init();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    KakaoContext.clientId = "3f713a24ffd507e39016b356d25530e4";
+
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Anonymous Chat',
       theme: ThemeData(
           fontFamily: 'Roboto',
           buttonColor: chatPrimaryColor,
           primaryColor: chatPrimaryColor,
           accentColor: chatAccentColor),
-      home: RoutePage(),
+      home: IntroPage(),
       routes: routes,
     );
   }

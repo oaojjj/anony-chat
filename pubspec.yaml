@@ -27,19 +27,23 @@ dependencies:
   provider: ^4.3.2+1 #privder 패키지
   image_picker: ^0.6.7+4 #갤러리에서 사진 불러오는 패키지
   flutter_picker: ^1.1.5
-  firebase_auth: ^0.18.0+1 #파이어베이스 인증
+  firebase_auth: ^0.18.0+1 #파이어베이스 인증 [*****플랫폼 별 설정 android, ios 필요*****]
   firebase_database: ^4.0.0 #파이어베이스 realtime database
+  firebase_messaging: ^7.0.2 #[*****플랫폼 별 설정 android, ios 필요*****]
+  cloud_firestore: ^0.14.1+2 #파이어베이스 데이터베이스 [*****플랫폼 별 설정 android, ios 필요*****]
   firebase_storage: ^4.0.0 #파이버에이스 파일저장소
-  flutter_spinkit: ^4.1.2+1 #로딩위젯
+  flutter_local_notifications: ^2.0.0
   async: ^2.3.0 #캐쉬
   fluttertoast: ^7.0.4 #플러터 토스트
-  shared_preferences: ^0.5.10 # 로컬디비
   intl: ^0.16.1 # DateFormat
   json_annotation: ^3.0.1
   analyzer: ^0.39.0
   hive: ^1.4.4
   hive_flutter: ^0.3.1
   hive_generator: ^0.7.2+1
+  kakao_flutter_sdk: ^0.5.2 # 카카오톡 sdk
+  url_launcher: ^5.7.2
+  flutter_svg: ^0.19.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

@@ -1,4 +1,4 @@
-import 'package:anony_chat/database/hive_controller.dart';
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/provider/member_auth_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
@@ -451,7 +451,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _fetchData() {
-    _member = HiveController.loadProfileToLocal();
+    _member = HiveController.instance.loadProfileToLocal();
     _fixProfile = Member.fromJson(_member.toJson());
     sexBtnColor = _member.sex == '남자';
     setState(() => loading = false);

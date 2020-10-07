@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,9 +11,12 @@ class SCAuthorizationTap extends StatefulWidget {
 }
 
 class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
+  final _formKey = GlobalKey<FormState>();
   final _focusNode = [FocusNode(), FocusNode()];
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _studentIDController = TextEditingController();
+
+  RegExp regExp = RegExp(r'^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$');
 
   bool _checkFlag = false;
   int _checkedPrev = -1;
@@ -206,33 +207,40 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                         SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Flexible(
                               flex: 1,
                               fit: FlexFit.tight,
-                              child: Align(
-                                  child: Text('학번',
-                                      style: TextStyle(fontSize: 18.0)),
-                                  alignment: Alignment.center),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Align(
+                                    child: Text('학번',
+                                        style: TextStyle(fontSize: 18.0)),
+                                    alignment: Alignment.center),
+                              ),
                             ),
                             Flexible(
                               flex: 3,
                               fit: FlexFit.tight,
-                              child: TextFormField(
-                                controller: _studentIDController,
-                                keyboardType: TextInputType.number,
-                                decoration: InputDecoration(
-                                    contentPadding:
-                                        EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
-                                    border: OutlineInputBorder(),
-                                    hintText: '학번'),
-                                onChanged: (text) {
-                                  Provider.of<RegisterProvider>(context,
-                                          listen: false)
-                                      .member
-                                      .studentID = int.parse(text);
-                                  if (text.length == 9) _canNextStep();
-                                },
+                              child: Form(
+                                key: _formKey,
+                                child: TextFormField(
+                                  maxLength: 9,
+                                  controller: _studentIDController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                      contentPadding:
+                                          EdgeInsets.fromLTRB(10.0, 0, 10.0, 0),
+                                      border: OutlineInputBorder(),
+                                      hintText: '학번'),
+                                  onChanged: (text) {
+                                    Provider.of<RegisterProvider>(context,
+                                            listen: false)
+                                        .member
+                                        .studentID = int.parse(text);
+                                  },
+                                ),
                               ),
                             ),
                           ],
@@ -259,7 +267,6 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                                       child: Text('업로드'),
                                       onPressed: () {
                                         uploadImage();
-                                        _canNextStep();
                                       }),
                                 )),
                           ],
@@ -452,7 +459,6 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
                                 this.setState(() => rp.member.major =
                                     _searchResult[_checkedPrev]);
                             }
-                            _canNextStep();
                             Navigator.pop(context);
                           }),
                     ),
@@ -475,13 +481,27 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
 
   // 다이어로그창때 학교, 학과를 하나만 선택할 수 있는 메소드
   _checkOnlyOneItem(StateSetter ss, int index) {
-
+    // 선택이 안되어 있다면
+    ss(() {
+      if (!_checkFlag) {
+        _selected[index] = !_selected[index];
+        _checkFlag = true;
+      } else {
+        if (index == _checkedPrev) {
+          _selected[index] = !_selected[index];
+          _checkFlag = false;
+        } else {
+          _selected[index] = !_selected[index];
+          _selected[_checkedPrev] = !_selected[_checkedPrev];
+        }
+      }
+      _checkedPrev = index;
+    });
   }
 
   _onSearchTextChanged(String text, item, ss) {
     _searchResult.clear();
     _selected.clear();
-    _checkFlag = false;
     if (text.isEmpty) {
       ss(() {});
       return;
@@ -493,16 +513,22 @@ class _SCAuthorizationTapState extends State<SCAuthorizationTap> {
         _selected.add(false);
       }
     });
+
+    if (_checkFlag) {
+      _selected[_checkedPrev] = false;
+      _checkFlag = false;
+    }
+
     ss(() {});
   }
 
-  _canNextStep() {
-    final rp = Provider.of<RegisterProvider>(context, listen: false);
-    if ((rp.member.university == null || rp.member.major == null) ||
-        (rp.member.studentID == null)) {
-      rp.onCantNextStep();
+  bool _checkedValidate() {
+    if (_formKey.currentState.validate()) {
+      // success
+      return false;
     } else {
-      rp.onRegisterReady();
+      // fail
+      return true;
     }
   }
 }

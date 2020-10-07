@@ -1,4 +1,4 @@
-import 'package:anony_chat/database/hive_controller.dart';
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/dao/report.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class _ChatReportPageState extends State<ChatReportPage> {
   }
 
   initID() {
-    memberID = HiveController.getMemberID();
+    memberID = HiveController.instance.getMemberID();
   }
 
   List<ReportType> reportType = Report.getList();

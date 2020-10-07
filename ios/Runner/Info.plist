@@ -40,6 +40,25 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<key>KAKAO_APP_KEY</key>
+    <string>3f713a24ffd507e39016b356d25530e4</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>kakao3f713a24ffd507e39016b356d25530e4</string>
+    </array>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string></string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>kakao3f713a24ffd507e39016b356d25530e4</string>
+            </array>
+        </dict>
+    </array>
 	<false/>
 </dict>
 </plist>

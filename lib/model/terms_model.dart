@@ -23,6 +23,8 @@ class TermsModel {
 
   onChecked(int index, bool b) {
     _mItems[index].isChecked = b;
+    if (!b) _allAgree = b;
+    if (isAlChecked()) _allAgree = true;
   }
 
   onAllOfAgreeCheckBox(bool b) {
@@ -40,6 +42,13 @@ class TermsModel {
         return false;
       }
     }
+    return true;
+  }
+
+  bool isAlChecked() {
+    if (_allAgree) return true;
+
+    for (final item in _mItems) if (!item.isChecked) return false;
     return true;
   }
 

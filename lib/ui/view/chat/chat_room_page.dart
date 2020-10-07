@@ -54,6 +54,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             children: [
               Expanded(
                   child: FirebaseAnimatedList(
+                      reverse: true,
                       controller: _scrollController,
                       query: _chatModel.getChatMessageList(widget.receiverID),
                       itemBuilder: (context, DataSnapshot snapshot,
@@ -68,7 +69,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           });
                           _isSubmit = false;
                         }
-
                         print(snapshot.value);
                         return ChatMessage(
                           message: Message(

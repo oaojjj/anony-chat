@@ -1,10 +1,8 @@
-import 'package:anony_chat/provider/member_auth_provider.dart';
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/ui/widget/home/home_drawer.dart';
 import 'package:anony_chat/utils/utill.dart';
-import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -23,7 +21,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Provider.of<MemberAuthProvider>(context, listen: false).checkAuthorization();
+    print(HiveController.instance.getFCMToken());
   }
 
   @override
@@ -48,18 +46,12 @@ class _MainPageState extends State<MainPage> {
                   children: [
                     Container(
                         height: 25, child: Image.asset(_messageCountIconPath)),
-                    FutureBuilder(
-                        future: MemberModel.getPossibleMessageOfSend(),
-                        builder: (_, snap) {
-                          if (!snap.hasData)
-                            return Container(
-                                width: 25,
-                                height: 25,
-                                child: CircularProgressIndicator());
-                          return Text('${snap.data}',
-                              style: TextStyle(
-                                  color: chatPrimaryColor, fontSize: 25));
-                        }),
+                    Text(
+                        HiveController.instance
+                            .getPossibleMessageOfSend()
+                            .toString(),
+                        style:
+                            TextStyle(color: chatPrimaryColor, fontSize: 25)),
                     SizedBox(width: 16),
                     Container(
                       width: 60,

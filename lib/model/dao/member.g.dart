@@ -9,6 +9,7 @@ part of 'member.dart';
 Member _$MemberFromJson(Map<String, dynamic> json) {
   return Member(
     id: json['id'] as int,
+    fcmToken: json['fcmToken'] as String,
     sex: json['sex'] as String,
     region: json['region'] as String,
     university: json['university'] as String,
@@ -25,6 +26,7 @@ Member _$MemberFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$MemberToJson(Member instance) => <String, dynamic>{
   'id': instance.id,
+  'fcmToken': instance.fcmToken,
   'sex': instance.sex,
   'region': instance.region,
   'university': instance.university,

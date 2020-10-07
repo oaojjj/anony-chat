@@ -1,3 +1,4 @@
+import 'package:anony_chat/ui/view/join/phone_certification_page.dart';
 import 'package:flutter/material.dart';
 
 import 'ui/view/chat/chat_list_page.dart';
@@ -12,13 +13,12 @@ import 'ui/view/home/drawer/profile_page.dart';
 import 'ui/view/home/drawer/report_guide_page.dart';
 import 'ui/view/home/drawer/report_page.dart';
 import 'ui/view/home/drawer/terms_of_service_page.dart';
-import 'ui/view/intro/intro_page.dart';
-import 'ui/view/intro/auth_and_register.dart';
-import 'ui/view/intro/terms_content_page.dart';
+import 'ui/view/join/intro_page.dart';
+import 'ui/view/join/terms_content_page.dart';
 
 final routes = {
   '/intro_page': (BuildContext context) => IntroPage(),
-  '/auth_and_register_page': (BuildContext context) => AuthAndRegisterPage(),
+  '/phone_certification_page': (BuildContext context) => PhoneCertification(),
   '/terms_content_page': (BuildContext context) => TermsContentPage(),
   '/main': (BuildContext context) => MainPage(),
   '/profile_page': (BuildContext context) => ProfilePage(),

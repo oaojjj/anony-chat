@@ -1,13 +1,11 @@
-import 'dart:io';
-
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/chat_model.dart';
-import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ChatSendPage extends StatefulWidget {
   @override
@@ -22,7 +20,8 @@ class _ChatSendPageState extends State<ChatSendPage> {
   final _messageController = TextEditingController();
 
   String _choiceIcon = 'messageIcon1.png';
-  ChatType _selectedSendType = ChatType.random;
+
+  int possibleMessageOfSend;
 
   final List<Widget> _icons = [];
   final List<String> _iconName = [
@@ -39,7 +38,8 @@ class _ChatSendPageState extends State<ChatSendPage> {
   @override
   void initState() {
     super.initState();
-    // initData();
+    // possibleMessageOfSend = HiveController.instance.getPossibleMessageOfSend();
+    possibleMessageOfSend = 1;
   }
 
   @override
@@ -98,18 +98,9 @@ class _ChatSendPageState extends State<ChatSendPage> {
                           height: 25,
                           child: Image.asset(_messageCountIconPath)),
                       SizedBox(width: 8),
-                      FutureBuilder(
-                        future: MemberModel.getPossibleMessageOfSend(),
-                        builder: (_, snap) {
-                          if (!snap.hasData)
-                            return Container(
-                                width: 25,
-                                height: 25,
-                                child: CircularProgressIndicator());
-                          return Text('${snap.data}',
-                              style: TextStyle(
-                                  color: chatPrimaryColor, fontSize: 25));
-                        },
+                      Text(
+                        possibleMessageOfSend.toString(),
+                        style: TextStyle(color: chatPrimaryColor, fontSize: 25),
                       ),
                     ],
                   ),
@@ -133,8 +124,20 @@ class _ChatSendPageState extends State<ChatSendPage> {
                   SizedBox(height: 24.0),
                   BottomButton(
                     text: '보내기',
-                    onPressed: () async {
-                      sendMessage();
+                    onPressed: () {
+                      if (possibleMessageOfSend <= 0) {
+                        Fluttertoast.showToast(
+                            msg: '보낼 수 있는 메시지가 없습니다.\n아이템을 구매해 주세요.',
+                            gravity: ToastGravity.BOTTOM,
+                            backgroundColor: Colors.black,
+                            toastLength: Toast.LENGTH_SHORT);
+                      } else {
+                        sendMessage();
+                        final test = ['1_2', '11_2', '131_3'];
+                        test.forEach((element) {
+                          print((element.split('_'))[1]);
+                        });
+                      }
                     },
                   ),
                 ],
@@ -147,17 +150,16 @@ class _ChatSendPageState extends State<ChatSendPage> {
   }
 
   sendMessage() {
+    // TODO 메시지 아이템 -1, 채팅방 만들기
     _chatModel.createChatRoom(
       chatRoom: ChatRoom(
         imageIcon: _choiceIcon,
-        type: _selectedSendType,
         message: Message(
           content: _messageController.text,
           time: DateTime.now().millisecondsSinceEpoch,
         ),
       ),
     );
-    Navigator.pop(context);
   }
 
   Future<void> _buildImageGridView() async {
@@ -216,10 +218,6 @@ class _ChatSendPageState extends State<ChatSendPage> {
         ),
       ),
     );
-  }
-
-  void _initData() {
-    _iconName.forEach((element) => _icons.add(_createIcon(element)));
   }
 
   _buildGridItem() {

@@ -3,8 +3,10 @@ import 'package:anony_chat/provider/member_auth_provider.dart';
 import 'package:hive/hive.dart';
 
 class HiveController {
-  // 가입할 때 프로필 저장
-  static saveProfileToLocal(Member member) async {
+  static HiveController get instance => HiveController();
+
+  // 가입할 때 유저정보 저장
+  saveMemberInfoToLocal(Member member) {
     final box = Hive.box('member');
 
     box.put('id', member.id);
@@ -16,26 +18,34 @@ class HiveController {
     box.put('studentID', member.studentID);
     box.put('phoneNumber', member.phoneNumber);
     box.put('authorization', member.authorization);
+    box.put('possibleMessageOfSend', member.possibleMessageOfSend);
     box.put('isNotMeetingSameUniversity', member.isNotMeetingSameUniversity);
     box.put('isNotMeetingSameMajor', member.isNotMeetingSameMajor);
   }
 
-  static void onRegisterCompleted() =>
+  onRegisterCompleted() =>
       Hive.box('auth').put('authStatus', AuthStatus.registered);
 
-  static void onRegisterSecession() =>
+  onRegisterSecession() =>
       Hive.box('auth').put('authStatus', AuthStatus.nonRegistered);
 
-  static AuthStatus getAuthStatus() =>
+  AuthStatus getAuthStatus() =>
       Hive.box('auth').get('authStatus') ?? AuthStatus.nonRegistered;
 
-  static int getMemberID() {
-    final box = Hive.box('member');
-    return box.get('id');
-  }
+  int getMemberID() => Hive.box('member').get('id');
+
+  String getFCMToken() => Hive.box('member').get('fcmToken') ?? null;
+
+  int getPossibleMessageOfSend() =>
+      Hive.box('member').get('possibleMessageOfSend') ?? 0;
+
+  setFCMToken(String val) => Hive.box('member').put('fcmToken', val);
+
+  setPossibleMessageOfSend(int n) =>
+      Hive.box('member').put('possibleMessageOfSend', n);
 
   // 프로필 가져오기
-  static Member loadProfileToLocal() {
+  Member loadProfileToLocal() {
     final box = Hive.box('member');
 
     return Member.fromJson({

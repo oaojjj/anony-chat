@@ -7,6 +7,7 @@ part 'member.g.dart';
 @JsonSerializable()
 class Member {
   int id;
+  String fcmToken;
   String sex;
   String region;
   String university;
@@ -18,23 +19,25 @@ class Member {
   String authorization;
   bool isNotMeetingSameUniversity;
   bool isNotMeetingSameMajor;
+
   // File studentCardImage;
 
-  Member(
-      {this.id,
-        this.sex = '남자',
-        this.region,
-        this.university,
-        this.major,
-        this.birthYear,
-        this.phoneNumber,
-        this.studentID,
-        this.possibleMessageOfSend = 5,
-        this.authorization = 'authorizationsWaiting',
-        this.isNotMeetingSameUniversity = false,
-        this.isNotMeetingSameMajor = false,
-        //this.studentCardImage
-      });
+  Member({
+    this.id,
+    this.fcmToken,
+    this.sex = '남자',
+    this.region,
+    this.university,
+    this.major,
+    this.birthYear,
+    this.phoneNumber,
+    this.studentID,
+    this.possibleMessageOfSend = 5,
+    this.authorization = 'authorizationsWaiting',
+    this.isNotMeetingSameUniversity = false,
+    this.isNotMeetingSameMajor = false,
+    //this.studentCardImage
+  });
 
   factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
 
@@ -42,24 +45,24 @@ class Member {
 
   @override
   String toString() {
-    return 'Member{sex: $sex, region: $region, university: $university, major: $major, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, isNotMeetingSameUniversity: $isNotMeetingSameUniversity, isNotMeetingSameMajor: $isNotMeetingSameMajor}';
+    return 'Member{id: $id, fcmToken: $fcmToken, sex: $sex, region: $region, university: $university, major: $major, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, possibleMessageOfSend: $possibleMessageOfSend, authorization: $authorization, isNotMeetingSameUniversity: $isNotMeetingSameUniversity, isNotMeetingSameMajor: $isNotMeetingSameMajor}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Member &&
-              runtimeType == other.runtimeType &&
-              id == other.id &&
-              sex == other.sex &&
-              region == other.region &&
-              university == other.university &&
-              major == other.major &&
-              birthYear == other.birthYear &&
-              phoneNumber == other.phoneNumber &&
-              studentID == other.studentID &&
-              isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
-              isNotMeetingSameMajor == other.isNotMeetingSameMajor;
+      other is Member &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          sex == other.sex &&
+          region == other.region &&
+          university == other.university &&
+          major == other.major &&
+          birthYear == other.birthYear &&
+          phoneNumber == other.phoneNumber &&
+          studentID == other.studentID &&
+          isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
+          isNotMeetingSameMajor == other.isNotMeetingSameMajor;
 
   @override
   int get hashCode =>

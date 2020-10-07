@@ -1,4 +1,4 @@
-import 'package:anony_chat/database/hive_controller.dart';
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ class _MessageState extends State<ChatMessage> {
   @override
   void initState() {
     super.initState();
-    isSendByMe = widget.message.senderID == HiveController.getMemberID();
+    isSendByMe = widget.message.senderID == HiveController.instance.getMemberID();
   }
 
   @override

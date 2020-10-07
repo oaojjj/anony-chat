@@ -10,7 +10,6 @@ ChatRoom _$ChatRoomFromJson(Map<String, dynamic> json) {
   return ChatRoom(
     imageIcon: json['imageIcon'] as String,
     withWho: json['withWho'] as int,
-    type: _$enumDecodeNullable(_$ChatTypeEnumMap, json['type']),
     message: json['message'] == null
         ? null
         : Message.fromJson(json['message'] as Map<String, dynamic>),
@@ -44,20 +43,3 @@ T _$enumDecode<T>(
   }
   return value ?? unknownValue;
 }
-
-T _$enumDecodeNullable<T>(
-    Map<T, dynamic> enumValues,
-    dynamic source, {
-      T unknownValue,
-    }) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
-}
-
-const _$ChatTypeEnumMap = {
-  ChatType.random: 'random',
-  ChatType.onlyMan: 'onlyMan',
-  ChatType.onlyWoman: 'onlyWoman',
-};

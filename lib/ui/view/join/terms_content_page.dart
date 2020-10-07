@@ -12,7 +12,7 @@ class _TermsContentPageState extends State<TermsContentPage> {
   Widget build(BuildContext context) {
     TermsData item = ModalRoute.of(context).settings.arguments;
 
-    final Size size = MediaQuery.of(context).size;
+    final Size deviceSize = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
@@ -20,6 +20,7 @@ class _TermsContentPageState extends State<TermsContentPage> {
         title: Text('이용약관', style: TextStyle(color: Colors.white)),
       ),
       body: Container(
+        height: deviceSize.height,
         color: Colors.black12,
         child: SingleChildScrollView(
           child: Column(
@@ -40,7 +41,7 @@ class _TermsContentPageState extends State<TermsContentPage> {
                 child: BottomButton(
                     onPressed: () => Navigator.pop(context, item), text: '동의'),
               ),
-              SizedBox(height: size.height * 0.05)
+              SizedBox(height: deviceSize.height * 0.05)
             ],
           ),
         ),

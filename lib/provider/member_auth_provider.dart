@@ -1,6 +1,5 @@
-import 'package:anony_chat/database/hive_controller.dart';
+import 'package:anony_chat/controller//hive_controller.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -52,7 +51,7 @@ class MemberAuthProvider extends ChangeNotifier {
 
   checkAuthorization() async {
     final stdCardAuth =
-        await MemberModel.getMemberAuthorization(HiveController.getMemberID());
+        await MemberModel.getMemberAuthorization(HiveController.instance.getMemberID());
     print('stdCardAuth: $stdCardAuth');
 
     switch (stdCardAuth) {
@@ -68,16 +67,6 @@ class MemberAuthProvider extends ChangeNotifier {
     }
   }
 
-  Stream<Event> getAuthorization(String uid) {
-    final authorization = FirebaseDatabase.instance
-        .reference()
-        .child(MemberModel.USERS_TABLE)
-        .child(uid)
-        .onValue;
-
-    return authorization;
-  }
-
   String authorizationStateString() {
     switch (_scaState) {
       case StdCardAuthState.authorizationsWaiting:
@@ -90,7 +79,7 @@ class MemberAuthProvider extends ChangeNotifier {
   }
 
   AuthStatus onStartUp() {
-    final status = HiveController.getAuthStatus();
+    final status = HiveController.instance.getAuthStatus();
 
     if (status == AuthStatus.registered) {}
     return status;
