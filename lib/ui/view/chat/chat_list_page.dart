@@ -36,22 +36,19 @@ class _ChatListPageState extends State<ChatListPage> {
               if (!snapshot.hasData || snapshot.hasError)
                 return Center(child: CircularProgressIndicator());
               else {
-                snapshot.data.docs.forEach((element) {
-                  print(element.data());
-                });
-                //mappingData(snapshot.data.docs);
+                mappingData(snapshot.data.docs);
                 return ListView.builder(
                   itemCount: _chatRooms.length,
                   itemBuilder: (_, index) => InkWell(
                       highlightColor: chatAccentColor,
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChatRoomPage(
-                                    senderID:
-                                        HiveController.instance.getMemberID(),
-                                    receiverID: receiverID[index])));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ChatRoomPage(senderID: 1, receiverID: 2),
+                          ),
+                        );
                       },
                       child: _chatRooms[index]),
                 );
@@ -66,14 +63,15 @@ class _ChatListPageState extends State<ChatListPage> {
   void mappingData(chatList) {
     if (chatList != null) {
       _chatRooms.clear();
-      chatList.forEach((key, value) {
-        print(value);
+
+      chatList.forEach((element) {
+        print(element['lastMessage']);
         final time =
-            DateTime.fromMillisecondsSinceEpoch(value['lastMessageTime']);
-        receiverID.add(value['withWho']);
+            DateTime.fromMillisecondsSinceEpoch(element['lastMessageTime']);
+        receiverID.add(element['withWho']);
         _chatRooms.add(ChatRoomPreview(
-          previewIcon: 'assets/icons/${value['imageIcon']}',
-          lastMessage: value['lastMessage'],
+          previewIcon: 'assets/icons/${element['imageIcon']}',
+          lastMessage: element['lastMessage'],
           timestamp: time.toString(),
         ));
       });

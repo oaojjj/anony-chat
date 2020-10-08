@@ -1,4 +1,4 @@
-import 'package:anony_chat/ui/view/join/phone_certification_page.dart';
+import 'package:anony_chat/ui/view/join/student_card_authorization_page.dart';
 import 'package:flutter/material.dart';
 
 import 'ui/view/chat/chat_list_page.dart';
@@ -18,9 +18,9 @@ import 'ui/view/join/terms_content_page.dart';
 
 final routes = {
   '/intro_page': (BuildContext context) => IntroPage(),
-  '/phone_certification_page': (BuildContext context) => PhoneCertification(),
   '/terms_content_page': (BuildContext context) => TermsContentPage(),
-  '/main': (BuildContext context) => MainPage(),
+  '/student_card_authorization_page': (BuildContext context) => SCAuthorizationPage(),
+  '/main_page': (BuildContext context) => MainPage(),
   '/profile_page': (BuildContext context) => ProfilePage(),
   '/service_info_page': (BuildContext context) => ServiceInfoPage(),
   '/terms_of_service_page': (BuildContext context) => TermsOfServicePage(),

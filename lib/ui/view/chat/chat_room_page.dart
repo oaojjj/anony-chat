@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:anony_chat/viewmodel/chat_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
@@ -20,10 +21,10 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   final ChatModel _chatModel = ChatModel();
-  final List<ChatMessage> _messages = [];
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
+  final List<ChatMessage> _messages = [];
 
   final chatAppBarName = '익명의 상대방';
   bool _isSubmit = true;
@@ -53,31 +54,36 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           child: Column(
             children: [
               Expanded(
-                  child: FirebaseAnimatedList(
-                      reverse: true,
-                      controller: _scrollController,
-                      query: _chatModel.getChatMessageList(widget.receiverID),
-                      itemBuilder: (context, DataSnapshot snapshot,
-                          Animation<double> animation, _) {
-                        if (_isSubmit) {
-                          SchedulerBinding.instance.addPostFrameCallback((_) {
-                            _scrollController.animateTo(
-                                _scrollController.position.maxScrollExtent +
-                                    100,
-                                duration: Duration(milliseconds: 100),
-                                curve: Curves.easeOut);
-                          });
-                          _isSubmit = false;
-                        }
-                        print(snapshot.value);
-                        return ChatMessage(
+                child: StreamBuilder(
+                  stream: _chatModel.getChatMessageList(widget.receiverID, 20),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      final List<QueryDocumentSnapshot> chatList =
+                          snapshot.data.documents;
+                      _messages.clear();
+                      chatList.forEach((element) {
+                        final value = element.data();
+                        print(value);
+                        _messages.add(ChatMessage(
                           message: Message(
-                              senderID: snapshot.value['senderID'],
-                              receiverID: snapshot.value['receiverID'],
-                              time: snapshot.value['time'],
-                              content: snapshot.value['content']),
-                        );
-                      })),
+                              content: value['content'],
+                              time: value['time'],
+                              isRead: value['isRead']),
+                        ));
+                      });
+                      return ListView.builder(
+                        padding: EdgeInsets.all(10.0),
+                        itemBuilder: (context, index) => _messages[index],
+                        itemCount: snapshot.data.documents.length,
+                        reverse: true,
+                        controller: _scrollController,
+                      );
+                    }
+                  },
+                ),
+              ),
               _buildTextComposer(),
             ],
           ),
@@ -136,16 +142,15 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
     final msg = Message(
         content: text,
+        type: 'text',
         time: DateTime.now().millisecondsSinceEpoch,
         receiverID: widget.receiverID,
         senderID: widget.senderID);
 
     _chatModel.sendMessage(message: msg);
     _focusNode.requestFocus();
-    _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent + 100,
-        duration: Duration(milliseconds: 100),
-        curve: Curves.easeOut);
+    _scrollController.animateTo(0.0,
+        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 
   Future<void> _showMyDialog() async {

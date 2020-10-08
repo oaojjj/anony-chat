@@ -16,27 +16,46 @@ class ChatModel {
   static const int RECEIVER_NUMBER = 1;
   static const String CHAT_ROOM_COLLECTION = 'chat_room';
   static const String CHAT_LIST_COLLECTION = 'chat_list';
+  static const String CHAT_MESSAGES = 'messages';
 
   Future<void> sendMessage({Message message}) async {
-    String receiverUid = await MemberModel.getMemberUid(message.receiverID);
+    final senderID = 1;
+    final receiverID = 2;
 
-    _db
-        .reference()
-        .child(CHAT_ROOM_COLLECTION)
-        .child(_mAuth.currentUser.uid)
-        .child('${message.senderID}_${message.receiverID}')
-        .update(message.toJson());
+    // 메세지 전송 추가
+    _fdb
+        .collection(CHAT_ROOM_COLLECTION)
+        .doc('${senderID}_$receiverID')
+        .collection(CHAT_MESSAGES)
+        .doc(message.time.toString())
+        .set(message.toJson());
 
-    _db
-        .reference()
-        .child(CHAT_ROOM_COLLECTION)
-        .child(receiverUid)
-        .child('${message.receiverID}_${message.senderID}')
-        .update(message.toJson());
+    _fdb
+        .collection(CHAT_ROOM_COLLECTION)
+        .doc('${receiverID}_$senderID')
+        .collection(CHAT_MESSAGES)
+        .doc(message.time.toString())
+        .set(message.toJson());
+
+    // 최근 메시지 업데이트
+    _fdb
+        .collection(MemberModel.USERS_COLLECTION)
+        .doc('$senderID')
+        .collection(CHAT_LIST_COLLECTION)
+        .doc('${senderID}_$receiverID')
+        .update(
+            {'lastMessage': message.content, 'lastMessageTime': message.time});
+
+    _fdb
+        .collection(MemberModel.USERS_COLLECTION)
+        .doc('$receiverID')
+        .collection(CHAT_LIST_COLLECTION)
+        .doc('${receiverID}_$senderID')
+        .update(
+            {'lastMessage': message.content, 'lastMessageTime': message.time});
   }
 
-  // 채팅방 만들기 Todo *매칭시스템의 기준이 명확하지 않아서 일단 생성하는거만
-  // TODO 랜덤으로 상대방을 찾을 때 이미 채팅이 생선된 방은 제외하는 로직 추가해야함
+  // TODO 매칭시스템 만들기
   createChatRoom({ChatRoom chatRoom}) async {
     // chatRoom.message.senderID = HiveController.instance.getMemberID();
 
@@ -56,6 +75,8 @@ class ChatModel {
     _fdb
         .collection(CHAT_ROOM_COLLECTION)
         .doc('${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
+        .collection(CHAT_MESSAGES)
+        .doc(chatRoom.message.time.toString())
         .set(chatRoom.message.toJson());
 
     chatRoom.withWho = chatRoom.message.senderID;
@@ -63,6 +84,8 @@ class ChatModel {
     _fdb
         .collection(CHAT_ROOM_COLLECTION)
         .doc('${chatRoom.message.receiverID}_${chatRoom.message.senderID}')
+        .collection(CHAT_MESSAGES)
+        .doc(chatRoom.message.time.toString())
         .set(chatRoom.message.toJson());
   }
 
@@ -86,19 +109,19 @@ class ChatModel {
     return _fdb
         .collection(MemberModel.USERS_COLLECTION)
         .doc('$id')
-        .collection(CHAT_ROOM_COLLECTION)
+        .collection(CHAT_LIST_COLLECTION)
         .snapshots();
   }
 
-  fd.Query getChatMessageList(int receiverID) {
-    final senderID = HiveController.instance.getMemberID();
+  getChatMessageList(int receiverID, int limit) {
+    final senderID = 1;
 
-    return _db
-        .reference()
-        .child(CHAT_ROOM_COLLECTION)
-        .child(_mAuth.currentUser.uid)
-        .child('${senderID}_$receiverID')
-        .orderByKey()
-        .limitToLast(10);
+    return _fdb
+        .collection(CHAT_ROOM_COLLECTION)
+        .doc('${senderID}_$receiverID')
+        .collection(CHAT_MESSAGES)
+        .orderBy('time', descending: true)
+        .limit(limit)
+        .snapshots();
   }
 }

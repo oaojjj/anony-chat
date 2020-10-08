@@ -14,6 +14,7 @@ class ChatSendPage extends StatefulWidget {
 
 class _ChatSendPageState extends State<ChatSendPage> {
   static const double DIALOG_CONTAINER_HEIGHT = 450;
+  final _focusNode = FocusNode();
   final String _messageCountIconPath = 'assets/icons/message_count.png';
 
   ChatModel _chatModel = ChatModel();
@@ -57,90 +58,95 @@ class _ChatSendPageState extends State<ChatSendPage> {
           iconTheme: IconThemeData(color: Colors.black),
           elevation: 0,
         ),
-        body: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(height: 40.0),
-                  Center(
-                    child: Container(
-                      width: 120,
-                      child: Stack(
-                        children: [
-                          Container(
-                              width: 120.0,
-                              height: 120.0,
-                              child: IconButton(
-                                  icon:
-                                      Image.asset('assets/icons/$_choiceIcon'),
-                                  onPressed: () => _buildImageGridView())),
-                          Positioned(
-                            top: 8,
-                            right: 4,
-                            child: CircleAvatar(
-                              backgroundColor: chatPrimaryColor,
-                              child: IconButton(
-                                  icon: Icon(Icons.autorenew,
-                                      color: Colors.white),
-                                  onPressed: () => _buildImageGridView()),
+        body: GestureDetector(
+          onTap: () => _focusNode.unfocus(),
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    SizedBox(height: 40.0),
+                    Center(
+                      child: Container(
+                        width: 120,
+                        child: Stack(
+                          children: [
+                            Container(
+                                width: 120.0,
+                                height: 120.0,
+                                child: IconButton(
+                                    icon: Image.asset(
+                                        'assets/icons/$_choiceIcon'),
+                                    onPressed: () => _buildImageGridView())),
+                            Positioned(
+                              top: 8,
+                              right: 4,
+                              child: CircleAvatar(
+                                backgroundColor: chatPrimaryColor,
+                                child: IconButton(
+                                    icon: Icon(Icons.autorenew,
+                                        color: Colors.white),
+                                    onPressed: () => _buildImageGridView()),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 40.0),
-                  Row(
-                    children: [
-                      Container(
-                          height: 25,
-                          child: Image.asset(_messageCountIconPath)),
-                      SizedBox(width: 8),
-                      Text(
-                        possibleMessageOfSend.toString(),
-                        style: TextStyle(color: chatPrimaryColor, fontSize: 25),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Container(
-                    color: Colors.white,
-                    height: 150,
-                    child: Card(
-                      elevation: 5,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: TextField(
-                            controller: _messageController,
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            decoration:
-                                InputDecoration.collapsed(hintText: '메시지 입력')),
+                    SizedBox(height: 40.0),
+                    Row(
+                      children: [
+                        Container(
+                            height: 25,
+                            child: Image.asset(_messageCountIconPath)),
+                        SizedBox(width: 8),
+                        Text(
+                          possibleMessageOfSend.toString(),
+                          style:
+                              TextStyle(color: chatPrimaryColor, fontSize: 25),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
+                    Container(
+                      color: Colors.white,
+                      height: 150,
+                      child: Card(
+                        elevation: 5,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: TextField(
+                              focusNode: _focusNode,
+                              controller: _messageController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: InputDecoration.collapsed(
+                                  hintText: '메시지 입력')),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 24.0),
-                  BottomButton(
-                    text: '보내기',
-                    onPressed: () {
-                      if (possibleMessageOfSend <= 0) {
-                        Fluttertoast.showToast(
-                            msg: '보낼 수 있는 메시지가 없습니다.\n아이템을 구매해 주세요.',
-                            gravity: ToastGravity.BOTTOM,
-                            backgroundColor: Colors.black,
-                            toastLength: Toast.LENGTH_SHORT);
-                      } else {
-                        sendMessage();
-                        final test = ['1_2', '11_2', '131_3'];
-                        test.forEach((element) {
-                          print((element.split('_'))[1]);
-                        });
-                      }
-                    },
-                  ),
-                ],
+                    SizedBox(height: 24.0),
+                    BottomButton(
+                      text: '보내기',
+                      onPressed: () {
+                        if (possibleMessageOfSend <= 0) {
+                          Fluttertoast.showToast(
+                              msg: '보낼 수 있는 메시지가 없습니다.\n아이템을 구매해 주세요.',
+                              gravity: ToastGravity.BOTTOM,
+                              backgroundColor: Colors.black,
+                              toastLength: Toast.LENGTH_SHORT);
+                        } else {
+                          sendMessage();
+                          final test = ['1_2', '11_2', '131_3'];
+                          test.forEach((element) {
+                            print((element.split('_'))[1]);
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

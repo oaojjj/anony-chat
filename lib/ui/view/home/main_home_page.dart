@@ -1,8 +1,10 @@
 import 'package:anony_chat/controller/hive_controller.dart';
+import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/home/home_drawer.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -22,6 +24,7 @@ class _MainPageState extends State<MainPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     print(HiveController.instance.getFCMToken());
+    print(Provider.of<RegisterProvider>(context).member.studentID);
   }
 
   @override

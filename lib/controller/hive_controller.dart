@@ -10,9 +10,9 @@ class HiveController {
     final box = Hive.box('member');
 
     box.put('id', member.id);
-    box.put('sex', member.sex);
+    box.put('gender', member.gender);
     box.put('birthYear', member.birthYear);
-    box.put('region', member.region);
+    box.put('city', member.city);
     box.put('university', member.university);
     box.put('major', member.major);
     box.put('studentID', member.studentID);
@@ -50,9 +50,9 @@ class HiveController {
 
     return Member.fromJson({
       'id': box.get('id') ?? -1,
-      'sex': box.get('sex') ?? "남자",
+      'gender': box.get('gender') ?? "남자",
       'birthYear': box.get('birthYear') ?? "",
-      'region': box.get('region') ?? "",
+      'city': box.get('city') ?? "",
       'university': box.get('university') ?? "",
       'major': box.get('major') ?? "",
       'studentID': box.get('studentID') ?? -1,

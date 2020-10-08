@@ -1,28 +1,88 @@
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/all.dart';
 
 enum RegisterState { canNotRegister, canRegister }
 
 class RegisterProvider extends ChangeNotifier {
-  Member member = Member();
+  Member _member = Member();
 
-  // 최종 회원가입 상태
-  bool canRegister = false;
+  bool _isCanRegister = false;
 
-  void onCanRegister() {
-    canRegister = true;
+  bool get isCanRegister => _isCanRegister;
+
+  Member get member => _member; // 최종 회원가입 상태
+
+  checkCanRegister() {
+    if (member.university != null &&
+        member.major != null &&
+        member.studentID != null &&
+        member.studentID.toString().length >= 7 &&
+        member.city != null &&
+        member.city != '선택') {
+      canRegister();
+    } else {
+      cantRegister();
+    }
+    print(_isCanRegister);
+  }
+
+  canRegister() {
+    _isCanRegister = true;
     notifyListeners();
   }
 
-  void onCantRegister() {
-    canRegister = false;
+  cantRegister() {
+    _isCanRegister = false;
     notifyListeners();
   }
 
-  void reset() {
+  reset() {
     print('register provider reset');
-    canRegister = false;
-    member = Member();
+    _isCanRegister = false;
+    _member = Member();
+    notifyListeners();
+  }
+
+  setMemberInfoWithKakao(Account kakaoAccount) {
+    _member.gender = kakaoAccount.gender == Gender.MALE ? '남자' : '여자';
+    _member.birthYear = kakaoAccount.birthyear;
+    _member.phoneNumber = kakaoAccount.phoneNumber;
+  }
+
+  onCheckShowMyInfo() {
+    member.isShowMyInfo = !member.isShowMyInfo;
+    notifyListeners();
+  }
+
+  onCheckNotMeetingSameMajor() {
+    member.isNotMeetingSameMajor = !member.isNotMeetingSameMajor;
+    notifyListeners();
+  }
+
+  onCheckNotMeetingSameUniversity() {
+    member.isNotMeetingSameUniversity = !member.isNotMeetingSameUniversity;
+    notifyListeners();
+  }
+
+  setStudentID(int id) {
+    _member.studentID = id;
+  }
+
+  setUniversityInfo(String data, String type) {
+    if (type == '학교')
+      _member.university = data;
+    else
+      _member.major = data;
+  }
+
+  setCity(String data) {
+    _member.city = data;
+    notifyListeners();
+  }
+
+  setFCMToken(String fcmToken) {
+    _member.fcmToken = fcmToken;
+    notifyListeners();
   }
 }

@@ -24,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Member _fixProfile;
 
   // true#남성 false#여성
-  bool sexBtnColor = true;
+  bool genderBtnColor = true;
   bool loading = true;
 
   // test data
@@ -35,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
       return (i + 1970).toString();
   });
 
-  List<String> _itemsRegion = [
+  List<String> _cityList = [
     '선택',
     '서울',
     '부산',
@@ -150,10 +150,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: TextStyle(
                                   fontSize: 20.0, color: Colors.white)),
                           onPressed: () {
-                            member.sex = '남자';
-                            setState(() => sexBtnColor = true);
+                            member.gender = '남자';
+                            setState(() => genderBtnColor = true);
                           },
-                          color: sexBtnColor ? chatPrimaryColor : Colors.grey,
+                          color: genderBtnColor ? chatPrimaryColor : Colors.grey,
                         ),
                       ),
                       SizedBox(width: 8),
@@ -165,10 +165,10 @@ class _ProfilePageState extends State<ProfilePage> {
                               style: TextStyle(
                                   fontSize: 20.0, color: Colors.white)),
                           onPressed: () {
-                            member.sex = '여자';
-                            setState(() => sexBtnColor = false);
+                            member.gender = '여자';
+                            setState(() => genderBtnColor = false);
                           },
-                          color: !sexBtnColor ? chatPrimaryColor : Colors.grey,
+                          color: !genderBtnColor ? chatPrimaryColor : Colors.grey,
                         ),
                       ),
                     ],
@@ -226,7 +226,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         fit: FlexFit.tight,
                         child: GestureDetector(
                           onTap: () {
-                            showPicker(context, _itemsRegion);
+                            showPicker(context, _cityList);
                           },
                           child: Container(
                             height: 40,
@@ -240,9 +240,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: Padding(
                                         padding:
                                             const EdgeInsets.only(left: 8.0),
-                                        child: Text(member.region == null
+                                        child: Text(member.city == null
                                             ? "선택"
-                                            : member.region),
+                                            : member.city),
                                       )),
                                   Flexible(
                                       fit: FlexFit.tight,
@@ -453,7 +453,7 @@ class _ProfilePageState extends State<ProfilePage> {
   _fetchData() {
     _member = HiveController.instance.loadProfileToLocal();
     _fixProfile = Member.fromJson(_member.toJson());
-    sexBtnColor = _member.sex == '남자';
+    genderBtnColor = _member.gender == '남자';
     setState(() => loading = false);
   }
 
@@ -486,8 +486,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       item == _itemsBirth
                           ? _fixProfile.birthYear = item[index] == '선택'
                               ? null
-                              : int.parse(item[index])
-                          : _fixProfile.region = item[index];
+                              : item[index]
+                          : _fixProfile.city = item[index];
                     });
                   },
                   itemBuilder: (_, index) => Center(
@@ -505,6 +505,6 @@ class _ProfilePageState extends State<ProfilePage> {
     if (item == _itemsBirth)
       return item.indexOf('${_fixProfile.birthYear}');
     else
-      return item.indexOf('${_fixProfile.region}');
+      return item.indexOf('${_fixProfile.city}');
   }
 }

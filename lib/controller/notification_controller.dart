@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 
 class NotificationController {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();

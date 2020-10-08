@@ -16,6 +16,7 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   bool _isKakaoTalkInstalled = false;
+  bool loading = false;
 
   @override
   void initState() {
@@ -97,8 +98,8 @@ class _IntroPageState extends State<IntroPage> {
               ),
               FlatButton(
                 child: Text('지름길'),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed('/phone_certification_page'),
+                onPressed: () => Navigator.pushNamed(
+                    context, '/student_card_authorization_page'),
               ),
               SizedBox(height: deviceSize.height * 0.25)
             ],
@@ -164,10 +165,8 @@ class _IntroPageState extends State<IntroPage> {
                             fontWeight: FontWeight.bold),
                       ),
                       onPressed: () async {
-                        if (_isKakaoTalkInstalled) {
-                          await login();
-                          Navigator.pop(context);
-                        } else {
+                        if (_isKakaoTalkInstalled) login();
+                        else {
                           Fluttertoast.showToast(
                               msg: '카카오톡을 설치하고 다시 시도해주세요.',
                               gravity: ToastGravity.BOTTOM,
@@ -176,6 +175,7 @@ class _IntroPageState extends State<IntroPage> {
                           Timer(Duration(milliseconds: 500),
                               () => _launchURLKakao());
                         }
+                        Navigator.pop(context);
                       },
                     ),
                   ],
@@ -203,9 +203,8 @@ class _IntroPageState extends State<IntroPage> {
       final token = await AuthApi.instance.issueAccessToken(code);
       await AccessTokenStore.instance.toStore(token);
       User user = await UserApi.instance.me();
-      print('gender:${user.kakaoAccount.gender}');
-      print('ageRange:${user.kakaoAccount.ageRange}');
-      print('카톡 ${user.id}');
+      print(user.kakaoAccount.toString());
+
       // 카카오 로그인 성공
       if (user.id != null) {
         // 사용자의 나이가 20대가 아니면 가입불가
@@ -213,7 +212,10 @@ class _IntroPageState extends State<IntroPage> {
           cantRegisterDialog();
         else {
           // 가입가능
+          print('제발좀 되라..');
           final rp = Provider.of<RegisterProvider>(context, listen: false);
+          rp.setMemberInfoWithKakao(user.kakaoAccount);
+          Navigator.pushNamed(context, '/student_card_authorization_page');
         }
       } else {
         // 실패
@@ -266,7 +268,7 @@ class _IntroPageState extends State<IntroPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    '어플의 특성상 20대만 이용할 수 있습니다.:-)\n회원님의 가입은 불가능합니다.',
+                    '어플의 특성상 20대만 이용할 수 있습니다. :-)\n회원님의 가입은 불가능합니다.',
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: 40),

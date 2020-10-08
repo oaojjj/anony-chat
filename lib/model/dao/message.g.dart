@@ -11,16 +11,16 @@ Message _$MessageFromJson(Map<String, dynamic> json) {
     senderID: json['senderID'] as int,
     receiverID: json['receiverID'] as int,
     content: json['content'] as String,
+    type: json['type'] as String,
     time: json['time'] as int,
   )..isRead = json['isRead'] as bool;
 }
 
 Map<String, dynamic> _$MessageToJson(Message instance) => <String, dynamic>{
-  '${instance.time}': {
     'senderID': instance.senderID,
     'receiverID': instance.receiverID,
     'time': instance.time,
     'content': instance.content,
+    'type': instance.type,
     'isRead': instance.isRead,
-  }
 };
