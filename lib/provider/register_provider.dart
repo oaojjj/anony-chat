@@ -41,7 +41,6 @@ class RegisterProvider extends ChangeNotifier {
     print('register provider reset');
     _isCanRegister = false;
     _member = Member();
-    notifyListeners();
   }
 
   setMemberInfoWithKakao(Account kakaoAccount) {
@@ -55,13 +54,13 @@ class RegisterProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  onCheckNotMeetingSameMajor() {
-    member.isNotMeetingSameMajor = !member.isNotMeetingSameMajor;
+  onCheckNotMatchingSameMajor() {
+    member.isNotMatchingSameMajor = !member.isNotMatchingSameMajor;
     notifyListeners();
   }
 
-  onCheckNotMeetingSameUniversity() {
-    member.isNotMeetingSameUniversity = !member.isNotMeetingSameUniversity;
+  onCheckNotMatchingSameUniversity() {
+    member.isNotMatchingSameUniversity = !member.isNotMatchingSameUniversity;
     notifyListeners();
   }
 
@@ -78,11 +77,13 @@ class RegisterProvider extends ChangeNotifier {
 
   setCity(String data) {
     _member.city = data;
-    notifyListeners();
   }
 
   setFCMToken(String fcmToken) {
     _member.fcmToken = fcmToken;
-    notifyListeners();
+  }
+
+  setStudentCardImagePath(String path) {
+    _member.studentCardImagePath = path;
   }
 }

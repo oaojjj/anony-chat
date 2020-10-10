@@ -3,8 +3,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'chat_room.g.dart';
 
-// 일단 보류
-// 무조건 랜덤으로 보냄
 @JsonSerializable()
 class ChatRoom {
   String imageIcon;

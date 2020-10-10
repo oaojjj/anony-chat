@@ -50,8 +50,7 @@ class MemberAuthProvider extends ChangeNotifier {
   }
 
   checkAuthorization() async {
-    final stdCardAuth =
-        await MemberModel.getMemberAuthorization(HiveController.instance.getMemberID());
+    final stdCardAuth = 'authorizations';
     print('stdCardAuth: $stdCardAuth');
 
     switch (stdCardAuth) {

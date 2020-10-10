@@ -17,6 +17,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   static const double CARD_SIZED_BOX_HEIGHT = 4;
+  static const double HORIZONTAL_PADDING = 16;
 
   final String _profileIconPath = 'assets/icons/profile2.png';
   MemberModel _memberModel = MemberModel();
@@ -24,16 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Member _fixProfile;
 
   // true#남성 false#여성
-  bool genderBtnColor = true;
   bool loading = true;
-
-  // test data
-  List<String> _itemsBirth = List<String>.generate(30, (i) {
-    if (i == 0)
-      return '선택';
-    else
-      return (i + 1970).toString();
-  });
 
   List<String> _cityList = [
     '선택',
@@ -57,6 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
   ];
 
   bool _isFix = false;
+  String _selectedCity;
 
   @override
   void initState() {
@@ -87,185 +80,146 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _profileForm(Member member) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 4),
-            child: Container(
-                width: 30, height: 30, child: Image.asset('$_profileIconPath')),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 16, bottom: 2),
+          child: Container(
+              width: 30, height: 30, child: Image.asset('$_profileIconPath')),
+        ),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Text('회원번호 ${member.id}',
+                style: TextStyle(color: Colors.white, fontSize: 13)),
           ),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Text('회원번호 ${member.id}',
-                  style: TextStyle(color: Colors.white, fontSize: 13)),
-            ),
-          ),
-          SizedBox(height: CARD_SIZED_BOX_HEIGHT),
-          Card(
+        ),
+        SizedBox(height: CARD_SIZED_BOX_HEIGHT),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
+          child: Card(
             elevation: 3,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('전화번호'),
-                Text(member.phoneNumber),
-                ButtonTheme(
-                    height: 30,
-                    minWidth: 70,
-                    buttonColor: Colors.black,
-                    child: RaisedButton(
+                Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: Center(child: Text('전화번호'))),
+                Flexible(
+                    fit: FlexFit.tight,
+                    flex: 2,
+                    child: Center(child: Text(member.phoneNumber))),
+                Flexible(
+                  fit: FlexFit.loose,
+                  flex: 1,
+                  child: Center(
+                    child: ButtonTheme(
+                      height: 30,
+                      minWidth: 60,
+                      buttonColor: Colors.black,
+                      child: RaisedButton(
                         child:
                             Text('변경', style: TextStyle(color: Colors.white)),
                         onPressed: () {
-                          //TODO 프로필 폰번호 변경 작성
-                        }))
+                          //TODO 휴대폰 번호 변경
+                        },
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          SizedBox(height: CARD_SIZED_BOX_HEIGHT),
-          Card(
+        ),
+        SizedBox(height: CARD_SIZED_BOX_HEIGHT),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
+          child: Card(
             elevation: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Align(
-                    child: Text('성별', style: TextStyle(fontSize: 16)),
-                    alignment: Alignment.centerLeft,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Flexible(
-                        flex: 1,
-                        fit: FlexFit.tight,
-                        child: RaisedButton(
-                          child: Text('남자',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white)),
-                          onPressed: () {
-                            member.gender = '남자';
-                            setState(() => genderBtnColor = true);
-                          },
-                          color: genderBtnColor ? chatPrimaryColor : Colors.grey,
-                        ),
+            child: Row(
+              children: [
+                Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: Center(child: Text('내지역'))),
+                Flexible(
+                    fit: FlexFit.tight,
+                    flex: 2,
+                    child: Center(child: Text(member.city))),
+                Flexible(
+                  fit: FlexFit.loose,
+                  flex: 1,
+                  child: Center(
+                    child: ButtonTheme(
+                      height: 30,
+                      minWidth: 60,
+                      buttonColor: Colors.black,
+                      child: RaisedButton(
+                        child:
+                            Text('변경', style: TextStyle(color: Colors.white)),
+                        onPressed: () => showPicker(context),
                       ),
-                      SizedBox(width: 8),
-                      Flexible(
-                        flex: 1,
-                        fit: FlexFit.tight,
-                        child: RaisedButton(
-                          child: Text('여자',
-                              style: TextStyle(
-                                  fontSize: 20.0, color: Colors.white)),
-                          onPressed: () {
-                            member.gender = '여자';
-                            setState(() => genderBtnColor = false);
-                          },
-                          color: !genderBtnColor ? chatPrimaryColor : Colors.grey,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                  SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Flexible(
-                          flex: 1,
-                          fit: FlexFit.tight,
-                          child:
-                              Text('태어난 해', style: TextStyle(fontSize: 16.0))),
-                      Flexible(
-                        flex: 2,
-                        fit: FlexFit.tight,
-                        child: GestureDetector(
-                          onTap: () => showPicker(context, _itemsBirth),
-                          child: Container(
-                            height: 40,
-                            child: Card(
-                              elevation: 3,
-                              child: Row(
-                                children: [
-                                  Flexible(
-                                      fit: FlexFit.tight,
-                                      flex: 3,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: Text(member.birthYear == null
-                                            ? "선택"
-                                            : member.birthYear.toString()),
-                                      )),
-                                  Flexible(
-                                      fit: FlexFit.tight,
-                                      flex: 1,
-                                      child: Icon(Icons.arrow_drop_down))
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Flexible(
-                          flex: 1,
-                          fit: FlexFit.tight,
-                          child: Text('지역', style: TextStyle(fontSize: 16.0))),
-                      Flexible(
-                        flex: 2,
-                        fit: FlexFit.tight,
-                        child: GestureDetector(
-                          onTap: () {
-                            showPicker(context, _cityList);
-                          },
-                          child: Container(
-                            height: 40,
-                            child: Card(
-                              elevation: 3,
-                              child: Row(
-                                children: [
-                                  Flexible(
-                                      fit: FlexFit.tight,
-                                      flex: 3,
-                                      child: Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: Text(member.city == null
-                                            ? "선택"
-                                            : member.city),
-                                      )),
-                                  Flexible(
-                                      fit: FlexFit.tight,
-                                      flex: 1,
-                                      child: Icon(Icons.arrow_drop_down))
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          SizedBox(height: CARD_SIZED_BOX_HEIGHT),
-          Consumer<MemberAuthProvider>(
+        ),
+        SizedBox(height: CARD_SIZED_BOX_HEIGHT),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
+          child: Card(
+            elevation: 3,
+            child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                            fit: FlexFit.tight,
+                            flex: 1,
+                            child: Center(child: Text('성별'))),
+                        Flexible(
+                            fit: FlexFit.tight,
+                            flex: 2,
+                            child: Center(child: Text(member.gender))),
+                        Flexible(
+                            fit: FlexFit.tight, flex: 1, child: Container())
+                      ],
+                    ),
+                    SizedBox(height: 8.0),
+                    Row(
+                      children: [
+                        Flexible(
+                            fit: FlexFit.tight,
+                            flex: 1,
+                            child: Center(child: Text('나이'))),
+                        Flexible(
+                            fit: FlexFit.tight,
+                            flex: 2,
+                            child: Center(child: Text(member.birthYear))),
+                        Flexible(
+                            fit: FlexFit.tight, flex: 1, child: Container())
+                      ],
+                    )
+                  ],
+                )),
+          ),
+        ),
+        SizedBox(height: CARD_SIZED_BOX_HEIGHT),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
+          child: Consumer<MemberAuthProvider>(
             builder: (_, sca, __) => Card(
               elevation: 3,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Column(
                   children: [
                     Row(
@@ -292,8 +246,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         Flexible(
                           fit: FlexFit.tight,
-                          flex: 2,
-                          child: Text(sca.authorizationStateString()),
+                          flex: 1,
+                          child: Center(
+                              child: Text(sca.authorizationStateString())),
                         )
                       ],
                     ),
@@ -321,7 +276,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Flexible(
-                            fit: FlexFit.tight, flex: 2, child: Container()),
+                            fit: FlexFit.tight, flex: 1, child: Container()),
                       ],
                     ),
                     SizedBox(height: 8),
@@ -344,7 +299,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                         Flexible(
-                            fit: FlexFit.tight, flex: 2, child: Container()),
+                            fit: FlexFit.tight, flex: 1, child: Container()),
                       ],
                     )
                   ],
@@ -352,76 +307,148 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.only(left: 4.0),
-            child: Column(
-              children: [
-                Row(
+        ),
+        SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.only(left: 4.0),
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 20.0, top: 4.0, bottom: 4.0),
+                child: Row(
                   children: [
-                    Flexible(
-                        flex: 2,
-                        fit: FlexFit.tight,
-                        child: Text('같은 학교 학생 안만나기',
-                            style: TextStyle(
-                                fontSize: 15.0,
-                                color: member.isNotMeetingSameUniversity
-                                    ? chatPrimaryColor
-                                    : null))),
-                    Flexible(
-                      flex: 1,
-                      fit: FlexFit.loose,
-                      child: Container(
-                        height: 30,
-                        child: Switch(
-                          activeColor: chatPrimaryColor,
-                          value: member.isNotMeetingSameUniversity,
-                          onChanged: (value) => setState(
-                              () => member.isNotMeetingSameUniversity = value),
-                        ),
+                    InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () => setState(
+                          () => member.isShowMyInfo = !member.isShowMyInfo),
+                      child: Row(
+                        children: [
+                          Icon(Icons.check,
+                              color: member.isShowMyInfo
+                                  ? chatPrimaryColor
+                                  : Colors.grey),
+                          SizedBox(
+                            width: 24,
+                          ),
+                          Text('회원정보 공개',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: member.isShowMyInfo
+                                      ? chatPrimaryColor
+                                      : Colors.black))
+                        ],
                       ),
-                    ),
-                    Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
+                    )
                   ],
                 ),
-                Row(
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Flexible(
-                        flex: 2,
-                        fit: FlexFit.tight,
-                        child: Text('같은 학과 학생 안만나기',
-                            style: TextStyle(
-                                fontSize: 15.0,
-                                color: member.isNotMeetingSameMajor
-                                    ? chatPrimaryColor
-                                    : null))),
-                    Flexible(
-                      flex: 1,
-                      fit: FlexFit.loose,
-                      child: Container(
-                        height: 30,
-                        child: Switch(
-                          activeColor: chatPrimaryColor,
-                          value: member.isNotMeetingSameMajor,
-                          onChanged: (value) => setState(
-                              () => member.isNotMeetingSameMajor = value),
-                        ),
+                    Icon(
+                      Icons.error,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        '회원님과 상대방 모두 공개일때만 회원정보가 공개됩니다',
+                        style: TextStyle(fontSize: 12, color: Colors.grey),
+                        overflow: TextOverflow.visible,
                       ),
                     ),
-                    Flexible(flex: 1, fit: FlexFit.tight, child: Container()),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Divider(thickness: 0.5, color: Colors.grey),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 20.0, top: 4.0, bottom: 4.0),
+                child: Row(
+                  children: [
+                    InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () => setState(() =>
+                          member.isNotMatchingSameUniversity =
+                              !member.isNotMatchingSameUniversity),
+                      child: Row(
+                        children: [
+                          Icon(Icons.check,
+                              color: member.isNotMatchingSameUniversity
+                                  ? chatPrimaryColor
+                                  : Colors.grey),
+                          SizedBox(
+                            width: 24,
+                          ),
+                          Text(
+                            '같은 학교 학생 안만나기',
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: member.isNotMatchingSameUniversity
+                                    ? chatPrimaryColor
+                                    : Colors.black),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 20.0, top: 4.0, bottom: 4.0),
+                child: Row(
+                  children: [
+                    InkWell(
+                      highlightColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      onTap: () => setState(() =>
+                          member.isNotMatchingSameMajor =
+                              !member.isNotMatchingSameMajor),
+                      child: Row(
+                        children: [
+                          Icon(Icons.check,
+                              color: member.isNotMatchingSameMajor
+                                  ? chatPrimaryColor
+                                  : Colors.grey),
+                          SizedBox(
+                            width: 24,
+                          ),
+                          Text(
+                            '같은 학교의 같은 학과 학생 안만나기',
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: member.isNotMatchingSameMajor
+                                    ? chatPrimaryColor
+                                    : Colors.black),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 24.0),
-          BottomButton(
-            text: '수정',
-            onPressed: _isFix ? () async => await updateProfile() : null,
-          ),
-          SizedBox(height: 16.0),
-        ],
-      ),
+        ),
+        SizedBox(height: 16.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
+          child: BottomButton(
+              text: '수정',
+              onPressed: _isFix ? () async => await updateProfile() : null),
+        ),
+        SizedBox(height: 16.0),
+      ],
     );
   }
 
@@ -453,14 +480,11 @@ class _ProfilePageState extends State<ProfilePage> {
   _fetchData() {
     _member = HiveController.instance.loadProfileToLocal();
     _fixProfile = Member.fromJson(_member.toJson());
-    genderBtnColor = _member.gender == '남자';
+    _selectedCity = _fixProfile.city;
     setState(() => loading = false);
   }
 
-  showPicker(
-    context,
-    List<String> item,
-  ) {
+  showPicker(context) {
     return showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) {
@@ -469,29 +493,24 @@ class _ProfilePageState extends State<ProfilePage> {
             color: Colors.white,
             child: GestureDetector(
               onTap: () {
+                setState(() => _fixProfile.city = _selectedCity);
                 Navigator.pop(context);
               },
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 child: CupertinoPicker.builder(
                   scrollController: FixedExtentScrollController(
-                      initialItem: getInitialItemIndex(item)),
+                      initialItem: _cityList.indexOf('${_fixProfile.city}')),
                   itemExtent: 50,
-                  childCount: item.length,
+                  childCount: _cityList.length,
                   diameterRatio: 10,
                   squeeze: 1,
                   backgroundColor: Colors.grey[100],
                   onSelectedItemChanged: (index) {
-                    setState(() {
-                      item == _itemsBirth
-                          ? _fixProfile.birthYear = item[index] == '선택'
-                              ? null
-                              : item[index]
-                          : _fixProfile.city = item[index];
-                    });
+                    setState(() => _selectedCity = _cityList[index]);
                   },
                   itemBuilder: (_, index) => Center(
-                    child: Text(item[index],
+                    child: Text(_cityList[index],
                         style: TextStyle(color: Colors.black)),
                   ),
                 ),
@@ -499,12 +518,5 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           );
         });
-  }
-
-  int getInitialItemIndex(List<String> item) {
-    if (item == _itemsBirth)
-      return item.indexOf('${_fixProfile.birthYear}');
-    else
-      return item.indexOf('${_fixProfile.city}');
   }
 }

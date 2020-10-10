@@ -16,30 +16,26 @@ class Member {
   String phoneNumber;
   int studentID;
   int possibleMessageOfSend;
-  String authorization;
   bool isShowMyInfo;
-  bool isNotMeetingSameUniversity;
-  bool isNotMeetingSameMajor;
+  bool isNotMatchingSameUniversity;
+  bool isNotMatchingSameMajor;
+  String studentCardImagePath;
 
-  // File studentCardImage;
-
-  Member({
-    this.id,
-    this.fcmToken,
-    this.gender = '남자',
-    this.city,
-    this.university,
-    this.major,
-    this.birthYear,
-    this.phoneNumber,
-    this.studentID,
-    this.possibleMessageOfSend = 2,
-    this.authorization = 'authorizationsWaiting',
-    this.isShowMyInfo = false,
-    this.isNotMeetingSameUniversity = false,
-    this.isNotMeetingSameMajor = false,
-    //this.studentCardImage
-  });
+  Member(
+      {this.id,
+      this.fcmToken,
+      this.gender = '남자',
+      this.city,
+      this.university,
+      this.major,
+      this.birthYear,
+      this.phoneNumber,
+      this.studentID,
+      this.possibleMessageOfSend = 2,
+      this.isShowMyInfo = false,
+      this.isNotMatchingSameUniversity = false,
+      this.isNotMatchingSameMajor = false,
+      this.studentCardImagePath});
 
   factory Member.fromJson(Map<String, dynamic> json) => _$MemberFromJson(json);
 
@@ -47,7 +43,7 @@ class Member {
 
   @override
   String toString() {
-    return 'Member{id: $id, fcmToken: $fcmToken, gender: $gender, city: $city, university: $university, major: $major, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, possibleMessageOfSend: $possibleMessageOfSend, authorization: $authorization, isShowMyInfo: $isShowMyInfo, isNotMeetingSameUniversity: $isNotMeetingSameUniversity, isNotMeetingSameMajor: $isNotMeetingSameMajor}';
+    return 'Member{id: $id, fcmToken: $fcmToken, gender: $gender, city: $city, university: $university, major: $major, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, possibleMessageOfSend: $possibleMessageOfSend, isShowMyInfo: $isShowMyInfo, isNotMatchingSameUniversity: $isNotMatchingSameUniversity, isNotMatchingSameMajor: $isNotMatchingSameMajor, studentCardImagePath: $studentCardImagePath}';
   }
 
   @override
@@ -65,10 +61,10 @@ class Member {
           phoneNumber == other.phoneNumber &&
           studentID == other.studentID &&
           possibleMessageOfSend == other.possibleMessageOfSend &&
-          authorization == other.authorization &&
           isShowMyInfo == other.isShowMyInfo &&
-          isNotMeetingSameUniversity == other.isNotMeetingSameUniversity &&
-          isNotMeetingSameMajor == other.isNotMeetingSameMajor;
+          isNotMatchingSameUniversity == other.isNotMatchingSameUniversity &&
+          isNotMatchingSameMajor == other.isNotMatchingSameMajor &&
+          studentCardImagePath == other.studentCardImagePath;
 
   @override
   int get hashCode =>
@@ -82,8 +78,8 @@ class Member {
       phoneNumber.hashCode ^
       studentID.hashCode ^
       possibleMessageOfSend.hashCode ^
-      authorization.hashCode ^
       isShowMyInfo.hashCode ^
-      isNotMeetingSameUniversity.hashCode ^
-      isNotMeetingSameMajor.hashCode;
+      isNotMatchingSameUniversity.hashCode ^
+      isNotMatchingSameMajor.hashCode ^
+      studentCardImagePath.hashCode;
 }

@@ -19,7 +19,8 @@ class _MessageState extends State<ChatMessage> {
   @override
   void initState() {
     super.initState();
-    isSendByMe = widget.message.senderID == HiveController.instance.getMemberID();
+    isSendByMe =
+        widget.message.senderID == HiveController.instance.getMemberID();
   }
 
   @override
@@ -65,9 +66,9 @@ class _MessageState extends State<ChatMessage> {
                   child: Text(formatTime(widget.message.time),
                       style: TextStyle(fontSize: 12.0, color: Colors.black)),
                 ),
-                isSendByMe
+                !isSendByMe
                     ? Container()
-                    : Text(isSendByMe ? (widget.message.isRead ? '읽음' : '안읽음') : '',
+                    : Text(widget.message.isRead ? '읽음' : '안읽음',
                         style: TextStyle(fontSize: 12.0)),
               ],
             ),

@@ -11,16 +11,17 @@ class HiveController {
 
     box.put('id', member.id);
     box.put('gender', member.gender);
+    box.put('fcmToken', member.fcmToken);
     box.put('birthYear', member.birthYear);
     box.put('city', member.city);
     box.put('university', member.university);
     box.put('major', member.major);
     box.put('studentID', member.studentID);
     box.put('phoneNumber', member.phoneNumber);
-    box.put('authorization', member.authorization);
     box.put('possibleMessageOfSend', member.possibleMessageOfSend);
-    box.put('isNotMeetingSameUniversity', member.isNotMeetingSameUniversity);
-    box.put('isNotMeetingSameMajor', member.isNotMeetingSameMajor);
+    box.put('isShowMyInfo', member.isShowMyInfo);
+    box.put('isNotMatchingSameUniversity', member.isNotMatchingSameUniversity);
+    box.put('isNotMatchingSameMajor', member.isNotMatchingSameMajor);
   }
 
   onRegisterCompleted() =>
@@ -50,17 +51,19 @@ class HiveController {
 
     return Member.fromJson({
       'id': box.get('id') ?? -1,
-      'gender': box.get('gender') ?? "남자",
-      'birthYear': box.get('birthYear') ?? "",
-      'city': box.get('city') ?? "",
-      'university': box.get('university') ?? "",
-      'major': box.get('major') ?? "",
+      'fcmToken': box.get('fcmToken') ?? "error",
+      'gender': box.get('gender') ?? "error",
+      'birthYear': box.get('birthYear') ?? "error",
+      'city': box.get('city') ?? "error",
+      'university': box.get('university') ?? "error",
+      'major': box.get('major') ?? "error",
       'studentID': box.get('studentID') ?? -1,
-      'phoneNumber': box.get('phoneNumber') ?? -1,
-      'authorization': box.get('authorization') ?? "authorizationsWaiting",
-      'isNotMeetingSameUniversity':
-          box.get('isNotMeetingSameUniversity') ?? false,
-      'isNotMeetingSameMajor': box.get('isNotMeetingSameMajor') ?? false,
+      'phoneNumber': box.get('phoneNumber') ?? "-1",
+      'possibleMessageOfSend': box.get('possibleMessageOfSend') ?? -1,
+      'isShowMyInfo': box.get('isShowMyInfo') ?? false,
+      'isNotMatchingSameUniversity':
+          box.get('isNotMatchingSameUniversity') ?? false,
+      'isNotMatchingSameMajor': box.get('isNotMatchingSameMajor') ?? false,
     });
   }
 }

@@ -4,6 +4,7 @@ import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/utils/utill.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,8 +18,11 @@ class SCAuthorizationPage extends StatefulWidget {
 class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
   final _formKey = GlobalKey<FormState>();
   final _focusNode = [FocusNode(), FocusNode()];
+
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _studentIDController = TextEditingController();
+
+  MemberModel _memberModel = MemberModel();
 
   RegExp regExp = RegExp(r'^[+-]?([0-9]+([0-9]*)?|[0-9]+)$');
 
@@ -52,6 +56,9 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
     '경남',
     '제주',
   ];
+
+  String _selectedCity;
+  int selected = 0;
 
   _fetchData() {
     _universityList = HttpController.instance.fetchDataUniversity();
@@ -402,7 +409,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                           ? Container()
                                           : Padding(
                                               padding: const EdgeInsets.only(
-                                                  left: 75.0),
+                                                  top: 8.0, left: 75.0),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Image.asset(stdCardImage,
@@ -515,12 +522,12 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                           highlightColor: Colors.transparent,
                                           splashColor: Colors.transparent,
                                           onTap: () => rp
-                                              .onCheckNotMeetingSameUniversity(),
+                                              .onCheckNotMatchingSameUniversity(),
                                           child: Row(
                                             children: [
                                               Icon(Icons.check,
                                                   color: rp.member
-                                                          .isNotMeetingSameUniversity
+                                                          .isNotMatchingSameUniversity
                                                       ? chatPrimaryColor
                                                       : Colors.grey),
                                               SizedBox(
@@ -531,7 +538,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     color: rp.member
-                                                            .isNotMeetingSameUniversity
+                                                            .isNotMatchingSameUniversity
                                                         ? chatPrimaryColor
                                                         : Colors.black),
                                               ),
@@ -550,24 +557,26 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                           highlightColor: Colors.transparent,
                                           splashColor: Colors.transparent,
                                           onTap: () =>
-                                              rp.onCheckNotMeetingSameMajor(),
+                                              rp.onCheckNotMatchingSameMajor(),
                                           child: Row(
                                             children: [
                                               Icon(Icons.check,
                                                   color: rp.member
-                                                          .isNotMeetingSameMajor
+                                                          .isNotMatchingSameMajor
                                                       ? chatPrimaryColor
                                                       : Colors.grey),
                                               SizedBox(
                                                 width: 24,
                                               ),
-                                              Text('같은 학교의 같은 학과 학생 안만나기',
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      color: rp.member
-                                                              .isNotMeetingSameMajor
-                                                          ? chatPrimaryColor
-                                                          : Colors.black))
+                                              Text(
+                                                '같은 학교의 같은 학과 학생 안만나기',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: rp.member
+                                                            .isNotMatchingSameMajor
+                                                        ? chatPrimaryColor
+                                                        : Colors.black),
+                                              )
                                             ],
                                           ),
                                         )
@@ -605,6 +614,9 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
   Future uploadImage() async {
     final imageFile = await ImagePicker().getImage(source: ImageSource.gallery);
     setState(() => stdCardImage = imageFile.path);
+    print(imageFile.path);
+    Provider.of<RegisterProvider>(context, listen: false)
+        .setStudentCardImagePath(imageFile.path);
   }
 
   Future<void> _showDialogAllDataDelete() async {
@@ -718,14 +730,15 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                               ? chatPrimaryColor
                                               : Colors.transparent),
                                       SizedBox(width: 5),
-                                      Container(
-                                        width: 250,
-                                        child: Text(_searchResult[index],
-                                            overflow: TextOverflow.fade,
-                                            style: TextStyle(
-                                                color: _selected[index]
-                                                    ? chatPrimaryColor
-                                                    : Colors.black)),
+                                      Expanded(
+                                        child: Container(
+                                          child: Text(_searchResult[index],
+                                              overflow: TextOverflow.fade,
+                                              style: TextStyle(
+                                                  color: _selected[index]
+                                                      ? chatPrimaryColor
+                                                      : Colors.black)),
+                                        ),
                                       )
                                     ],
                                   ),
@@ -777,7 +790,17 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
             height: 300,
             color: Colors.white,
             child: GestureDetector(
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                final rp =
+                    Provider.of<RegisterProvider>(context, listen: false);
+                if (selected == 0)
+                  rp.setCity('선택');
+                else
+                  rp.setCity(_selectedCity);
+                selected = 0;
+                rp.checkCanRegister();
+                Navigator.pop(context);
+              },
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 child: CupertinoPicker.builder(
@@ -787,10 +810,8 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                   squeeze: 1,
                   backgroundColor: Colors.grey[100],
                   onSelectedItemChanged: (index) {
-                    final rp =
-                        Provider.of<RegisterProvider>(context, listen: false);
-                    rp.setCity(item[index]);
-                    rp.checkCanRegister();
+                    _selectedCity = item[index];
+                    print(selected++);
                   },
                   itemBuilder: (_, index) => Center(
                     child: Text(item[index],
@@ -812,7 +833,6 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
 
   // 다이어로그창때 학교, 학과를 하나만 선택할 수 있는 메소드
   _checkOnlyOneItem(StateSetter ss, int index) {
-    // 선택이 안되어 있다면
     ss(() {
       if (!_checkFlag) {
         _selected[index] = !_selected[index];
@@ -839,7 +859,11 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
     }
 
     item.forEach((String value) {
-      if (value.contains(text)) {
+      if (value == text) {
+        _searchResult.clear();
+        _searchResult.add(text);
+        _selected.add(false);
+      } else if (value.contains(text)) {
         _searchResult.add(value);
         _selected.add(false);
       }
@@ -853,16 +877,18 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
     ss(() {});
   }
 
-  _register() {
+  _register() async {
     if (_checkedValidate()) {
-      print('숫자만 입력');
+      // fail
       return;
     } else {
       //register
+      setState(() => loading = true);
       final rp = Provider.of<RegisterProvider>(context, listen: false);
-      print(rp.member.toString());
-      rp.setFCMToken(HiveController.instance.getFCMToken());
-      Navigator.pushNamed(context, '/main_page');
+      await rp.setFCMToken(HiveController.instance.getFCMToken());
+      _memberModel.register(rp.member);
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/main_page', (route) => false);
     }
   }
 

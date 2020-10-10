@@ -1,5 +1,5 @@
 import 'package:anony_chat/controller/hive_controller.dart';
-import 'package:anony_chat/ui/view/route_page.dart';
+import 'package:anony_chat/ui/view/join/intro_page.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
                   await FirebaseAuth.instance.signOut();
                   HiveController.instance.onRegisterSecession();
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => RoutePage()),
+                      MaterialPageRoute(builder: (context) => IntroPage()),
                           (route) => false);
                 },
                 trailing: Icon(Icons.arrow_forward_ios),

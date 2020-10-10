@@ -1,11 +1,8 @@
-import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/ui/view/chat/chat_room_page.dart';
 import 'package:anony_chat/ui/widget/chat/chat_room_preview.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/chat_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ChatListPage extends StatefulWidget {
@@ -17,7 +14,8 @@ class _ChatListPageState extends State<ChatListPage> {
   List<ChatRoomPreview> _chatRooms = [];
   ChatModel _chatModel = ChatModel();
 
-  final receiverID = [];
+  final _receiverID = [];
+  final _chatRoomID = [];
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +23,7 @@ class _ChatListPageState extends State<ChatListPage> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Text('채팅', style: TextStyle(color: Colors.black)),
+          title: Text('채팅목록', style: TextStyle(color: Colors.black)),
           centerTitle: true,
           iconTheme: new IconThemeData(color: Colors.black),
         ),
@@ -45,8 +43,10 @@ class _ChatListPageState extends State<ChatListPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                ChatRoomPage(senderID: 1, receiverID: 2),
+                            builder: (context) => ChatRoomPage(
+                                senderID: 2,
+                                receiverID: 1,
+                                chatRoomID: _chatRoomID[index]),
                           ),
                         );
                       },
@@ -64,11 +64,11 @@ class _ChatListPageState extends State<ChatListPage> {
     if (chatList != null) {
       _chatRooms.clear();
 
-      chatList.forEach((element) {
-        print(element['lastMessage']);
-        final time =
-            DateTime.fromMillisecondsSinceEpoch(element['lastMessageTime']);
-        receiverID.add(element['withWho']);
+      chatList.forEach((QueryDocumentSnapshot element) {
+        final time = DateTime.fromMillisecondsSinceEpoch(element['lastMessageTime']);
+
+        _receiverID.add(element['withWho']);
+        _chatRoomID.add(element.id);
         _chatRooms.add(ChatRoomPreview(
           previewIcon: 'assets/icons/${element['imageIcon']}',
           lastMessage: element['lastMessage'],

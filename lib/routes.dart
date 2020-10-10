@@ -14,11 +14,9 @@ import 'ui/view/home/drawer/report_guide_page.dart';
 import 'ui/view/home/drawer/report_page.dart';
 import 'ui/view/home/drawer/terms_of_service_page.dart';
 import 'ui/view/join/intro_page.dart';
-import 'ui/view/join/terms_content_page.dart';
 
 final routes = {
   '/intro_page': (BuildContext context) => IntroPage(),
-  '/terms_content_page': (BuildContext context) => TermsContentPage(),
   '/student_card_authorization_page': (BuildContext context) => SCAuthorizationPage(),
   '/main_page': (BuildContext context) => MainPage(),
   '/profile_page': (BuildContext context) => ProfilePage(),

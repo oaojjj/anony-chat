@@ -2,6 +2,7 @@ import 'package:anony_chat/controller/notification_controller.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/provider/member_auth_provider.dart';
 import 'package:anony_chat/routes.dart';
+import 'package:anony_chat/ui/view/home/main_home_page.dart';
 import 'package:anony_chat/ui/view/join/intro_page.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -56,7 +57,7 @@ class _AnonymousChatState extends State<AnonymousChat> {
           buttonColor: chatPrimaryColor,
           primaryColor: chatPrimaryColor,
           accentColor: chatAccentColor),
-      home: IntroPage(),
+      home: MainPage(),
       routes: routes,
     );
   }

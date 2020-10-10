@@ -21,7 +21,8 @@ class _IntroPageState extends State<IntroPage> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _initKakaoTalkInstalled();
+      await _checkKakaoTalkInstalled();
+      // 여기서 인증확인
       if (Platform.isIOS) {
         print('ios 기기');
         // 자동로그인 같은거 구현하면 쓰면될듯
@@ -187,7 +188,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   // 카카오톡 설치 여부 확인 메소드
-  _initKakaoTalkInstalled() async {
+  _checkKakaoTalkInstalled() async {
     final installed = await isKakaoTalkInstalled();
     print('Kakao install : ' + installed.toString());
 
@@ -235,6 +236,7 @@ class _IntroPageState extends State<IntroPage> {
         'http://play.google.com/store/apps/details?id=com.kakao.talk&hl=ko';
     if (await canLaunch(url)) {
       await launch(url);
+      await _checkKakaoTalkInstalled();
     } else {
       throw 'Could not launch $url';
     }

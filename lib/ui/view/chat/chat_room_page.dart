@@ -12,8 +12,9 @@ import 'package:flutter/scheduler.dart';
 class ChatRoomPage extends StatefulWidget {
   final receiverID;
   final senderID;
+  final chatRoomID;
 
-  ChatRoomPage({this.receiverID, this.senderID});
+  ChatRoomPage({this.receiverID, this.senderID, this.chatRoomID});
 
   @override
   _ChatRoomPageState createState() => _ChatRoomPageState();
@@ -21,9 +22,11 @@ class ChatRoomPage extends StatefulWidget {
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
   final ChatModel _chatModel = ChatModel();
+  final FocusNode _focusNode = FocusNode();
+
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
-  final FocusNode _focusNode = FocusNode();
+
   final List<ChatMessage> _messages = [];
 
   final chatAppBarName = '익명의 상대방';
@@ -55,7 +58,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             children: [
               Expanded(
                 child: StreamBuilder(
-                  stream: _chatModel.getChatMessageList(widget.receiverID, 20),
+                  stream: _chatModel.getChatMessageList(widget.chatRoomID, 20),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
@@ -189,10 +192,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           children: [
             ListTile(
               dense: true,
-              leading: Image.asset(
-                'assets/icons/report.png',
-                width: 30,
-                height: 30,
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Image.asset(
+                  'assets/icons/report.png',
+                  width: 30,
+                  height: 24,
+                ),
               ),
               title: Text('신고하기', style: TextStyle(fontSize: 18.0)),
               onTap: () {
@@ -206,7 +212,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             ListTile(
               dense: true,
               leading: IconButton(
-                icon: Icon(Icons.exit_to_app),
+                icon: Icon(Icons.exit_to_app, size: 30),
                 onPressed: () {},
               ),
               title: Text('나가기', style: TextStyle(fontSize: 18.0)),

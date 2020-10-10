@@ -17,7 +17,7 @@ class Message {
       {this.senderID,
       this.receiverID,
       this.content,
-      this.type,
+      this.type = 'text',
       this.time,
       this.isRead = false});
 

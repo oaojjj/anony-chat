@@ -2,42 +2,36 @@ import 'dart:convert';
 
 import 'package:anony_chat/controller//hive_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 class MemberModel {
   static final FirebaseAuth _mAuth = FirebaseAuth.instance;
   static final FirebaseDatabase _db = FirebaseDatabase.instance;
+  static final FirebaseFirestore _fdb = FirebaseFirestore.instance;
 
   static const String USERS_COLLECTION = 'users';
   static const String USER_IDS_COLLECTION = 'user_ids';
 
   // 가입하기
   Future<void> register(Member member) async {
+    member.id = 2;
+
     // 마지막 회원번호를 불러오고 회원 카운트 증가
-    // member.id = ApiLastNumber
 
     // 프로필 로컬 저장, 학생증 서버에 업로드
     HiveController.instance.saveMemberInfoToLocal(member);
-    //FSController.uploadStdCardToStorage(member.studentCardImage);
-
-    // 회원 번호로 관리하기 위해 테이블에 회원번호와 매핑되는 uid 추가
-    _db
-        .reference()
-        .child(USER_IDS_COLLECTION)
-        .child('id/${_mAuth.currentUser.uid}')
-        .set(member.id);
-
-    _db
-        .reference()
-        .child(USER_IDS_COLLECTION)
-        .child('uid/${member.id}')
-        .set(_mAuth.currentUser.uid);
 
     // 회원 정보 등록(최종회원가입)
-    // ApiRegister(member.toJson())
+    // 일단 파이어베이스에서 테스트
+    await _fdb
+        .collection(USERS_COLLECTION)
+        .doc('${member.id}')
+        .set(member.toJson());
 
-    HiveController.instance.onRegisterCompleted();
+    // ApiRegister(member.toJson())
+    // await HiveController.instance.onRegisterCompleted();
   }
 
   // 전체 회원 수 가져오기

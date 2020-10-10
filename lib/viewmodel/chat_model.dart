@@ -1,4 +1,3 @@
-import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,8 +18,8 @@ class ChatModel {
   static const String CHAT_MESSAGES = 'messages';
 
   Future<void> sendMessage({Message message}) async {
-    final senderID = 1;
-    final receiverID = 2;
+    final senderID = 2;
+    final receiverID = 1;
 
     // 메세지 전송 추가
     _fdb
@@ -59,8 +58,8 @@ class ChatModel {
   createChatRoom({ChatRoom chatRoom}) async {
     // chatRoom.message.senderID = HiveController.instance.getMemberID();
 
-    int receiver = 2;
-    chatRoom.message.senderID = 1;
+    int receiver = 1;
+    chatRoom.message.senderID = 2;
     chatRoom.message.receiverID = receiver;
     chatRoom.withWho = receiver;
 
@@ -78,15 +77,6 @@ class ChatModel {
         .collection(CHAT_MESSAGES)
         .doc(chatRoom.message.time.toString())
         .set(chatRoom.message.toJson());
-
-    chatRoom.withWho = chatRoom.message.senderID;
-
-    _fdb
-        .collection(CHAT_ROOM_COLLECTION)
-        .doc('${chatRoom.message.receiverID}_${chatRoom.message.senderID}')
-        .collection(CHAT_MESSAGES)
-        .doc(chatRoom.message.time.toString())
-        .set(chatRoom.message.toJson());
   }
 
   void _createChatList(ChatRoom chatRoom) {
@@ -96,6 +86,8 @@ class ChatModel {
         .collection(CHAT_LIST_COLLECTION)
         .doc('${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
         .set(chatRoom.toJson());
+
+    chatRoom.withWho = chatRoom.message.senderID;
 
     _fdb
         .collection(MemberModel.USERS_COLLECTION)
@@ -113,12 +105,10 @@ class ChatModel {
         .snapshots();
   }
 
-  getChatMessageList(int receiverID, int limit) {
-    final senderID = 1;
-
+  getChatMessageList(String chatRoomID, int limit) {
     return _fdb
         .collection(CHAT_ROOM_COLLECTION)
-        .doc('${senderID}_$receiverID')
+        .doc(chatRoomID)
         .collection(CHAT_MESSAGES)
         .orderBy('time', descending: true)
         .limit(limit)
