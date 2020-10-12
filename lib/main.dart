@@ -2,7 +2,6 @@ import 'package:anony_chat/controller/notification_controller.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/provider/member_auth_provider.dart';
 import 'package:anony_chat/routes.dart';
-import 'package:anony_chat/ui/view/home/main_home_page.dart';
 import 'package:anony_chat/ui/view/join/intro_page.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,7 +15,9 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  NotificationController.instance.firebaseMessaging.requestNotificationPermissions();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  headers['Content-Type'] = 'application/json; charset=utf-8';
   await Hive.initFlutter();
   Hive.registerAdapter(AuthStatusAdapter());
   await Hive.openBox('member');
@@ -57,7 +58,7 @@ class _AnonymousChatState extends State<AnonymousChat> {
           buttonColor: chatPrimaryColor,
           primaryColor: chatPrimaryColor,
           accentColor: chatAccentColor),
-      home: MainPage(),
+      home: IntroPage(),
       routes: routes,
     );
   }

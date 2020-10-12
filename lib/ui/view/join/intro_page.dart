@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:anony_chat/model/auth/auth_sign_in.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/utils/utill.dart';
+import 'package:anony_chat/viewmodel/auth_http_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kakao_flutter_sdk/all.dart';
@@ -17,6 +19,8 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   bool _isKakaoTalkInstalled = false;
   bool loading = false;
+
+  AuthHttpModel _authHttpModel = AuthHttpModel();
 
   @override
   void initState() {
@@ -166,7 +170,8 @@ class _IntroPageState extends State<IntroPage> {
                             fontWeight: FontWeight.bold),
                       ),
                       onPressed: () async {
-                        if (_isKakaoTalkInstalled) login();
+                        if (_isKakaoTalkInstalled)
+                          login();
                         else {
                           Fluttertoast.showToast(
                               msg: '카카오톡을 설치하고 다시 시도해주세요.',
@@ -198,28 +203,43 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   login() async {
-    print('로그인');
     try {
-      final code = await AuthCodeClient.instance.requestWithTalk();
-      final token = await AuthApi.instance.issueAccessToken(code);
-      await AccessTokenStore.instance.toStore(token);
-      User user = await UserApi.instance.me();
-      print(user.kakaoAccount.toString());
+      User user = await KakaoTalkLogin();
 
-      // 카카오 로그인 성공
       if (user.id != null) {
-        // 사용자의 나이가 20대가 아니면 가입불가
+        print('#카카오톡 로그인 성공');
         if (user.kakaoAccount.ageRange != AgeRange.TWENTIES)
           cantRegisterDialog();
         else {
-          // 가입가능
-          print('제발좀 되라..');
-          final rp = Provider.of<RegisterProvider>(context, listen: false);
-          rp.setMemberInfoWithKakao(user.kakaoAccount);
-          Navigator.pushNamed(context, '/student_card_authorization_page');
+          print('-----앱 로그인 시도-----');
+          AuthSignIn loginResult =
+              await _authHttpModel.requestSingIn('kakao', user.id.toString());
+          print('로그인 결과 ${loginResult.toJson()}');
+
+          if (loginResult.code == ResponseCode.SUCCESS_CODE) {
+            print('#앱 로그인 성공');
+
+            headers.forEach((key, value) => print('헤더 $key // $value'));
+            print('토큰 ${loginResult.data.item[0]}');
+            headers['token'] = loginResult.data.item[0];
+            /*await PushNotificationManager()
+                .firebaseMessaging
+                .getToken()
+                .then((token) async {
+              print('파이어베이스 token:' + token);
+              await userHttpModel.modUserInfo(msgToken: token);
+              print('토큰 업뎃함');
+            });*/
+            Navigator.pushNamed(context, '/main_page');
+          } else if (loginResult.code == ResponseCode.DATA_NOT_FOUND) {
+            print('#앱 로그인 실패 -> 회원가입');
+            Provider.of<RegisterProvider>(context, listen: false)
+                .setMemberInfoWithKakao(user.kakaoAccount);
+            Navigator.pushNamed(context, '/student_card_authorization_page');
+          }
         }
       } else {
-        // 실패
+        print('#카카오톡 로그인 실패');
         Fluttertoast.showToast(
             msg: '카카오톡 로그인에 실패했습니다.',
             gravity: ToastGravity.BOTTOM,
@@ -229,6 +249,16 @@ class _IntroPageState extends State<IntroPage> {
     } catch (e) {
       print('카톡 error: $e');
     }
+  }
+
+  Future<User> KakaoTalkLogin() async {
+    print('-----카카오톡 로그인 시도-----');
+    final code = await AuthCodeClient.instance.requestWithTalk();
+    final token = await AuthApi.instance.issueAccessToken(code);
+    await AccessTokenStore.instance.toStore(token);
+    User user = await UserApi.instance.me();
+    print(user.kakaoAccount.toString());
+    return user;
   }
 
   _launchURLKakao() async {
@@ -243,6 +273,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   cantRegisterDialog() {
+    print('#20대 아니라서 가입 불가');
     showDialog(
         context: context,
         barrierDismissible: false,

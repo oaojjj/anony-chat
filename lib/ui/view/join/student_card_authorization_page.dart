@@ -4,6 +4,7 @@ import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/utils/utill.dart';
+import 'package:anony_chat/viewmodel/career_net_model.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
   final TextEditingController _studentIDController = TextEditingController();
 
   MemberModel _memberModel = MemberModel();
+  CareerNetModel _careerNetModel = CareerNetModel();
 
   RegExp regExp = RegExp(r'^[+-]?([0-9]+([0-9]*)?|[0-9]+)$');
 
@@ -61,8 +63,8 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
   int selected = 0;
 
   _fetchData() {
-    _universityList = HttpController.instance.fetchDataUniversity();
-    _majorList = HttpController.instance.fetchDataMajor();
+    _universityList = _careerNetModel.fetchDataUniversity();
+    _majorList = _careerNetModel.fetchDataMajor();
 
     // 데이터 받아오지 못함 -> 무한로딩
     if (_universityList != null && _majorList != null)

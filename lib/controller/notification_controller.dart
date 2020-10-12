@@ -15,6 +15,8 @@ class NotificationController {
 
   static NotificationController get instance => NotificationController();
 
+  FirebaseMessaging get firebaseMessaging => _firebaseMessaging;
+
   Future init() async {
     if (Platform.isIOS) {
       // set iOS Local notification.
