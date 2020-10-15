@@ -15,11 +15,12 @@ class RegisterProvider extends ChangeNotifier {
 
   checkCanRegister() {
     if (member.university != null &&
-        member.major != null &&
+        member.department != null &&
         member.studentID != null &&
         member.studentID.toString().length >= 7 &&
         member.city != null &&
-        member.city != '선택') {
+        member.city != '선택' &&
+        member.studentCardImage != null) {
       canRegister();
     } else {
       cantRegister();
@@ -40,13 +41,21 @@ class RegisterProvider extends ChangeNotifier {
   reset() {
     print('register provider reset');
     _isCanRegister = false;
-    _member = Member();
+    _member.city = null;
+    _member.university = null;
+    _member.department = null;
+    _member.studentID = null;
+    _member.studentCardImage = null;
+    _member.isShowMyInfo = false;
+    _member.isNotMatchingSameDepartment = false;
+    _member.isNotMatchingSameUniversity = false;
   }
 
-  setMemberInfoWithKakao(Account kakaoAccount) {
-    _member.gender = kakaoAccount.gender == Gender.MALE ? '남자' : '여자';
-    _member.birthYear = kakaoAccount.birthyear;
-    _member.phoneNumber = kakaoAccount.phoneNumber;
+  setMemberInfoWithKakao(User user) {
+    _member.authID = user.id.toString();
+    _member.gender = user.kakaoAccount.gender == Gender.MALE ? '남자' : '여자';
+    _member.birthYear = int.parse(user.kakaoAccount.birthyear ?? "-1");
+    _member.phoneNumber = user.kakaoAccount.phoneNumber;
   }
 
   onCheckShowMyInfo() {
@@ -55,7 +64,7 @@ class RegisterProvider extends ChangeNotifier {
   }
 
   onCheckNotMatchingSameMajor() {
-    member.isNotMatchingSameMajor = !member.isNotMatchingSameMajor;
+    member.isNotMatchingSameDepartment = !member.isNotMatchingSameDepartment;
     notifyListeners();
   }
 
@@ -72,7 +81,7 @@ class RegisterProvider extends ChangeNotifier {
     if (type == '학교')
       _member.university = data;
     else
-      _member.major = data;
+      _member.department = data;
   }
 
   setCity(String data) {
@@ -83,7 +92,7 @@ class RegisterProvider extends ChangeNotifier {
     _member.fcmToken = fcmToken;
   }
 
-  setStudentCardImagePath(String path) {
-    _member.studentCardImagePath = path;
+  setStudentCardImage(image) {
+    _member.studentCardImage = image;
   }
 }

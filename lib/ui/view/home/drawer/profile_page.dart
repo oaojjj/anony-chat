@@ -94,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
               borderRadius: BorderRadius.all(Radius.circular(32.0))),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Text('회원번호 ${member.id}',
+            child: Text('회원번호 ${member.userID}',
                 style: TextStyle(color: Colors.white, fontSize: 13)),
           ),
         ),
@@ -203,7 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         Flexible(
                             fit: FlexFit.tight,
                             flex: 2,
-                            child: Center(child: Text(member.birthYear))),
+                            child: Center(child: Text(member.birthYear.toString()))),
                         Flexible(
                             fit: FlexFit.tight, flex: 1, child: Container())
                       ],
@@ -268,7 +268,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           flex: 2,
                           child: Center(
                             child: Text(
-                              '${member.major}',
+                              '${member.department}',
                               style: getStateTextStyle(sca),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -412,12 +412,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       highlightColor: Colors.transparent,
                       splashColor: Colors.transparent,
                       onTap: () => setState(() =>
-                          member.isNotMatchingSameMajor =
-                              !member.isNotMatchingSameMajor),
+                          member.isNotMatchingSameDepartment =
+                              !member.isNotMatchingSameDepartment),
                       child: Row(
                         children: [
                           Icon(Icons.check,
-                              color: member.isNotMatchingSameMajor
+                              color: member.isNotMatchingSameDepartment
                                   ? chatPrimaryColor
                                   : Colors.grey),
                           SizedBox(
@@ -427,7 +427,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             '같은 학교의 같은 학과 학생 안만나기',
                             style: TextStyle(
                                 fontSize: 16,
-                                color: member.isNotMatchingSameMajor
+                                color: member.isNotMatchingSameDepartment
                                     ? chatPrimaryColor
                                     : Colors.black),
                           )

@@ -218,7 +218,6 @@ class _IntroPageState extends State<IntroPage> {
 
           if (loginResult.code == ResponseCode.SUCCESS_CODE) {
             print('#앱 로그인 성공');
-
             headers.forEach((key, value) => print('헤더 $key // $value'));
             print('토큰 ${loginResult.data.item[0]}');
             headers['token'] = loginResult.data.item[0];
@@ -233,8 +232,7 @@ class _IntroPageState extends State<IntroPage> {
             Navigator.pushNamed(context, '/main_page');
           } else if (loginResult.code == ResponseCode.DATA_NOT_FOUND) {
             print('#앱 로그인 실패 -> 회원가입');
-            Provider.of<RegisterProvider>(context, listen: false)
-                .setMemberInfoWithKakao(user.kakaoAccount);
+            Provider.of<RegisterProvider>(context, listen: false).setMemberInfoWithKakao(user);
             Navigator.pushNamed(context, '/student_card_authorization_page');
           }
         }

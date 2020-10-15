@@ -1,16 +1,16 @@
-class AuthSignIn {
+class UserInfo {
   num code;
   String message;
   bool success;
-  AuthSignInData data;
+  UserInfoData data;
 
-  AuthSignIn({this.code, this.message, this.success, this.data});
+  UserInfo({this.code, this.message, this.success, this.data});
 
-  AuthSignIn.fromJson(Map<String, dynamic> json) {
+  UserInfo.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     message = json['message'];
     success = json['success'];
-    data = json['data'] != null ? new AuthSignInData.fromJson(json['data']) : null;
+    data = json['data'] != null ? UserInfoData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -25,21 +25,24 @@ class AuthSignIn {
   }
 }
 
-class AuthSignInData {
-  List<String> item;
+class UserInfoData {
+  List<int> item;
   num itemLength;
+  num total;
 
-  AuthSignInData({this.item, this.itemLength});
+  UserInfoData({this.item, this.itemLength});
 
-  AuthSignInData.fromJson(Map<String, dynamic> json) {
-    item = json['item'].cast<String>();
+  UserInfoData.fromJson(Map<String, dynamic> json) {
+    item = json['item'].cast<int>();
     itemLength = json['item_length'];
+    total = json['total'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['token'] = this.item;
+    data['item'] = this.item;
     data['item_length'] = this.itemLength;
+    data['total'] = this.total;
     return data;
   }
 }

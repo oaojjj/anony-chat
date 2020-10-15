@@ -1,10 +1,14 @@
 import 'dart:convert';
 
-import 'package:anony_chat/controller//hive_controller.dart';
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
+import 'package:anony_chat/utils/utill.dart';
+import 'package:anony_chat/viewmodel/file_http_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+
+import 'auth_http_model.dart';
 
 class MemberModel {
   static final FirebaseAuth _mAuth = FirebaseAuth.instance;
@@ -13,25 +17,36 @@ class MemberModel {
 
   static const String USERS_COLLECTION = 'users';
   static const String USER_IDS_COLLECTION = 'user_ids';
+  AuthHttpModel _authHttpModel = AuthHttpModel();
 
   // 가입하기
-  Future<void> register(Member member) async {
-    member.id = 2;
+  Future<bool> register(Member member) async {
+    print(member.toString());
 
-    // 마지막 회원번호를 불러오고 회원 카운트 증가
+    // 서버에 사용자 정보로 회원가입
+    final signUpResult =
+        await _authHttpModel.requestSingUp("anonymous_chat", member);
 
-    // 프로필 로컬 저장, 학생증 서버에 업로드
-    HiveController.instance.saveMemberInfoToLocal(member);
+    if (signUpResult.code == ResponseCode.SUCCESS_CODE) {
+      print('#회원가입 성공');
+      print('#회원번호: ${signUpResult.data.item[0]}');
+      member.userID = signUpResult.data.item[0];
 
-    // 회원 정보 등록(최종회원가입)
+      // 프로필 로컬 저장
+      HiveController.instance.saveMemberInfoToLocal(member);
+      return true;
+    } else {
+      print('#회원가입 실패');
+      print(signUpResult.toJson());
+      return false;
+    }
+
     // 일단 파이어베이스에서 테스트
-    await _fdb
+    /* await _fdb
         .collection(USERS_COLLECTION)
-        .doc('${member.id}')
+        .doc('${member.userID}')
         .set(member.toJson());
-
-    // ApiRegister(member.toJson())
-    // await HiveController.instance.onRegisterCompleted();
+     */
   }
 
   // 전체 회원 수 가져오기
@@ -87,7 +102,7 @@ class MemberModel {
     await _db
         .reference()
         .child(USERS_COLLECTION)
-        .child('${fixProfile.id}')
+        .child('${fixProfile.userID}')
         .update(fixProfile.toJson());
 
     return fixProfile;

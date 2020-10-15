@@ -1,11 +1,17 @@
-import 'package:anony_chat/controller/hive_controller.dart';
-import 'package:anony_chat/controller/http_controller.dart';
+import 'dart:io';
+
+import 'package:anony_chat/model/auth/auth_sign_in.dart';
+import 'package:anony_chat/model/dao/member.dart';
+import 'package:anony_chat/model/user/user_info.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/utils/utill.dart';
+import 'package:anony_chat/viewmodel/auth_http_model.dart';
 import 'package:anony_chat/viewmodel/career_net_model.dart';
+import 'package:anony_chat/viewmodel/file_http_model.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
+import 'package:anony_chat/viewmodel/user_http_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -25,6 +31,9 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
 
   MemberModel _memberModel = MemberModel();
   CareerNetModel _careerNetModel = CareerNetModel();
+  AuthHttpModel _authHttpModel = AuthHttpModel();
+  FileHttpModel _fileHttpModel = FileHttpModel();
+  UserHttpModel _userHttpModel = UserHttpModel();
 
   RegExp regExp = RegExp(r'^[+-]?([0-9]+([0-9]*)?|[0-9]+)$');
 
@@ -32,7 +41,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
 
   bool _checkFlag = false;
   int _checkedPrev = -1;
-  String stdCardImage;
+  File stdCardImage;
 
   List<bool> _selected = [];
   List<String> _searchResult = [];
@@ -324,14 +333,14 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                                         child: Consumer<
                                                             RegisterProvider>(
                                                           builder: (_, value, __) => Text(
-                                                              value.member.major ==
+                                                              value.member.department ==
                                                                       null
                                                                   ? '학과 검색'
                                                                   : value.member
-                                                                      .major,
+                                                                      .department,
                                                               style: TextStyle(
                                                                   color: value.member
-                                                                              .major ==
+                                                                              .department ==
                                                                           null
                                                                       ? Colors
                                                                           .grey
@@ -414,10 +423,12 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                                   top: 8.0, left: 75.0),
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
-                                                child: Image.asset(stdCardImage,
-                                                    fit: BoxFit.fill,
-                                                    height: 50,
-                                                    width: 50),
+                                                child: Image(
+                                                  width: 50,
+                                                  height: 50,
+                                                  image:
+                                                      FileImage(stdCardImage),
+                                                ),
                                               ),
                                             ),
                                       SizedBox(height: 4),
@@ -442,7 +453,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                                 child: RaisedButton(
                                                     textColor: Colors.white,
                                                     child: Text('업로드'),
-                                                    onPressed: uploadImage),
+                                                    onPressed: _uploadImage),
                                               )),
                                         ],
                                       ),
@@ -564,7 +575,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                             children: [
                                               Icon(Icons.check,
                                                   color: rp.member
-                                                          .isNotMatchingSameMajor
+                                                          .isNotMatchingSameDepartment
                                                       ? chatPrimaryColor
                                                       : Colors.grey),
                                               SizedBox(
@@ -575,7 +586,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                                 style: TextStyle(
                                                     fontSize: 16,
                                                     color: rp.member
-                                                            .isNotMatchingSameMajor
+                                                            .isNotMatchingSameDepartment
                                                         ? chatPrimaryColor
                                                         : Colors.black),
                                               )
@@ -613,12 +624,13 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
           );
   }
 
-  Future uploadImage() async {
+  Future _uploadImage() async {
     final imageFile = await ImagePicker().getImage(source: ImageSource.gallery);
-    setState(() => stdCardImage = imageFile.path);
-    print(imageFile.path);
-    Provider.of<RegisterProvider>(context, listen: false)
-        .setStudentCardImagePath(imageFile.path);
+    final rp = Provider.of<RegisterProvider>(context, listen: false);
+    setState(() => stdCardImage = File(imageFile.path));
+
+    rp.setStudentCardImage(stdCardImage);
+    rp.checkCanRegister();
   }
 
   Future<void> _showDialogAllDataDelete() async {
@@ -781,10 +793,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
     );
   }
 
-  _showPicker(
-    context,
-    List<String> item,
-  ) {
+  _showPicker(context, item) {
     return showCupertinoModalPopup<void>(
         context: context,
         builder: (BuildContext context) {
@@ -879,21 +888,6 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
     ss(() {});
   }
 
-  _register() async {
-    if (_checkedValidate()) {
-      // fail
-      return;
-    } else {
-      //register
-      setState(() => loading = true);
-      final rp = Provider.of<RegisterProvider>(context, listen: false);
-      await rp.setFCMToken(HiveController.instance.getFCMToken());
-      _memberModel.register(rp.member);
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/main_page', (route) => false);
-    }
-  }
-
   String validatePassword(String value) {
     print(value);
     if (!regExp.hasMatch(value)) {
@@ -913,6 +907,52 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
     } else {
       // fail
       return true;
+    }
+  }
+
+  _register() async {
+    if (_checkedValidate()) {
+      // fail
+      return;
+    } else {
+      // register
+      setState(() => loading = true);
+      final rp = Provider.of<RegisterProvider>(context, listen: false);
+      final result = await _memberModel.register(rp.member);
+      if (result)
+        _appLogin(rp.member);
+      else {
+        print('#회원가입 실패');
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  Future<int> _appLogin(Member member) async {
+    print('-----앱 로그인 시도-----');
+    AuthSignIn loginResult =
+        await _authHttpModel.requestSingIn('kakao', member.authID.toString());
+    print('로그인 결과 ${loginResult.toJson()}');
+
+    if (loginResult.code == ResponseCode.SUCCESS_CODE) {
+      print('#앱 로그인 성공');
+      print('토큰 ${loginResult.data.item[0]}');
+      headers['token'] = loginResult.data.item[0];
+
+      print('#학생증 업로드');
+      final uploadResult =
+          await _fileHttpModel.uploadFile(file: member.studentCardImage);
+      print('#학생증 업로드 결과:$uploadResult');
+
+      UserInfo userEditResult = await _userHttpModel.userEdit(member,
+          imageCode: uploadResult.data.item[0]);
+      if (userEditResult.code == ResponseCode.SUCCESS_CODE) {
+        print('#최종 회원가입 성공');
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/main_page', (route) => false);
+      }
+    } else {
+      print('#앱 로그인 실패 why?');
     }
   }
 }

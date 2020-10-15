@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:anony_chat/utils/utill.dart';
+import 'package:path/path.dart';
 
 class HttpController {
   static HttpController get instance => HttpController();
@@ -27,6 +30,38 @@ class HttpController {
       print("httpPost error ${e.toString()} $url");
       result['success'] = false;
       return result;
+    }
+  }
+
+  Future<dynamic> httpMultipartPost(String url, Map headers,
+      {File file, int duration}) async {
+    print('http httpMultipartPost 요청 $url');
+
+    Map<String, dynamic> result = Map();
+    try {
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+      if (duration != null) {
+        Map<String, String> durationMap = Map();
+        durationMap['duration'] = duration.toString();
+        request.fields.addAll(durationMap);
+      }
+      request.headers.addAll(headers);
+      request.files.add(
+          await http.MultipartFile.fromPath(basename(file.path), file.path));
+
+      return await request.send().then((response) async {
+        if (response.statusCode == ResponseCode.SUCCESS_CODE) {
+          result = json.decode(await response.stream.bytesToString());
+          print('HttpMultipartPost 업로드 성공 $result');
+          return result;
+        } else {
+          print('HttpMultipartPost 업로드 실패 ${response.statusCode}');
+          result['success'] = false;
+          return result;
+        }
+      });
+    } catch (e) {
+      print('httpMultipartPost 업로드 실패 $e');
     }
   }
 }

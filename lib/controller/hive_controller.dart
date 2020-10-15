@@ -9,26 +9,27 @@ class HiveController {
   saveMemberInfoToLocal(Member member) {
     final box = Hive.box('member');
 
-    box.put('id', member.id);
+    box.put('userID', member.userID);
+    box.put('authID', member.authID);
     box.put('gender', member.gender);
     box.put('fcmToken', member.fcmToken);
     box.put('birthYear', member.birthYear);
     box.put('city', member.city);
     box.put('university', member.university);
-    box.put('major', member.major);
+    box.put('department', member.department);
     box.put('studentID', member.studentID);
     box.put('phoneNumber', member.phoneNumber);
     box.put('possibleMessageOfSend', member.possibleMessageOfSend);
     box.put('isShowMyInfo', member.isShowMyInfo);
     box.put('isNotMatchingSameUniversity', member.isNotMatchingSameUniversity);
-    box.put('isNotMatchingSameMajor', member.isNotMatchingSameMajor);
+    box.put('isNotMatchingSameDepartment', member.isNotMatchingSameDepartment);
   }
 
-  onRegisterCompleted() =>
+/*  onRegisterCompleted() =>
       Hive.box('auth').put('authStatus', AuthStatus.registered);
 
   onRegisterSecession() =>
-      Hive.box('auth').put('authStatus', AuthStatus.nonRegistered);
+      Hive.box('auth').put('authStatus', AuthStatus.nonRegistered);*/
 
   AuthStatus getAuthStatus() =>
       Hive.box('auth').get('authStatus') ?? AuthStatus.nonRegistered;
@@ -50,20 +51,22 @@ class HiveController {
     final box = Hive.box('member');
 
     return Member.fromJson({
-      'id': box.get('id') ?? -1,
-      'fcmToken': box.get('fcmToken') ?? "error",
-      'gender': box.get('gender') ?? "error",
-      'birthYear': box.get('birthYear') ?? "error",
-      'city': box.get('city') ?? "error",
-      'university': box.get('university') ?? "error",
-      'major': box.get('major') ?? "error",
+      'userID': box.get('userID') ?? -1,
+      'authID': box.get('authID') ?? "null",
+      'fcmToken': box.get('fcmToken') ?? "null",
+      'gender': box.get('gender') ?? "null",
+      'birthYear': box.get('birthYear') ?? -1,
+      'city': box.get('city') ?? "null",
+      'university': box.get('university') ?? "null",
+      'department': box.get('department') ?? "null",
       'studentID': box.get('studentID') ?? -1,
-      'phoneNumber': box.get('phoneNumber') ?? "-1",
+      'phoneNumber': box.get('phoneNumber') ?? "null",
       'possibleMessageOfSend': box.get('possibleMessageOfSend') ?? -1,
       'isShowMyInfo': box.get('isShowMyInfo') ?? false,
       'isNotMatchingSameUniversity':
           box.get('isNotMatchingSameUniversity') ?? false,
-      'isNotMatchingSameMajor': box.get('isNotMatchingSameMajor') ?? false,
+      'isNotMatchingSameDepartment':
+          box.get('isNotMatchingSameDepartment') ?? false,
     });
   }
 }

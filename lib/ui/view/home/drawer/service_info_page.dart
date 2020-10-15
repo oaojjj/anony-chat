@@ -68,22 +68,6 @@ class _ServiceInfoPageState extends State<ServiceInfoPage> {
                 thickness: 0.5,
                 height: 0,
               ),
-              ListTile(
-                title: Text('회원 탈퇴', style: TextStyle(fontSize: 20.0)),
-                onTap: () async {
-                  await FirebaseAuth.instance.signOut();
-                  HiveController.instance.onRegisterSecession();
-                  Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => IntroPage()),
-                          (route) => false);
-                },
-                trailing: Icon(Icons.arrow_forward_ios),
-              ),
-              Divider(
-                color: Colors.black,
-                thickness: 0.5,
-                height: 0,
-              ),
             ],
           ),
         ),
