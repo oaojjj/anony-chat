@@ -1,5 +1,6 @@
-import 'package:anony_chat/model/dao/report.dart';
+import 'package:anony_chat/model/report/report_type.dart' as test;
 import 'package:anony_chat/utils/utill.dart';
+import 'package:anony_chat/viewmodel/report_http_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -11,6 +12,17 @@ class ReportPage extends StatefulWidget {
 class _ReportPageState extends State<ReportPage> {
   bool isReported = false;
 
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  Future init() async {
+    test.ReportType reportType = await ReportHttpModel().requestReportType();
+    print(reportType.data.item[0]);
+  }
+
   final List<Tab> tabs = [
     Tab(
       child: Text('신고된 내역', style: TextStyle(fontSize: 18)),
@@ -20,25 +32,7 @@ class _ReportPageState extends State<ReportPage> {
     )
   ];
 
-  final reportedList0 = [
-    Report.fromJson(
-        {'opponentID': 2245, 'processed': false, 'reportType': '신고사유 2'}),
-    Report.fromJson(
-        {'opponentID': 12, 'processed': true, 'reportType': '신고사유 1'})
-  ];
 
-  final reportedList1 = [
-    Report.fromJson(
-        {'opponentID': 12345, 'processed': true, 'reportType': '신고사유 1'}),
-    Report.fromJson(
-        {'opponentID': 1245, 'processed': true, 'reportType': '신고사유 1'}),
-    Report.fromJson(
-        {'opponentID': 1, 'processed': false, 'reportType': '신고사유 5'}),
-    Report.fromJson(
-        {'opponentID': 2, 'processed': false, 'reportType': '신고사유 5'}),
-    Report.fromJson(
-        {'opponentID': 3, 'processed': false, 'reportType': '신고사유 5'}),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +98,7 @@ class _ReportPageState extends State<ReportPage> {
                           int index = tabs.indexOf(tab);
                           return Container(
                             width: double.infinity,
-                            child: buildReportedList(index),
+                            child: Text('ih'),
                           );
                         }).toList(),
                       ),
@@ -129,10 +123,10 @@ class _ReportPageState extends State<ReportPage> {
         : Container();
   }
 
-  buildReportedList(int index) {
-    final List<Report> item = index == 0 ? reportedList0 : reportedList1;
+  /*buildReportedList(int index) {
+    final List<int> item = 0 ;
     return ListView.builder(
-        itemCount: index == 0 ? reportedList0.length : reportedList1.length,
+        itemCount: index == 0 ? ,
         itemBuilder: (context, ix) {
           return Column(
             children: [
@@ -179,5 +173,5 @@ class _ReportPageState extends State<ReportPage> {
             ],
           );
         });
-  }
+  }*/
 }

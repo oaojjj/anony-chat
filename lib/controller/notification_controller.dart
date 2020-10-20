@@ -49,11 +49,11 @@ class NotificationController {
         _firebaseMessaging.requestNotificationPermissions(
             IosNotificationSettings(sound: true, badge: true, alert: true));
       }
-
       final userToken = HiveController.instance.getFCMToken();
+
       if (userToken == null) {
         _firebaseMessaging.getToken().then((val) async {
-          print('Token: ' + val);
+          print('token: ' + val);
           HiveController.instance.setFCMToken(val);
         });
       }

@@ -39,6 +39,7 @@ class AnonymousChat extends StatefulWidget {
 }
 
 class _AnonymousChatState extends State<AnonymousChat> {
+
   @override
   void initState() {
     super.initState();

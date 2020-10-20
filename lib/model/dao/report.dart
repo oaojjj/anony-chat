@@ -1,3 +1,4 @@
+/*
 // 예시로 일단
 enum ReportType {
   // 욕설
@@ -49,3 +50,4 @@ class Report {
         ReportType.IllegalThing
       ];
 }
+*/

@@ -1,3 +1,4 @@
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -54,19 +55,18 @@ class ChatModel {
             {'lastMessage': message.content, 'lastMessageTime': message.time});
   }
 
-  // TODO 매칭시스템 만들기
   createChatRoom({ChatRoom chatRoom}) async {
-    // chatRoom.message.senderID = HiveController.instance.getMemberID();
+    chatRoom.message.senderID = HiveController.instance.getMemberID();
 
+    // api 이용해서 상대방 id 가져오기
     int receiver = 1;
-    chatRoom.message.senderID = 2;
     chatRoom.message.receiverID = receiver;
     chatRoom.withWho = receiver;
 
     // 채팅 리스트 만들기
     _createChatList(chatRoom);
 
-    // 나의 너의 채팅방 만들기
+    // 채팅방 만들기
     _createChatRoom(chatRoom);
   }
 

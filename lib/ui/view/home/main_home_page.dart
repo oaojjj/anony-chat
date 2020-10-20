@@ -23,8 +23,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print(HiveController.instance.getFCMToken());
-    print(Provider.of<RegisterProvider>(context).member.studentID);
+    print("fcmToken:${HiveController.instance.getFCMToken()}");
   }
 
   @override

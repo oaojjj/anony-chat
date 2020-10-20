@@ -1,6 +1,8 @@
 import 'package:anony_chat/controller/hive_controller.dart';
-import 'package:anony_chat/model/dao/report.dart';
+import 'package:anony_chat/model/report/report_type.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:anony_chat/viewmodel/report_http_model.dart';
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 
 class ChatReportPage extends StatefulWidget {
@@ -9,20 +11,9 @@ class ChatReportPage extends StatefulWidget {
 }
 
 class _ChatReportPageState extends State<ChatReportPage> {
-  int memberID = 5463;
-  ReportType _selectedType = ReportType.FourLetterWord;
-
-  @override
-  void initState() {
-    super.initState();
-    initID();
-  }
-
-  initID() {
-    memberID = HiveController.instance.getMemberID();
-  }
-
-  List<ReportType> reportType = Report.getList();
+  final AsyncMemoizer _memoizer = AsyncMemoizer();
+  String _selectedType;
+  List<String> reportType = [];
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +52,7 @@ class _ChatReportPageState extends State<ChatReportPage> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24.0, vertical: 4),
                           child: Text(
-                            '회원번호 $memberID',
+                            '회원번호 ${HiveController.instance.getMemberID()}',
                             style: TextStyle(color: Colors.white, fontSize: 15),
                           ),
                         ),
@@ -83,20 +74,28 @@ class _ChatReportPageState extends State<ChatReportPage> {
                                 style: TextStyle(fontSize: 15),
                               )),
                         ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: reportType.length,
-                          itemBuilder: (context, index) {
-                            return RadioListTile(
-                                title: Text(Report.changeTypeToKoreanWord(
-                                    reportType[index])),
-                                value: reportType[index],
-                                groupValue: _selectedType,
-                                onChanged: (value) {
-                                  setState(() => _selectedType = value);
-                                });
-                          },
-                        ),
+                        FutureBuilder(
+                            future: getReportType(),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data.length,
+                                  itemBuilder: (context, index) {
+                                    return RadioListTile(
+                                        title: Text(snapshot.data[index]),
+                                        value: snapshot.data[index],
+                                        groupValue: _selectedType,
+                                        onChanged: (value) {
+                                          setState(() => _selectedType = value);
+                                        });
+                                  },
+                                );
+                              } else if (snapshot.hasError) {
+                                return Text("${snapshot.error}");
+                              }
+                              return CircularProgressIndicator();
+                            }),
                         SizedBox(height: 8)
                       ],
                     ),
@@ -157,5 +156,16 @@ class _ChatReportPageState extends State<ChatReportPage> {
         ),
       ),
     );
+  }
+
+  Future<void> getReportType() async {
+    return this._memoizer.runOnce(() async {
+      ReportType rt = await ReportHttpModel().requestReportType();
+      rt.data.item.forEach((element) {
+        print(element["value"]);
+        reportType.add(element["value"]);
+      });
+      return reportType;
+    });
   }
 }

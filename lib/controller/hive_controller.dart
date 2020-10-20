@@ -34,7 +34,7 @@ class HiveController {
   AuthStatus getAuthStatus() =>
       Hive.box('auth').get('authStatus') ?? AuthStatus.nonRegistered;
 
-  int getMemberID() => Hive.box('member').get('id');
+  int getMemberID() => Hive.box('member').get('userID');
 
   String getFCMToken() => Hive.box('member').get('fcmToken') ?? null;
 

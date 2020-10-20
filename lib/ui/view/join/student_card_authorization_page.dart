@@ -1,8 +1,5 @@
 import 'dart:io';
 
-import 'package:anony_chat/model/auth/auth_sign_in.dart';
-import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/model/user/user_info.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
@@ -31,9 +28,6 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
 
   MemberModel _memberModel = MemberModel();
   CareerNetModel _careerNetModel = CareerNetModel();
-  AuthHttpModel _authHttpModel = AuthHttpModel();
-  FileHttpModel _fileHttpModel = FileHttpModel();
-  UserHttpModel _userHttpModel = UserHttpModel();
 
   RegExp regExp = RegExp(r'^[+-]?([0-9]+([0-9]*)?|[0-9]+)$');
 
@@ -919,40 +913,14 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
       setState(() => loading = true);
       final rp = Provider.of<RegisterProvider>(context, listen: false);
       final result = await _memberModel.register(rp.member);
-      if (result)
-        _appLogin(rp.member);
-      else {
-        print('#회원가입 실패');
-        Navigator.pop(context);
-      }
-    }
-  }
-
-  Future<int> _appLogin(Member member) async {
-    print('-----앱 로그인 시도-----');
-    AuthSignIn loginResult =
-        await _authHttpModel.requestSingIn('kakao', member.authID.toString());
-    print('로그인 결과 ${loginResult.toJson()}');
-
-    if (loginResult.code == ResponseCode.SUCCESS_CODE) {
-      print('#앱 로그인 성공');
-      print('토큰 ${loginResult.data.item[0]}');
-      headers['token'] = loginResult.data.item[0];
-
-      print('#학생증 업로드');
-      final uploadResult =
-          await _fileHttpModel.uploadFile(file: member.studentCardImage);
-      print('#학생증 업로드 결과:$uploadResult');
-
-      UserInfo userEditResult = await _userHttpModel.userEdit(member,
-          imageCode: uploadResult.data.item[0]);
-      if (userEditResult.code == ResponseCode.SUCCESS_CODE) {
+      if (result) {
         print('#최종 회원가입 성공');
         Navigator.pushNamedAndRemoveUntil(
             context, '/main_page', (route) => false);
+      } else {
+        print('#회원가입 실패');
+        Navigator.pop(context);
       }
-    } else {
-      print('#앱 로그인 실패 why?');
     }
   }
 }
