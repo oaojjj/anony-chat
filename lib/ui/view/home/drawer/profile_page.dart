@@ -455,16 +455,28 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future updateProfile() async {
     try {
-      _member = await _memberModel.updateProfile(_fixProfile);
-      _fixProfile = Member.fromJson(_member.toJson());
+      final result = await _memberModel.updateProfile(_fixProfile);
+      if (result) {
+        _member = _fixProfile;
+        Fluttertoast.showToast(
+            msg: '수정되었습니다.',
+            fontSize: 15,
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_SHORT);
+      } else {
+        _fixProfile = _member;
+        Fluttertoast.showToast(
+            msg: '수정에 실패했습니다.',
+            fontSize: 15,
+            backgroundColor: Colors.black87,
+            textColor: Colors.white,
+            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_SHORT);
+        return;
+      }
       setState(() => _isFix = false);
-      Fluttertoast.showToast(
-          msg: '수정되었습니다.',
-          fontSize: 15,
-          backgroundColor: Colors.black87,
-          textColor: Colors.white,
-          gravity: ToastGravity.CENTER,
-          toastLength: Toast.LENGTH_SHORT);
     } catch (e) {
       print('profileUpdateError');
     }

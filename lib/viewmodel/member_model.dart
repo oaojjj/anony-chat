@@ -116,16 +116,14 @@ class MemberModel {
   }
 
   // 회원 프로필 수정하기
-  Future<Member> updateProfile(Member fixProfile) async {
+  Future<bool> updateProfile(Member fixProfile) async {
     HiveController.instance.saveMemberInfoToLocal(fixProfile);
-
-    await _db
-        .reference()
-        .child(USERS_COLLECTION)
-        .child('${fixProfile.userID}')
-        .update(fixProfile.toJson());
-
-    return fixProfile;
+    UserInfo userEditResult = await _userHttpModel.userEdit(fixProfile);
+    if (userEditResult.code == ResponseCode.SUCCESS_CODE) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /* // 남은 메시지 조회
