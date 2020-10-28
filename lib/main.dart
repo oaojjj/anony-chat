@@ -1,6 +1,6 @@
 import 'package:anony_chat/controller/notification_controller.dart';
 import 'package:anony_chat/provider/register_provider.dart';
-import 'package:anony_chat/provider/member_auth_provider.dart';
+import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/routes.dart';
 import 'package:anony_chat/ui/view/join/intro_page.dart';
 import 'package:anony_chat/utils/utill.dart';
@@ -19,14 +19,13 @@ void main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   headers['Content-Type'] = 'application/json; charset=utf-8';
   await Hive.initFlutter();
-  Hive.registerAdapter(AuthStatusAdapter());
   await Hive.openBox('member');
   await Hive.openBox('auth');
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: RegisterProvider()),
-        ChangeNotifierProvider.value(value: MemberAuthProvider()),
+        ChangeNotifierProvider.value(value: AuthProvider()),
       ],
       child: AnonymousChat(),
     ),

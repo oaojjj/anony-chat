@@ -1,4 +1,5 @@
 import 'package:anony_chat/controller/hive_controller.dart';
+import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/home/home_drawer.dart';
 import 'package:anony_chat/utils/utill.dart';
@@ -24,6 +25,7 @@ class _MainPageState extends State<MainPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     print("fcmToken:${HiveController.instance.getFCMToken()}");
+    print("authState:${Provider.of<AuthProvider>(context, listen: false).authState}");
   }
 
   @override

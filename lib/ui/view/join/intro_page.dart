@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:anony_chat/model/auth/auth_sign_in.dart';
+import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/auth_http_model.dart';
@@ -204,35 +205,41 @@ class _IntroPageState extends State<IntroPage> {
 
   login() async {
     try {
+      print('#카카오톡 로그인 시도');
       User user = await KakaoTalkLogin();
-
       if (user.id != null) {
         print('#카카오톡 로그인 성공');
-        if (user.kakaoAccount.ageRange != AgeRange.TWENTIES)
-          cantRegisterDialog();
-        else {
-          print('-----앱 로그인 시도-----');
-          AuthSignIn loginResult =
-              await _authHttpModel.requestSingIn('kakao', user.id.toString());
-          print('로그인 결과 ${loginResult.toJson()}');
 
+        if (user.kakaoAccount.ageRange != AgeRange.TWENTIES ||
+            user.kakaoAccount.ageRange == null) {
+          cantRegisterDialog();
+        } else {
+          print('#앱 로그인 시도');
+          final authProvider = Provider.of<AuthProvider>(context);
+          final loginResult =
+              await _authHttpModel.requestSingIn('kakao', user.id.toString());
+
+          print('로그인 결과 ${loginResult.toJson()}');
           if (loginResult.code == ResponseCode.SUCCESS_CODE) {
-            print('#앱 로그인 성공');
-            headers.forEach((key, value) => print('헤더 $key // $value'));
-            print('토큰 ${loginResult.data.item[0]}');
+            print('#앱 로그인 성공(정상인증)');
+
+            // 파이어베이스 토큰 업데이트도 해야할듯?
+            print('jwtToken ${loginResult.data.item[0]}');
             headers['token'] = loginResult.data.item[0];
-            /*await PushNotificationManager()
-                .firebaseMessaging
-                .getToken()
-                .then((token) async {
-              print('파이어베이스 token:' + token);
-              await userHttpModel.modUserInfo(msgToken: token);
-              print('토큰 업뎃함');
-            });*/
+
+            // 사용자 인증 상태 업데이트
+            authProvider.setAuthState(loginResult.code);
             Navigator.pushNamed(context, '/main_page');
+          } else if (loginResult.code == ResponseCode.NOT_AUTHORIZED) {
+            print('#앱 로그인 성공(인증대기)');
+          } else if (loginResult.code == ResponseCode.DENIED_AUTHORIZED) {
+            print('#앱 로그인 성공(인증거절)');
+          } else if (loginResult.code == ResponseCode.BANNED_USER) {
+            print('#앱 로그인 성공(사용정지)');
           } else if (loginResult.code == ResponseCode.DATA_NOT_FOUND) {
             print('#앱 로그인 실패 -> 회원가입');
-            Provider.of<RegisterProvider>(context, listen: false).setMemberInfoWithKakao(user);
+            Provider.of<RegisterProvider>(context, listen: false)
+                .setMemberInfoWithKakao(user);
             Navigator.pushNamed(context, '/student_card_authorization_page');
           }
         }

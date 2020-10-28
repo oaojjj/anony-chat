@@ -49,16 +49,16 @@ class NotificationController {
         _firebaseMessaging.requestNotificationPermissions(
             IosNotificationSettings(sound: true, badge: true, alert: true));
       }
-      final userToken = HiveController.instance.getFCMToken();
 
+      final userToken = HiveController.instance.getFCMToken();
       if (userToken == null) {
         _firebaseMessaging.getToken().then((val) async {
-          print('token: ' + val);
+          print('fcmToken: ' + val);
           HiveController.instance.setFCMToken(val);
         });
       }
     } catch (e) {
-      print(e.message);
+      print('fcmToken_error: ${e.message}');
     }
   }
 

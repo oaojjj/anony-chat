@@ -1,5 +1,5 @@
 import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/provider/member_auth_provider.dart';
+import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:hive/hive.dart';
 
 class HiveController {
@@ -24,15 +24,6 @@ class HiveController {
     box.put('isNotMatchingSameUniversity', member.isNotMatchingSameUniversity);
     box.put('isNotMatchingSameDepartment', member.isNotMatchingSameDepartment);
   }
-
-/*  onRegisterCompleted() =>
-      Hive.box('auth').put('authStatus', AuthStatus.registered);
-
-  onRegisterSecession() =>
-      Hive.box('auth').put('authStatus', AuthStatus.nonRegistered);*/
-
-  AuthStatus getAuthStatus() =>
-      Hive.box('auth').get('authStatus') ?? AuthStatus.nonRegistered;
 
   int getMemberID() => Hive.box('member').get('userID');
 

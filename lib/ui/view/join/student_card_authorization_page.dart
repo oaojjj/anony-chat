@@ -1,14 +1,12 @@
 import 'dart:io';
 
+import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/utils/utill.dart';
-import 'package:anony_chat/viewmodel/auth_http_model.dart';
 import 'package:anony_chat/viewmodel/career_net_model.dart';
-import 'package:anony_chat/viewmodel/file_http_model.dart';
 import 'package:anony_chat/viewmodel/member_model.dart';
-import 'package:anony_chat/viewmodel/user_http_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -915,6 +913,8 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
       final result = await _memberModel.register(rp.member);
       if (result) {
         print('#최종 회원가입 성공');
+        Provider.of<AuthProvider>(context, listen: false)
+            .setAuthState(ResponseCode.NOT_AUTHORIZED);
         Navigator.pushNamedAndRemoveUntil(
             context, '/main_page', (route) => false);
       } else {

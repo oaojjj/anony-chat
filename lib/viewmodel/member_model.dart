@@ -28,8 +28,7 @@ class MemberModel {
     member.phoneNumber = "01092826796";
 
     // 서버에 사용자 정보로 회원가입
-    final signUpResult =
-        await _authHttpModel.requestSingUp("kakao", member);
+    final signUpResult = await _authHttpModel.requestSingUp("kakao", member);
 
     if (signUpResult.code == ResponseCode.SUCCESS_CODE) {
       print('#회원가입 성공');
@@ -53,24 +52,21 @@ class MemberModel {
         UserInfo userEditResult = await _userHttpModel.userEdit(member,
             imageCode: uploadResult.data.item[0]);
         if (userEditResult.code == ResponseCode.SUCCESS_CODE) {
+          print('#학생증 업로드 성공');
           return true;
         } else {
-          print('#학생증 업로드 에딧 실패');
+          print('#학생증 업로드 파일 실패');
           return false;
         }
+      } else {
+        print('#학생증 업로드 에디트 실패');
+        return false;
       }
     } else {
       print('#회원가입 실패');
       print(signUpResult.toJson());
       return false;
     }
-
-    // 일단 파이어베이스에서 테스트
-    /* await _fdb
-        .collection(USERS_COLLECTION)
-        .doc('${member.userID}')
-        .set(member.toJson());
-     */
   }
 
   // 전체 회원 수 가져오기

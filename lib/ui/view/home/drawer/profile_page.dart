@@ -1,6 +1,6 @@
 import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
-import 'package:anony_chat/provider/member_auth_provider.dart';
+import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/utils/utill.dart';
@@ -203,7 +203,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         Flexible(
                             fit: FlexFit.tight,
                             flex: 2,
-                            child: Center(child: Text(member.birthYear.toString()))),
+                            child: Center(
+                                child: Text(member.birthYear.toString()))),
                         Flexible(
                             fit: FlexFit.tight, flex: 1, child: Container())
                       ],
@@ -215,7 +216,7 @@ class _ProfilePageState extends State<ProfilePage> {
         SizedBox(height: CARD_SIZED_BOX_HEIGHT),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: HORIZONTAL_PADDING),
-          child: Consumer<MemberAuthProvider>(
+          child: Consumer<AuthProvider>(
             builder: (_, sca, __) => Card(
               elevation: 3,
               child: Padding(
@@ -469,10 +470,10 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  TextStyle getStateTextStyle(MemberAuthProvider authProvider) {
+  TextStyle getStateTextStyle(AuthProvider authProvider) {
     return TextStyle(
         fontSize: 16,
-        color: authProvider.scaState == StdCardAuthState.authorizations
+        color: authProvider.authState == AuthState.authorizations
             ? Colors.black
             : Colors.grey);
   }
