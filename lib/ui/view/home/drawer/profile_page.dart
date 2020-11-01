@@ -60,7 +60,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     _isFix = !(_member == _fixProfile);
-    print('isFixProfile: $_isFix');
     return loading
         ? Loading()
         : SafeArea(
@@ -249,7 +248,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           fit: FlexFit.tight,
                           flex: 1,
                           child: Center(
-                              child: Text(sca.authorizationStateString())),
+                              child: Text(
+                            sca.authorizationStateString(),
+                            style: TextStyle(fontSize: 12),
+                          )),
                         )
                       ],
                     ),
@@ -453,33 +455,37 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future updateProfile() async {
+  Future<void> updateProfile() async {
+    if (Provider.of<AuthProvider>(context, listen: false).authState ==
+        AuthState.authorizations) {
+      showToast('인증이 안료되어야 수정이 가능합니다.');
+      _fixProfile = _member;
+      return;
+    }
     try {
       final result = await _memberModel.updateProfile(_fixProfile);
       if (result) {
         _member = _fixProfile;
-        Fluttertoast.showToast(
-            msg: '수정되었습니다.',
-            fontSize: 15,
-            backgroundColor: Colors.black87,
-            textColor: Colors.white,
-            gravity: ToastGravity.CENTER,
-            toastLength: Toast.LENGTH_SHORT);
+        showToast('수정되었습니다.');
       } else {
         _fixProfile = _member;
-        Fluttertoast.showToast(
-            msg: '수정에 실패했습니다.',
-            fontSize: 15,
-            backgroundColor: Colors.black87,
-            textColor: Colors.white,
-            gravity: ToastGravity.CENTER,
-            toastLength: Toast.LENGTH_SHORT);
+        showToast('수정에 실패했습니다.');
         return;
       }
       setState(() => _isFix = false);
     } catch (e) {
       print('profileUpdateError');
     }
+  }
+
+  void showToast(text) {
+    Fluttertoast.showToast(
+        msg: text,
+        fontSize: 15,
+        backgroundColor: Colors.black87,
+        textColor: Colors.white,
+        gravity: ToastGravity.CENTER,
+        toastLength: Toast.LENGTH_SHORT);
   }
 
   TextStyle getStateTextStyle(AuthProvider authProvider) {
@@ -491,7 +497,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _fetchData() {
-    _member = HiveController.instance.loadProfileToLocal();
+    _member = HiveController.instance.loadMemberInfoToLocal();
     _fixProfile = Member.fromJson(_member.toJson());
     _selectedCity = _fixProfile.city;
     setState(() => loading = false);
@@ -520,7 +526,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   squeeze: 1,
                   backgroundColor: Colors.grey[100],
                   onSelectedItemChanged: (index) {
-                    setState(() => _selectedCity = _cityList[index]);
+                    _selectedCity = _cityList[index];
                   },
                   itemBuilder: (_, index) => Center(
                     child: Text(_cityList[index],

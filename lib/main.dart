@@ -15,7 +15,8 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  NotificationController.instance.firebaseMessaging.requestNotificationPermissions();
+  NotificationController.instance.firebaseMessaging
+      .requestNotificationPermissions();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   headers['Content-Type'] = 'application/json; charset=utf-8';
   await Hive.initFlutter();
@@ -38,12 +39,13 @@ class AnonymousChat extends StatefulWidget {
 }
 
 class _AnonymousChatState extends State<AnonymousChat> {
-
   @override
   void initState() {
     super.initState();
-    NotificationController.instance.takeFCMTokenWhenAppLaunch();
-    NotificationController.instance.init();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await NotificationController.instance.takeFCMTokenWhenAppLaunch();
+      await NotificationController.instance.init();
+    });
   }
 
   @override

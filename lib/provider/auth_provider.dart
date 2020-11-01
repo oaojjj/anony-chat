@@ -38,6 +38,8 @@ class AuthProvider extends ChangeNotifier {
         return '(인증대기중)';
       case AuthState.deniedAuthorized:
         return '(인증거절)';
+      case AuthState.banned:
+        return '(사용정지)';
       default:
         return '';
     }
@@ -59,6 +61,6 @@ class AuthProvider extends ChangeNotifier {
         break;
     }
     notifyListeners();
-    // HiveController.instance.setAuthState();
+    // HiveController.instance.setAuthState(code);
   }
 }

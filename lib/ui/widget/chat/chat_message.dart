@@ -21,6 +21,7 @@ class _MessageState extends State<ChatMessage> {
     super.initState();
     isSendByMe =
         widget.message.senderID == HiveController.instance.getMemberID();
+    print('${widget.message.toJson()}, $isSendByMe');
   }
 
   @override
@@ -28,7 +29,7 @@ class _MessageState extends State<ChatMessage> {
     return Container(
       child: Column(
         crossAxisAlignment:
-            isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        isSendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
@@ -37,15 +38,15 @@ class _MessageState extends State<ChatMessage> {
                   color: isSendByMe ? Colors.black : chatPrimaryColor,
                   borderRadius: isSendByMe
                       ? BorderRadius.only(
-                          topLeft: Radius.circular(32.0),
-                          topRight: Radius.circular(32.0),
-                          bottomLeft: Radius.circular(32.0),
-                        )
+                    topLeft: Radius.circular(32.0),
+                    topRight: Radius.circular(32.0),
+                    bottomLeft: Radius.circular(32.0),
+                  )
                       : BorderRadius.only(
-                          topLeft: Radius.circular(32.0),
-                          topRight: Radius.circular(32.0),
-                          bottomRight: Radius.circular(32.0),
-                        ),
+                    topLeft: Radius.circular(32.0),
+                    topRight: Radius.circular(32.0),
+                    bottomRight: Radius.circular(32.0),
+                  ),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -59,7 +60,7 @@ class _MessageState extends State<ChatMessage> {
                 : const EdgeInsets.only(left: 16.0, bottom: 8.0),
             child: Row(
               mainAxisAlignment:
-                  isSendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+              isSendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 4.0),
@@ -69,7 +70,7 @@ class _MessageState extends State<ChatMessage> {
                 !isSendByMe
                     ? Container()
                     : Text(widget.message.isRead ? '읽음' : '안읽음',
-                        style: TextStyle(fontSize: 12.0)),
+                    style: TextStyle(fontSize: 12.0)),
               ],
             ),
           )

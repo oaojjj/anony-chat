@@ -1,4 +1,4 @@
-import 'package:anony_chat/model/report/report_type.dart' as test;
+import 'package:anony_chat/model/dao/report_type_dao.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/report_http_model.dart';
 import 'package:flutter/material.dart';
@@ -10,29 +10,58 @@ class ReportPage extends StatefulWidget {
 }
 
 class _ReportPageState extends State<ReportPage> {
-  bool isReported = false;
+  final _reportHttpModel = ReportHttpModel();
 
-  @override
-  void initState() {
-    super.initState();
-    init();
-  }
-
-  Future init() async {
-    test.ReportType reportType = await ReportHttpModel().requestReportType();
-    print(reportType.data.item[0]);
-  }
+  bool _isBanned = false;
 
   final List<Tab> tabs = [
     Tab(
-      child: Text('신고된 내역', style: TextStyle(fontSize: 18)),
+      child: Text('신고한 내역', style: TextStyle(fontSize: 18)),
     ),
     Tab(
-      child: Text('신고한 내역', style: TextStyle(fontSize: 18)),
+      child: Text('신고된 내역', style: TextStyle(fontSize: 18)),
     )
   ];
 
+  final List<ReportTypeDao> reportList = [];
+  final List<ReportTypeDao> reportedList = [];
 
+  initTest() {
+    reportList.add(ReportTypeDao(
+        reportType: "욕설", createBy: "2020-10-08 13:49:11", id: 6));
+    reportList.add(ReportTypeDao(
+        reportType: "욕설", createBy: "2020-10-08 13:49:11", id: 6));
+    reportList.add(ReportTypeDao(
+        reportType: "욕설", createBy: "2020-10-08 13:49:11", id: 6));
+    reportList.add(ReportTypeDao(
+        reportType: "욕설", createBy: "2020-10-08 13:49:11", id: 6));
+    reportedList
+        .add(ReportTypeDao(reportType: "욕설", createBy: "2020-10-08 13:49:11"));
+    reportedList
+        .add(ReportTypeDao(reportType: "욕설", createBy: "2020-10-08 13:49:11"));
+    reportedList
+        .add(ReportTypeDao(reportType: "욕설", createBy: "2020-10-08 13:49:11"));
+  }
+
+  Future<bool> _fetchList() async {
+    final resultReportList = await _reportHttpModel.getReportList(page: 1);
+    final resultReportedList = await _reportHttpModel.getReportedList(page: 1);
+
+    print(resultReportList.toJson());
+    print(resultReportedList.toJson());
+
+    if (resultReportList.data.itemLength != 0)
+      resultReportList.data.item.forEach((element) {
+        reportList.add(ReportTypeDao.fromJson(element));
+      });
+
+    if (resultReportedList.data.itemLength != 0)
+      resultReportedList.data.item.forEach((element) {
+        reportedList.add(ReportTypeDao.fromJson(element));
+      });
+
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +97,7 @@ class _ReportPageState extends State<ReportPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          isReported ? '서비스제한중' : '정상이용가능',
+                          _isBanned ? '서비스제한중' : '정상이용가능',
                           style: TextStyle(color: Colors.white, fontSize: 18),
                         ),
                         getReportTime()
@@ -84,24 +113,36 @@ class _ReportPageState extends State<ReportPage> {
                 children: [
                   TabBar(
                     indicator: BoxDecoration(
-                        border: Border(
-                            bottom:
-                                BorderSide(width: 5, color: chatPrimaryColor))),
+                      border: Border(
+                        bottom: BorderSide(width: 5, color: chatPrimaryColor),
+                      ),
+                    ),
                     tabs: tabs,
                     labelColor: Colors.black,
                   ),
                   SingleChildScrollView(
-                    child: Container(
-                      height: deviceSize.height - 203,
-                      child: TabBarView(
-                        children: tabs.map((Tab tab) {
-                          int index = tabs.indexOf(tab);
+                    child: FutureBuilder(
+                      future: _fetchList(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
                           return Container(
-                            width: double.infinity,
-                            child: Text('ih'),
+                            height: deviceSize.height - 203,
+                            child: TabBarView(
+                              children: tabs.map((Tab tab) {
+                                int index = tabs.indexOf(tab);
+                                return Container(
+                                  width: double.infinity,
+                                  child: buildReportedList(index),
+                                );
+                              }).toList(),
+                            ),
                           );
-                        }).toList(),
-                      ),
+                        } else {
+                          return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator());
+                        }
+                      },
                     ),
                   ),
                 ],
@@ -115,7 +156,7 @@ class _ReportPageState extends State<ReportPage> {
 
   Widget getReportTime() {
     final time = DateFormat('yyyy년 M월 dd').format(DateTime.now());
-    return isReported
+    return _isBanned
         ? Text(
             '${time.toString()}까지',
             style: TextStyle(color: Colors.white),
@@ -123,30 +164,32 @@ class _ReportPageState extends State<ReportPage> {
         : Container();
   }
 
-  /*buildReportedList(int index) {
-    final List<int> item = 0 ;
+  buildReportedList(int index) {
+    final List<ReportTypeDao> item = (index == 0) ? reportList : reportedList;
     return ListView.builder(
-        itemCount: index == 0 ? ,
+        itemCount: index == 0 ? reportList.length : reportedList.length,
         itemBuilder: (context, ix) {
           return Column(
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.only(left: 16.0, top: 4.0, bottom: 4.0),
-                child: Row(
-                  children: [
-                    Text(
-                      '신고된 유저',
-                      style: TextStyle(color: Colors.grey, fontSize: 18),
-                    ),
-                    SizedBox(width: 16),
-                    Text(
-                      '${item[ix].opponentID}',
-                      style: TextStyle(fontSize: 18),
+              index == 0
+                  ? Padding(
+                      padding: const EdgeInsets.only(
+                          left: 16.0, top: 4.0, bottom: 4.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            '신고당한 유저',
+                            style: TextStyle(color: Colors.grey, fontSize: 18),
+                          ),
+                          SizedBox(width: 16),
+                          Text(
+                            '${item[ix].id}',
+                            style: TextStyle(fontSize: 18),
+                          )
+                        ],
+                      ),
                     )
-                  ],
-                ),
-              ),
+                  : Container(),
               Padding(
                 padding: const EdgeInsets.only(
                     left: 16.0, top: 4.0, bottom: 4.0, right: 8.0),
@@ -160,7 +203,7 @@ class _ReportPageState extends State<ReportPage> {
                     Text(item[ix].reportType, style: TextStyle(fontSize: 18)),
                     Spacer(),
                     Text(
-                      item[ix].isProcessed == true ? '처리완료' : '신고접수',
+                      item[ix].createBy,
                       style: TextStyle(color: Colors.grey),
                     )
                   ],
@@ -173,5 +216,5 @@ class _ReportPageState extends State<ReportPage> {
             ],
           );
         });
-  }*/
+  }
 }

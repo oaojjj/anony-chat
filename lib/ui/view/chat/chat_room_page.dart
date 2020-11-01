@@ -1,13 +1,11 @@
 import 'dart:async';
 
 import 'package:anony_chat/model/dao/message.dart';
+import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/ui/widget/chat/chat_message.dart';
-import 'package:anony_chat/viewmodel/chat_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_database/ui/firebase_animated_list.dart';
+import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
 
 class ChatRoomPage extends StatefulWidget {
   final receiverID;
@@ -30,7 +28,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   final List<ChatMessage> _messages = [];
 
   final chatAppBarName = '익명의 상대방';
+
+  int limit = 20;
   bool _isSubmit = true;
+
+  AuthState _authState;
+
+  @override
+  void initState() {
+    super.initState();
+    _authState = Provider.of<AuthProvider>(context, listen: false).authState;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +49,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           backgroundColor: Colors.white,
           title: Text(chatAppBarName, style: TextStyle(color: Colors.black)),
           centerTitle: true,
+          elevation: 2,
           iconTheme: IconThemeData(color: Colors.black),
           actions: [
             // hint => https://www.freewebmentor.com/questions/how-to-change-the-enddrawer-icon-in-flutter
@@ -58,19 +67,20 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             children: [
               Expanded(
                 child: StreamBuilder(
-                  stream: _chatModel.getChatMessageList(widget.chatRoomID, 20),
+                  stream:
+                      _chatModel.getChatMessageList(widget.chatRoomID, limit),
                   builder: (context, snapshot) {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
                     } else {
-                      final List<QueryDocumentSnapshot> chatList =
-                          snapshot.data.documents;
                       _messages.clear();
-                      chatList.forEach((element) {
+
+                      snapshot.data.documents.forEach((element) {
                         final value = element.data();
-                        print(value);
+                        print('msg: $value');
                         _messages.add(ChatMessage(
                           message: Message(
+                              senderID: value['senderID'],
                               content: value['content'],
                               time: value['time'],
                               isRead: value['isRead']),
@@ -150,7 +160,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         receiverID: widget.receiverID,
         senderID: widget.senderID);
 
-    _chatModel.sendMessage(message: msg);
+    _chatModel.sendMessage(chatRoomId: widget.chatRoomID, message: msg);
     _focusNode.requestFocus();
     _scrollController.animateTo(0.0,
         duration: Duration(milliseconds: 300), curve: Curves.easeOut);
@@ -200,10 +210,17 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   height: 24,
                 ),
               ),
-              title: Text('신고하기', style: TextStyle(fontSize: 18.0)),
-              onTap: () {
-                Navigator.pushNamed(context, '/report_chat_page');
-              },
+              title: Text('신고하기',
+                  style: TextStyle(
+                      fontSize: 18.0,
+                      color: _authState == AuthState.authorizations
+                          ? Colors.black
+                          : Colors.grey)),
+              onTap: _authState == AuthState.authorizations
+                  ? () {
+                      Navigator.pushNamed(context, '/report_chat_page');
+                    }
+                  : null,
             ),
             Divider(
               height: 0,

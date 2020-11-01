@@ -7,6 +7,22 @@ Map headers = Map<String, String>();
 const Color chatPrimaryColor = Color.fromRGBO(81, 17, 243, 1);
 const Color chatAccentColor = Color.fromRGBO(100, 70, 245, 1);
 
+class ChatUtil {
+  static convertTimeToString(int time) {
+    final now = DateTime.now();
+    final tf = DateTime.fromMillisecondsSinceEpoch(time); // 오늘
+
+    if (now.difference(tf).inHours > 24) {
+      if (now.year - tf.year != 0)
+        return '${tf.year}년${tf.month}월${tf.day}일';
+      else
+        return '${tf.month}월${tf.day}일';
+    } else {
+      return '${tf.hour < 12 ? '오전' : '오후'} ${tf.hour > 12 ? tf.hour - 12 : tf.hour}:${tf.minute}';
+    }
+  }
+}
+
 class ResponseCode {
   /// 정상실행
   static const SUCCESS_CODE = 1000;

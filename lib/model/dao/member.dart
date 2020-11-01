@@ -16,6 +16,7 @@ class Member {
   int birthYear;
   String phoneNumber;
   int studentID;
+  int studentImageNumber;
   int possibleMessageOfSend;
   bool isShowMyInfo;
   bool isNotMatchingSameUniversity;
@@ -33,6 +34,7 @@ class Member {
       this.birthYear,
       this.phoneNumber,
       this.studentID,
+      this.studentImageNumber,
       this.possibleMessageOfSend = 2,
       this.isShowMyInfo = false,
       this.isNotMatchingSameUniversity = false,
@@ -45,7 +47,7 @@ class Member {
 
   @override
   String toString() {
-    return 'Member{userID: $userID,authID: $authID, fcmToken: $fcmToken, gender: $gender, city: $city, university: $university, department: $department, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, possibleMessageOfSend: $possibleMessageOfSend, isShowMyInfo: $isShowMyInfo, isNotMatchingSameUniversity: $isNotMatchingSameUniversity, isNotMatchingSameDepartment: $isNotMatchingSameDepartment, studentCardImage: $studentCardImage}';
+    return 'Member{userID: $userID,authID: $authID, fcmToken: $fcmToken, gender: $gender, city: $city, university: $university, department: $department, birthYear: $birthYear, phoneNumber: $phoneNumber, studentID: $studentID, studentImageNumber: $studentImageNumber,possibleMessageOfSend: $possibleMessageOfSend, isShowMyInfo: $isShowMyInfo, isNotMatchingSameUniversity: $isNotMatchingSameUniversity, isNotMatchingSameDepartment: $isNotMatchingSameDepartment, studentCardImage: $studentCardImage}';
   }
 
   @override

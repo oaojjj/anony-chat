@@ -41,6 +41,33 @@ class NotificationController {
           iOS: initializationSettingsIOS);
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
     }
+
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
+  }
+
+  static Future<dynamic> myBackgroundMessageHandler(
+      Map<String, dynamic> message) async {
+    if (message.containsKey('data')) {
+      // Handle data message
+      final dynamic data = message['data'];
+    }
+
+    if (message.containsKey('notification')) {
+      // Handle notification message
+      final dynamic notification = message['notification'];
+    }
+
+    // Or do other work.
   }
 
   Future takeFCMTokenWhenAppLaunch() async {
@@ -62,8 +89,7 @@ class NotificationController {
     }
   }
 
-  /*
- sendLocalNotification(name, msg) async {
+  sendLocalNotification(name, msg) async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
         importance: Importance.max, priority: Priority.high, ticker: 'ticker');
@@ -74,10 +100,10 @@ class NotificationController {
     await _flutterLocalNotificationsPlugin
         .show(0, name, msg, platformChannelSpecifics, payload: 'item x');
   }
- */
 
   Future<void> sendNotificationToPeerUser(
       unReadMSGCount, messageType, text, myID, peerUserToken) async {
+    print(peerUserToken);
     await http.post(
       'https://fcm.googleapis.com/fcm/send',
       headers: <String, String>{
@@ -88,7 +114,7 @@ class NotificationController {
         <String, dynamic>{
           'notification': <String, dynamic>{
             'body': messageType == 'text' ? '$text' : '(사진)',
-            'title': '$myID',
+            'title': '$myID번 회원',
             'badge': '$unReadMSGCount',
             "sound": "default"
           },

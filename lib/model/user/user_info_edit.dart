@@ -1,16 +1,16 @@
-class UserInfo {
+class UserInfoEdit {
   num code;
   String message;
   bool success;
-  UserInfoData data;
+  UserInfoEditData data;
 
-  UserInfo({this.code, this.message, this.success, this.data});
+  UserInfoEdit({this.code, this.message, this.success, this.data});
 
-  UserInfo.fromJson(Map<String, dynamic> json) {
+  UserInfoEdit.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     message = json['message'];
     success = json['success'];
-    data = json['data'] != null ? UserInfoData.fromJson(json['data']) : null;
+    data = json['data'] != null ? UserInfoEditData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -25,15 +25,15 @@ class UserInfo {
   }
 }
 
-class UserInfoData {
-  List<Map> item;
+class UserInfoEditData {
+  List<int> item;
   num itemLength;
   num total;
 
-  UserInfoData({this.item, this.itemLength});
+  UserInfoEditData({this.item, this.itemLength});
 
-  UserInfoData.fromJson(Map<String, dynamic> json) {
-    item = json['item'].cast<Map>();
+  UserInfoEditData.fromJson(Map<String, dynamic> json) {
+    item = json['item'].cast<int>();
     itemLength = json['item_length'];
     total = json['total'];
   }

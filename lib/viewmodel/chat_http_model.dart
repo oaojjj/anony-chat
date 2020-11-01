@@ -4,6 +4,7 @@ import 'package:anony_chat/model/chat/chat_user_info.dart';
 import 'package:anony_chat/utils/utill.dart';
 
 class ChatHttpModel {
+
   // 사용자 채팅 상대 반환
   Future<ChatMatching> matching() async {
     final url = '$HOST/api/v1/matching';

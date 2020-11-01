@@ -21,13 +21,13 @@ class _ChatRoomPreviewState extends State<ChatRoomPreview> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 16, right: 24, top: 16, bottom: 8),
+                    left: 16, right: 24, top: 16, bottom: 16),
                 child: Image(
                     height: 64.0, image: AssetImage('${widget.previewIcon}')),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 16, right: 8),
+                  padding: const EdgeInsets.only(top: 16, right: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -49,7 +49,11 @@ class _ChatRoomPreviewState extends State<ChatRoomPreview> {
             ],
           ),
           Divider(
-              height: 1, indent: 104, thickness: 0.4, color: Colors.black)
+              height: 1,
+              indent: 16,
+              endIndent: 16,
+              thickness: 1,
+              color: Colors.grey[200])
         ],
       ),
     );

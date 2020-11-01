@@ -1,10 +1,12 @@
 import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/provider/auth_provider.dart';
-import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/home/home_drawer.dart';
+import 'package:anony_chat/ui/widget/home/stack_item.dart';
 import 'package:anony_chat/utils/utill.dart';
+import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatefulWidget {
@@ -21,15 +23,29 @@ class _MainPageState extends State<MainPage> {
   final String _sendMsgIconPath = 'assets/icons/send_messageIcon.png';
   final String _chatListIconPath = 'assets/icons/chat_list.png';
 
+  final _chatModel = ChatModel();
+
+  final List<Widget> stackItems = [];
+
+  final int userId = HiveController.instance.getMemberID();
+  Size deviceSize;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      var status = await Permission.storage.status;
+      if (status.isUndetermined) {
+        Permission.storage.request();
+      }
+    });
     print("fcmToken:${HiveController.instance.getFCMToken()}");
     print("authState:${Provider.of<AuthProvider>(context, listen: false).authState}");
   }
 
   @override
   Widget build(BuildContext context) {
+    deviceSize = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -71,16 +87,19 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
             Expanded(
-              child: Stack(
-                children: [
-                  Center(
-                      child: IconButton(
-                          iconSize: 80,
-                          icon: Image.asset('assets/icons/messageIcon3.png'),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/chat_page');
-                          }))
-                ],
+              child: StreamBuilder<Object>(
+                stream: _chatModel.getChatRoomList(userId),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    stackItems.add(StackItem(
+                        150, deviceSize.height - 150, deviceSize.width - 50));
+                    return Stack(
+                      children: stackItems,
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
               ),
             ),
             Container(

@@ -35,7 +35,7 @@ class AuthHttpModel {
       'student_id': member.studentID ?? -1,
       'school_matching': member.isNotMatchingSameUniversity ? 1 : 0,
       'department_matching': member.isNotMatchingSameDepartment ? 1 : 0,
-      'provide': member.isShowMyInfo ? 1 : 0,
+      'provide': member.isShowMyInfo ? 0 : 1,
     });
 
     print('requestSingUp $json');

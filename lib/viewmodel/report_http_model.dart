@@ -41,7 +41,7 @@ class ReportHttpModel {
 
   // 신고당한 내역 가져오기
   Future<ReportedList> getReportedList({int page, int limit}) async {
-    final url = '$HOST/api/v1/report/be_sued_list?page$page';
+    final url = '$HOST/api/v1/report/be_sued_list?page=$page';
     headers['Content-Type'] = 'application/json; charset=utf-8';
 
     print('requestReportedList $json');

@@ -24,6 +24,7 @@ class _ItemStorePageState extends State<ItemStorePage> {
           iconTheme: IconThemeData(color: Colors.black),
           elevation: 0,
         ),
+        backgroundColor: Colors.white,
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -34,7 +35,10 @@ class _ItemStorePageState extends State<ItemStorePage> {
                 ),
               ),
               SizedBox(height: 24),
-              Image.asset(DOWN_ARROW_IMAGE_PATH, scale: 0.9),
+              Image.asset(
+                DOWN_ARROW_IMAGE_PATH,
+                scale: 1.0,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 24.0, vertical: 12.0),
@@ -50,26 +54,22 @@ class _ItemStorePageState extends State<ItemStorePage> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24.0, vertical: 16.0),
-                  child: Expanded(
-                    child: Text(
-                      '· 신청 전 주의사항\n20대만 이용할 수 있는 어플이므로 29살이신 회원님은 매년 말일에 월구독신청이 해제됩니다.',
-                      overflow: TextOverflow.visible,
-                    ),
+                  child: Text(
+                    '· 신청 전 주의사항\n20대만 이용할 수 있는 어플이므로 29살이신 회원님은 매년 말일에 월구독신청이 해제됩니다.',
+                    overflow: TextOverflow.visible,
                   ),
                 ),
               ),
               Container(
                 color: Colors.grey[300],
-                width: double.infinity,
-                child: Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0, vertical: 16.0),
-                    child: Text(
-                      '· 구입한 아이템은 환불이 불가능합니다.\n· 청구된 결제금액의 환불 및 해지는 Google / Apple 고객센터에서 가능합니다.',
-                      style: TextStyle(color: Colors.grey),
-                      overflow: TextOverflow.visible,
-                    ),
+                width: MediaQuery.of(context).size.width,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0, vertical: 16.0),
+                  child: Text(
+                    '· 구입한 아이템은 환불이 불가능합니다.\n· 청구된 결제금액의 환불 및 해지는 Google / Apple 고객센터에서 가능합니다.',
+                    style: TextStyle(color: Colors.grey, fontSize: 11),
+                    overflow: TextOverflow.visible,
                   ),
                 ),
               )

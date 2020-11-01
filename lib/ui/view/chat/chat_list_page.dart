@@ -1,7 +1,8 @@
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/ui/view/chat/chat_room_page.dart';
 import 'package:anony_chat/ui/widget/chat/chat_room_preview.dart';
 import 'package:anony_chat/utils/utill.dart';
-import 'package:anony_chat/viewmodel/chat_model.dart';
+import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,13 @@ class _ChatListPageState extends State<ChatListPage> {
 
   final _receiverID = [];
   final _chatRoomID = [];
+  int userId;
+
+  @override
+  void initState() {
+    super.initState();
+    userId = HiveController.instance.getMemberID();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +37,7 @@ class _ChatListPageState extends State<ChatListPage> {
         ),
         body: Container(
           child: StreamBuilder(
-            stream: _chatModel.getChatRoomList(1),
+            stream: _chatModel.getChatRoomList(userId),
             builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData || snapshot.hasError)
                 return Center(child: CircularProgressIndicator());
@@ -44,8 +52,8 @@ class _ChatListPageState extends State<ChatListPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ChatRoomPage(
-                                senderID: 2,
-                                receiverID: 1,
+                                senderID: userId,
+                                receiverID: _receiverID[index],
                                 chatRoomID: _chatRoomID[index]),
                           ),
                         );
@@ -65,14 +73,12 @@ class _ChatListPageState extends State<ChatListPage> {
       _chatRooms.clear();
 
       chatList.forEach((QueryDocumentSnapshot element) {
-        final time = DateTime.fromMillisecondsSinceEpoch(element['lastMessageTime']);
-
         _receiverID.add(element['withWho']);
         _chatRoomID.add(element.id);
         _chatRooms.add(ChatRoomPreview(
           previewIcon: 'assets/icons/${element['imageIcon']}',
           lastMessage: element['lastMessage'],
-          timestamp: time.toString(),
+          timestamp: ChatUtil.convertTimeToString(element['lastMessageTime']),
         ));
       });
     }

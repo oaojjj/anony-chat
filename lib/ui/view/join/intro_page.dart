@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:anony_chat/model/auth/auth_sign_in.dart';
+import 'package:anony_chat/controller/hive_controller.dart';
+import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/provider/register_provider.dart';
+import 'package:anony_chat/ui/widget/loading.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/auth_http_model.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
+import 'package:anony_chat/viewmodel/user_http_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kakao_flutter_sdk/all.dart';
@@ -19,18 +23,20 @@ class IntroPage extends StatefulWidget {
 
 class _IntroPageState extends State<IntroPage> {
   bool _isKakaoTalkInstalled = false;
-  bool loading = false;
+  bool _loading = false;
 
-  AuthHttpModel _authHttpModel = AuthHttpModel();
+  final _memberModel = MemberModel();
+
+  final AuthHttpModel _authHttpModel = AuthHttpModel();
+  final UserHttpModel _userHttpModel = UserHttpModel();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      print(HiveController.instance.getFCMToken());
       await _checkKakaoTalkInstalled();
-      // 여기서 인증확인
       if (Platform.isIOS) {
         print('ios 기기');
-        // 자동로그인 같은거 구현하면 쓰면될듯
         // login
       } else {
         print('android 기기');
@@ -45,77 +51,96 @@ class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
-    return SafeArea(
-      child: Scaffold(
-        body: Container(
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Container(
-                  height: 120.0,
-                  width: 120.0,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    child: Image.asset(
-                      'assets/icons/send_messageIcon.png',
-                      width: double.infinity,
-                    ),
-                  )),
-              Text(
-                '익명메신저\n어플',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: chatPrimaryColor),
-              ),
-              SizedBox(height: deviceSize.height * 0.20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  width: double.infinity,
-                  height: 50,
-                  child: RaisedButton(
-                    color: Colors.yellow,
-                    child: Row(
-                      children: [
-                        Flexible(
-                          fit: FlexFit.tight,
-                          flex: 1,
+    return _loading
+        ? Loading()
+        : SafeArea(
+            child: Scaffold(
+              body: Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                        height: 120.0,
+                        width: 120.0,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.transparent,
                           child: Image.asset(
-                            'assets/icons/kakao_logo.png',
-                            height: 50,
+                            'assets/icons/send_messageIcon.png',
+                            width: double.infinity,
                           ),
-                        ),
-                        Flexible(
-                          fit: FlexFit.tight,
-                          flex: 2,
-                          child: Text(
-                            '카카오 계정으로 로그인',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      ],
+                        )),
+                    Text(
+                      '익명메신저\n어플',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: chatPrimaryColor),
                     ),
-                    onPressed: () => startGuideDialog(context),
-                  ),
+                    SizedBox(height: deviceSize.height * 0.20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        width: double.infinity,
+                        height: 50,
+                        child: RaisedButton(
+                          color: Colors.yellow,
+                          child: Row(
+                            children: [
+                              Flexible(
+                                fit: FlexFit.tight,
+                                flex: 1,
+                                child: Image.asset(
+                                  'assets/icons/kakao_logo.png',
+                                  height: 50,
+                                ),
+                              ),
+                              Flexible(
+                                fit: FlexFit.tight,
+                                flex: 2,
+                                child: Text(
+                                  '카카오 계정으로 로그인',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                              ),
+                            ],
+                          ),
+                          onPressed: () => _startGuideDialog(context),
+                        ),
+                      ),
+                    ),
+                    FlatButton(
+                      child: Text('지름길'),
+                      onPressed: () {
+                        HiveController.instance
+                            .saveMemberInfoToLocal(Member.fromJson({
+                          'id': 2,
+                          'fcmToken': HiveController.instance.getFCMToken(),
+                          'gender': "여자",
+                          'address': "테스트 도시",
+                          'school': "테스트 학교",
+                          'department': "테스트 학과",
+                          'birth_year': 1999,
+                          'num': "010-1111-2222",
+                          'studentID': 201812345,
+                          'possibleMessageOfSend': 2,
+                          'provide': true,
+                          'school_matching': false,
+                          'department_matching': false,
+                        }));
+                        Navigator.pushNamed(context, '/main_page');
+                      },
+                    ),
+                    SizedBox(height: deviceSize.height * 0.25)
+                  ],
                 ),
               ),
-              FlatButton(
-                child: Text('지름길'),
-                onPressed: () => Navigator.pushNamed(
-                    context, '/student_card_authorization_page'),
-              ),
-              SizedBox(height: deviceSize.height * 0.25)
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
-  startGuideDialog(context) {
+  _startGuideDialog(context) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -172,7 +197,7 @@ class _IntroPageState extends State<IntroPage> {
                       ),
                       onPressed: () async {
                         if (_isKakaoTalkInstalled)
-                          login();
+                          _login();
                         else {
                           Fluttertoast.showToast(
                               msg: '카카오톡을 설치하고 다시 시도해주세요.',
@@ -203,39 +228,38 @@ class _IntroPageState extends State<IntroPage> {
     });
   }
 
-  login() async {
+  _login() async {
     try {
       print('#카카오톡 로그인 시도');
-      User user = await KakaoTalkLogin();
+      User user = await _KakaoTalkLogin();
       if (user.id != null) {
         print('#카카오톡 로그인 성공');
-
         if (user.kakaoAccount.ageRange != AgeRange.TWENTIES ||
             user.kakaoAccount.ageRange == null) {
-          cantRegisterDialog();
+          _cantRegisterDialog();
         } else {
+          setState(() => _loading = true);
           print('#앱 로그인 시도');
-          final authProvider = Provider.of<AuthProvider>(context);
           final loginResult =
               await _authHttpModel.requestSingIn('kakao', user.id.toString());
+          if (loginResult.code == ResponseCode.SUCCESS_CODE ||
+              loginResult.code == ResponseCode.NOT_AUTHORIZED ||
+              loginResult.code == ResponseCode.DENIED_AUTHORIZED ||
+              loginResult.code == ResponseCode.BANNED_USER) {
+            print('#앱 로그인 성공(${loginResult.message})');
+            if (loginResult.code == ResponseCode.SUCCESS_CODE) {
+              print('jwtToken: ${loginResult.data.item[0]}');
+              headers['token'] = loginResult.data.item[0];
+            }
 
-          print('로그인 결과 ${loginResult.toJson()}');
-          if (loginResult.code == ResponseCode.SUCCESS_CODE) {
-            print('#앱 로그인 성공(정상인증)');
-
-            // 파이어베이스 토큰 업데이트도 해야할듯?
-            print('jwtToken ${loginResult.data.item[0]}');
-            headers['token'] = loginResult.data.item[0];
+            // 사용자 체크하고 로컬db 업데이트
+            if (await _fetchAndUpdateUser()) return;
 
             // 사용자 인증 상태 업데이트
-            authProvider.setAuthState(loginResult.code);
-            Navigator.pushNamed(context, '/main_page');
-          } else if (loginResult.code == ResponseCode.NOT_AUTHORIZED) {
-            print('#앱 로그인 성공(인증대기)');
-          } else if (loginResult.code == ResponseCode.DENIED_AUTHORIZED) {
-            print('#앱 로그인 성공(인증거절)');
-          } else if (loginResult.code == ResponseCode.BANNED_USER) {
-            print('#앱 로그인 성공(사용정지)');
+            Provider.of<AuthProvider>(context, listen: false)
+                .setAuthState(loginResult.code);
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/main_page', (route) => false);
           } else if (loginResult.code == ResponseCode.DATA_NOT_FOUND) {
             print('#앱 로그인 실패 -> 회원가입');
             Provider.of<RegisterProvider>(context, listen: false)
@@ -256,7 +280,25 @@ class _IntroPageState extends State<IntroPage> {
     }
   }
 
-  Future<User> KakaoTalkLogin() async {
+  Future<bool> _fetchAndUpdateUser() async {
+    final userInfo = await _userHttpModel.getUserInfo();
+    print(userInfo.toJson());
+
+    if (userInfo.code == ResponseCode.SUCCESS_CODE) {
+      await _memberModel.updateFcmToken(
+          userInfo.data.item[0]['id'], HiveController.instance.getFCMToken());
+
+      final localUserID = HiveController.instance.getMemberID().toString();
+      if (localUserID != userInfo.data.item[0]['id']) {
+        await HiveController.instance.fetchMemberInfo(userInfo.data.item[0]);
+      }
+      return false;
+    }
+    setState(() => _loading = false);
+    return true;
+  }
+
+  Future<User> _KakaoTalkLogin() async {
     print('-----카카오톡 로그인 시도-----');
     final code = await AuthCodeClient.instance.requestWithTalk();
     final token = await AuthApi.instance.issueAccessToken(code);
@@ -277,7 +319,7 @@ class _IntroPageState extends State<IntroPage> {
     }
   }
 
-  cantRegisterDialog() {
+  _cantRegisterDialog() {
     print('#20대 아니라서 가입 불가');
     showDialog(
         context: context,

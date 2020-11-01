@@ -30,7 +30,7 @@ dependencies:
   firebase_auth: ^0.18.0+1 #파이어베이스 인증 [*****플랫폼 별 설정 android, ios 필요*****]
   firebase_database: ^4.0.0 #파이어베이스 realtime database
   firebase_messaging: ^7.0.2 #[*****플랫폼 별 설정 android, ios 필요*****]
-  cloud_firestore: ^0.14.1+2 #파이어베이스 데이터베이스 [*****플랫폼 별 설정 android, ios 필요*****]
+  cloud_firestore: ^0.14.2 #파이어베이스 데이터베이스 [*****플랫폼 별 설정 android, ios 필요*****]
   firebase_storage: ^4.0.0 #파이버에이스 파일저장소
   flutter_local_notifications: ^2.0.0
   async: ^2.3.0 #캐쉬
@@ -43,9 +43,11 @@ dependencies:
   hive_generator: ^0.7.2+1
   kakao_flutter_sdk: ^0.5.2 # 카카오톡 sdk
   url_launcher: ^5.7.2
-  flutter_svg: ^0.19.0
+  flutter_svg: ^0.19.1
   http: ^0.12.2
   iamport_flutter: ^0.9.13  #아임포트 결제서비스 [*****플랫폼 별 설정 android, ios 필요*****]
+  new_version: ^0.0.5
+  permission_handler: ^5.0.1+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

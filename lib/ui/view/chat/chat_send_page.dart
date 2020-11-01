@@ -1,8 +1,10 @@
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/utils/utill.dart';
-import 'package:anony_chat/viewmodel/chat_model.dart';
+import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
+import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -39,8 +41,8 @@ class _ChatSendPageState extends State<ChatSendPage> {
   @override
   void initState() {
     super.initState();
-    // possibleMessageOfSend = HiveController.instance.getPossibleMessageOfSend();
-    possibleMessageOfSend = 1;
+    possibleMessageOfSend = HiveController.instance.getPossibleMessageOfSend();
+    print(HiveController.instance.loadMemberInfoToLocal());
   }
 
   @override
@@ -110,7 +112,6 @@ class _ChatSendPageState extends State<ChatSendPage> {
                     ),
                     SizedBox(height: 8),
                     Container(
-                      color: Colors.white,
                       height: 150,
                       child: Card(
                         elevation: 5,
@@ -137,11 +138,12 @@ class _ChatSendPageState extends State<ChatSendPage> {
                               backgroundColor: Colors.black,
                               toastLength: Toast.LENGTH_SHORT);
                         } else {
-                          sendMessage();
+                          _sendMessage();
                           final test = ['1_2', '11_2', '131_3'];
                           test.forEach((element) {
                             print((element.split('_'))[1]);
                           });
+                          Navigator.pop(context);
                         }
                       },
                     ),
@@ -155,12 +157,13 @@ class _ChatSendPageState extends State<ChatSendPage> {
     );
   }
 
-  sendMessage() {
+  _sendMessage() {
     // TODO 메시지 아이템 -1, 채팅방 만들기
     _chatModel.createChatRoom(
-      chatRoom: ChatRoom(
+      ChatRoom(
         imageIcon: _choiceIcon,
         message: Message(
+          senderID: HiveController.instance.getMemberID(),
           content: _messageController.text,
           time: DateTime.now().millisecondsSinceEpoch,
         ),

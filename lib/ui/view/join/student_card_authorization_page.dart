@@ -27,15 +27,15 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
   MemberModel _memberModel = MemberModel();
   CareerNetModel _careerNetModel = CareerNetModel();
 
-  RegExp regExp = RegExp(r'^[+-]?([0-9]+([0-9]*)?|[0-9]+)$');
+  RegExp _regExp = RegExp(r'^[+-]?([0-9]+([0-9]*)?|[0-9]+)$');
 
-  bool loading = true;
+  bool _loading = true;
 
   bool _checkFlag = false;
   int _checkedPrev = -1;
-  File stdCardImage;
+  File _stdCardImage;
 
-  List<bool> _selected = [];
+  List<bool> _selectedList = [];
   List<String> _searchResult = [];
   List<String> _universityList = [];
   List<String> _majorList = [];
@@ -61,7 +61,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
   ];
 
   String _selectedCity;
-  int selected = 0;
+  int _selected = 0;
 
   _fetchData() {
     _universityList = _careerNetModel.fetchDataUniversity();
@@ -69,7 +69,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
 
     // 데이터 받아오지 못함 -> 무한로딩
     if (_universityList != null && _majorList != null)
-      setState(() => loading = false);
+      setState(() => _loading = false);
   }
 
   @override
@@ -83,7 +83,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return loading
+    return _loading
         ? Loading()
         : SafeArea(
             child: WillPopScope(
@@ -402,13 +402,13 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                                       int.parse(text));
                                                   rp.checkCanRegister();
                                                 },
-                                                validator: validatePassword,
+                                                validator: _validatePassword,
                                               ),
                                             ),
                                           ),
                                         ],
                                       ),
-                                      stdCardImage == null
+                                      _stdCardImage == null
                                           ? Container()
                                           : Padding(
                                               padding: const EdgeInsets.only(
@@ -419,7 +419,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                                   width: 50,
                                                   height: 50,
                                                   image:
-                                                      FileImage(stdCardImage),
+                                                      FileImage(_stdCardImage),
                                                 ),
                                               ),
                                             ),
@@ -616,12 +616,13 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
           );
   }
 
+  // 학생증 업로드
   Future _uploadImage() async {
     final imageFile = await ImagePicker().getImage(source: ImageSource.gallery);
     final rp = Provider.of<RegisterProvider>(context, listen: false);
-    setState(() => stdCardImage = File(imageFile.path));
+    setState(() => _stdCardImage = File(imageFile.path));
 
-    rp.setStudentCardImage(stdCardImage);
+    rp.setStudentCardImage(_stdCardImage);
     rp.checkCanRegister();
   }
 
@@ -732,7 +733,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                   title: Row(
                                     children: <Widget>[
                                       Icon(Icons.check,
-                                          color: _selected[index]
+                                          color: _selectedList[index]
                                               ? chatPrimaryColor
                                               : Colors.transparent),
                                       SizedBox(width: 5),
@@ -741,7 +742,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                                           child: Text(_searchResult[index],
                                               overflow: TextOverflow.fade,
                                               style: TextStyle(
-                                                  color: _selected[index]
+                                                  color: _selectedList[index]
                                                       ? chatPrimaryColor
                                                       : Colors.black)),
                                         ),
@@ -796,11 +797,11 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
               onTap: () {
                 final rp =
                     Provider.of<RegisterProvider>(context, listen: false);
-                if (selected == 0)
+                if (_selected == 0)
                   rp.setCity('선택');
                 else
                   rp.setCity(_selectedCity);
-                selected = 0;
+                _selected = 0;
                 rp.checkCanRegister();
                 Navigator.pop(context);
               },
@@ -814,7 +815,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
                   backgroundColor: Colors.grey[100],
                   onSelectedItemChanged: (index) {
                     _selectedCity = item[index];
-                    print(selected++);
+                    print(_selected++);
                   },
                   itemBuilder: (_, index) => Center(
                     child: Text(item[index],
@@ -838,15 +839,15 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
   _checkOnlyOneItem(StateSetter ss, int index) {
     ss(() {
       if (!_checkFlag) {
-        _selected[index] = !_selected[index];
+        _selectedList[index] = !_selectedList[index];
         _checkFlag = true;
       } else {
         if (index == _checkedPrev) {
-          _selected[index] = !_selected[index];
+          _selectedList[index] = !_selectedList[index];
           _checkFlag = false;
         } else {
-          _selected[index] = !_selected[index];
-          _selected[_checkedPrev] = !_selected[_checkedPrev];
+          _selectedList[index] = !_selectedList[index];
+          _selectedList[_checkedPrev] = !_selectedList[_checkedPrev];
         }
       }
       _checkedPrev = index;
@@ -855,7 +856,7 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
 
   _onSearchTextChanged(String text, item, ss) {
     _searchResult.clear();
-    _selected.clear();
+    _selectedList.clear();
     if (text.isEmpty) {
       ss(() {});
       return;
@@ -865,24 +866,24 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
       if (value == text) {
         _searchResult.clear();
         _searchResult.add(text);
-        _selected.add(false);
-      } else if (value.contains(text)) {
+        _selectedList.add(false);
+      } else if (value.toUpperCase().contains(text.toUpperCase())) {
         _searchResult.add(value);
-        _selected.add(false);
+        _selectedList.add(false);
       }
     });
 
     if (_checkFlag) {
-      _selected[_checkedPrev] = false;
+      _selectedList[_checkedPrev] = false;
       _checkFlag = false;
     }
 
     ss(() {});
   }
 
-  String validatePassword(String value) {
+  String _validatePassword(String value) {
     print(value);
-    if (!regExp.hasMatch(value)) {
+    if (!_regExp.hasMatch(value)) {
       return '숫자만 입력해주세요.';
     } else if (value.length > 11) {
       return '학번을 정확하게 입력해주세요.';
@@ -908,13 +909,13 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
       return;
     } else {
       // register
-      setState(() => loading = true);
+      setState(() => _loading = true);
       final rp = Provider.of<RegisterProvider>(context, listen: false);
+      final ap = Provider.of<AuthProvider>(context, listen: false);
       final result = await _memberModel.register(rp.member);
+
       if (result) {
-        print('#최종 회원가입 성공');
-        Provider.of<AuthProvider>(context, listen: false)
-            .setAuthState(ResponseCode.NOT_AUTHORIZED);
+        ap.setAuthState(ResponseCode.NOT_AUTHORIZED);
         Navigator.pushNamedAndRemoveUntil(
             context, '/main_page', (route) => false);
       } else {

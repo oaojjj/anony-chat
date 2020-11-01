@@ -1,15 +1,11 @@
-import 'package:anony_chat/controller/hive_controller.dart';
+import 'package:anony_chat/controller/notification_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart' as fd;
 
 import 'member_model.dart';
 
 class ChatModel {
-  static final FirebaseAuth _mAuth = FirebaseAuth.instance;
-  static final fd.FirebaseDatabase _db = fd.FirebaseDatabase.instance;
   static final FirebaseFirestore _fdb = FirebaseFirestore.instance;
 
   // 메시지를 받는 사람 수
@@ -18,21 +14,15 @@ class ChatModel {
   static const String CHAT_LIST_COLLECTION = 'chat_list';
   static const String CHAT_MESSAGES = 'messages';
 
-  Future<void> sendMessage({Message message}) async {
-    final senderID = 2;
-    final receiverID = 1;
+  Future<void> sendMessage({String chatRoomId, Message message}) async {
+    final senderID = message.senderID;
+    final receiverID = message.receiverID;
 
+    print('$senderID,$receiverID');
     // 메세지 전송 추가
     _fdb
         .collection(CHAT_ROOM_COLLECTION)
-        .doc('${senderID}_$receiverID')
-        .collection(CHAT_MESSAGES)
-        .doc(message.time.toString())
-        .set(message.toJson());
-
-    _fdb
-        .collection(CHAT_ROOM_COLLECTION)
-        .doc('${receiverID}_$senderID')
+        .doc('$chatRoomId')
         .collection(CHAT_MESSAGES)
         .doc(message.time.toString())
         .set(message.toJson());
@@ -42,7 +32,7 @@ class ChatModel {
         .collection(MemberModel.USERS_COLLECTION)
         .doc('$senderID')
         .collection(CHAT_LIST_COLLECTION)
-        .doc('${senderID}_$receiverID')
+        .doc('$chatRoomId')
         .update(
             {'lastMessage': message.content, 'lastMessageTime': message.time});
 
@@ -50,16 +40,14 @@ class ChatModel {
         .collection(MemberModel.USERS_COLLECTION)
         .doc('$receiverID')
         .collection(CHAT_LIST_COLLECTION)
-        .doc('${receiverID}_$senderID')
+        .doc('$chatRoomId')
         .update(
             {'lastMessage': message.content, 'lastMessageTime': message.time});
   }
 
-  createChatRoom({ChatRoom chatRoom}) async {
-    chatRoom.message.senderID = HiveController.instance.getMemberID();
-
+  createChatRoom(ChatRoom chatRoom) async {
     // api 이용해서 상대방 id 가져오기
-    int receiver = 1;
+    int receiver = 10;
     chatRoom.message.receiverID = receiver;
     chatRoom.withWho = receiver;
 
@@ -68,6 +56,14 @@ class ChatModel {
 
     // 채팅방 만들기
     _createChatRoom(chatRoom);
+
+    final peerUserToken = await getFcmToken(chatRoom.message.receiverID);
+    NotificationController.instance.sendNotificationToPeerUser(
+        1,
+        chatRoom.message.type,
+        chatRoom.message.content,
+        chatRoom.message.senderID,
+        peerUserToken);
   }
 
   void _createChatRoom(ChatRoom chatRoom) {
@@ -93,7 +89,7 @@ class ChatModel {
         .collection(MemberModel.USERS_COLLECTION)
         .doc('${chatRoom.message.receiverID}')
         .collection(CHAT_LIST_COLLECTION)
-        .doc('${chatRoom.message.receiverID}_${chatRoom.message.senderID}')
+        .doc('${chatRoom.message.senderID}_${chatRoom.message.receiverID}')
         .set(chatRoom.toJson());
   }
 
@@ -113,5 +109,13 @@ class ChatModel {
         .orderBy('time', descending: true)
         .limit(limit)
         .snapshots();
+  }
+
+  getFcmToken(int id) async {
+    final data = await _fdb
+        .collection(MemberModel.USERS_COLLECTION)
+        .doc(id.toString())
+        .get();
+    return data['fcmToken'];
   }
 }
