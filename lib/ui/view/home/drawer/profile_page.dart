@@ -456,25 +456,27 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> updateProfile() async {
-    if (Provider.of<AuthProvider>(context, listen: false).authState ==
-        AuthState.authorizations) {
+    final myAuthState =
+        Provider.of<AuthProvider>(context, listen: false).authState;
+    if (myAuthState != AuthState.authorizations) {
       showToast('인증이 안료되어야 수정이 가능합니다.');
-      _fixProfile = _member;
-      return;
-    }
-    try {
-      final result = await _memberModel.updateProfile(_fixProfile);
-      if (result) {
-        _member = _fixProfile;
-        showToast('수정되었습니다.');
-      } else {
-        _fixProfile = _member;
-        showToast('수정에 실패했습니다.');
-        return;
-      }
+      _fixProfile = Member.fromJson(_member.toJson());
       setState(() => _isFix = false);
-    } catch (e) {
-      print('profileUpdateError');
+      return;
+    } else {
+      try {
+        final result = await _memberModel.updateProfile(_fixProfile);
+        if (result) {
+          _member = Member.fromJson(_fixProfile.toJson());
+          showToast('수정되었습니다.');
+        } else {
+          _fixProfile = Member.fromJson(_member.toJson());
+          showToast('수정에 실패했습니다.');
+        }
+        setState(() => _isFix = false);
+      } catch (e) {
+        print('profileUpdateError');
+      }
     }
   }
 

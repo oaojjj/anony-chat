@@ -1,4 +1,5 @@
 import 'package:anony_chat/model/dao/member.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/message_count_http_model.dart';
 import 'package:hive/hive.dart';
 
@@ -53,7 +54,7 @@ class HiveController {
       'address': box.get('city') ?? "null",
       'school': box.get('university') ?? "null",
       'department': box.get('department') ?? "null",
-      'studentID': box.get('studentID') ?? -1,
+      'student_id': box.get('studentID') ?? -1,
       'img': box.get('img') ?? -1,
       'num': box.get('phoneNumber') ?? "null",
       'possibleMessageOfSend': box.get('possibleMessageOfSend') ?? -1,
@@ -69,13 +70,16 @@ class HiveController {
 
   Future fetchMemberInfo(member) async {
     // 사용자 정보 로컬에 저장
-    await HiveController.instance.saveMemberInfoToLocal(
-        Member.fromJson(member)..fcmToken = getFCMToken());
-
     final sendMsg = await _messageCountHttpModel.getMsgCount();
-    await HiveController.instance
-        .setPossibleMessageOfSend(sendMsg.data.item[0]['cnt']);
-    print(HiveController.instance.loadMemberInfoToLocal());
-    return;
+    if (sendMsg.code == ResponseCode.SUCCESS_CODE) {
+      print("보낼수있는메세지:${sendMsg.toJson()}");
+      await HiveController.instance
+          .saveMemberInfoToLocal(Member.fromJson(member)
+            ..fcmToken = getFCMToken()
+            ..possibleMessageOfSend = sendMsg.data.item[0]['cnt']);
+      print(HiveController.instance.loadMemberInfoToLocal());
+      return true;
+    }
+    return false;
   }
 }

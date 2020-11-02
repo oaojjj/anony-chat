@@ -145,7 +145,7 @@ class _ChatReportPageState extends State<ChatReportPage> {
                   BottomButton(
                     text: '신고하기',
                     onPressed: () {
-                      //TODO 신고하기 작성
+                      //TODO 신고하기 작성 / complete toast msg
                     },
                   ),
                   SizedBox(height: 20),

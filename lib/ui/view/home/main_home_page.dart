@@ -39,8 +39,6 @@ class _MainPageState extends State<MainPage> {
         Permission.storage.request();
       }
     });
-    print("fcmToken:${HiveController.instance.getFCMToken()}");
-    print("authState:${Provider.of<AuthProvider>(context, listen: false).authState}");
   }
 
   @override

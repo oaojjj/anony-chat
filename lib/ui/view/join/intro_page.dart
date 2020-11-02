@@ -112,23 +112,10 @@ class _IntroPageState extends State<IntroPage> {
                     ),
                     FlatButton(
                       child: Text('지름길'),
-                      onPressed: () {
-                        HiveController.instance
-                            .saveMemberInfoToLocal(Member.fromJson({
-                          'id': 2,
-                          'fcmToken': HiveController.instance.getFCMToken(),
-                          'gender': "여자",
-                          'address': "테스트 도시",
-                          'school': "테스트 학교",
-                          'department': "테스트 학과",
-                          'birth_year': 1999,
-                          'num': "010-1111-2222",
-                          'studentID': 201812345,
-                          'possibleMessageOfSend': 2,
-                          'provide': true,
-                          'school_matching': false,
-                          'department_matching': false,
-                        }));
+                      onPressed: () async {
+                        headers['token'] =
+                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1IjozLCJsIjowLCJpYXQiOjE2MDQyNzgyNTAsImV4cCI6MTYwNTE0MjI1MCwiaXNzIjoidW5pbSIsInN1YiI6InVpbmZvIn0.lekQCHsrjAGh69YuYQdGtd-sewZ1ttZPBZeuACEvzAk';
+                        await _fetchAndUpdateUser(1000);
                         Navigator.pushNamed(context, '/main_page');
                       },
                     ),
@@ -229,6 +216,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   _login() async {
+    setState(() => _loading = true);
     try {
       print('#카카오톡 로그인 시도');
       User user = await _KakaoTalkLogin();
@@ -238,7 +226,6 @@ class _IntroPageState extends State<IntroPage> {
             user.kakaoAccount.ageRange == null) {
           _cantRegisterDialog();
         } else {
-          setState(() => _loading = true);
           print('#앱 로그인 시도');
           final loginResult =
               await _authHttpModel.requestSingIn('kakao', user.id.toString());
@@ -253,11 +240,12 @@ class _IntroPageState extends State<IntroPage> {
             }
 
             // 사용자 체크하고 로컬db 업데이트
-            if (await _fetchAndUpdateUser()) return;
+            if (await _fetchAndUpdateUser(loginResult.code)) return;
 
             // 사용자 인증 상태 업데이트
             Provider.of<AuthProvider>(context, listen: false)
                 .setAuthState(loginResult.code);
+
             Navigator.pushNamedAndRemoveUntil(
                 context, '/main_page', (route) => false);
           } else if (loginResult.code == ResponseCode.DATA_NOT_FOUND) {
@@ -265,9 +253,17 @@ class _IntroPageState extends State<IntroPage> {
             Provider.of<RegisterProvider>(context, listen: false)
                 .setMemberInfoWithKakao(user);
             Navigator.pushNamed(context, '/student_card_authorization_page');
+          } else {
+            setState(() => _loading = false);
+            Fluttertoast.showToast(
+                msg: '문제가 생겼습니다.\n관리자에게 문의해주세요.',
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: Colors.black,
+                toastLength: Toast.LENGTH_SHORT);
           }
         }
       } else {
+        setState(() => _loading = false);
         print('#카카오톡 로그인 실패');
         Fluttertoast.showToast(
             msg: '카카오톡 로그인에 실패했습니다.',
@@ -280,22 +276,27 @@ class _IntroPageState extends State<IntroPage> {
     }
   }
 
-  Future<bool> _fetchAndUpdateUser() async {
+  Future<bool> _fetchAndUpdateUser(int code) async {
+    bool result = true;
+
     final userInfo = await _userHttpModel.getUserInfo();
     print(userInfo.toJson());
-
     if (userInfo.code == ResponseCode.SUCCESS_CODE) {
+      // 사용자 인증 상태 업데이트
+      Provider.of<AuthProvider>(context, listen: false).setAuthState(code);
+
       await _memberModel.updateFcmToken(
           userInfo.data.item[0]['id'], HiveController.instance.getFCMToken());
 
       final localUserID = HiveController.instance.getMemberID().toString();
       if (localUserID != userInfo.data.item[0]['id']) {
-        await HiveController.instance.fetchMemberInfo(userInfo.data.item[0]);
+        result = await HiveController.instance
+            .fetchMemberInfo(userInfo.data.item[0]);
       }
-      return false;
+      return !result;
     }
     setState(() => _loading = false);
-    return true;
+    return result;
   }
 
   Future<User> _KakaoTalkLogin() async {
@@ -320,6 +321,7 @@ class _IntroPageState extends State<IntroPage> {
   }
 
   _cantRegisterDialog() {
+    setState(() => _loading = false);
     print('#20대 아니라서 가입 불가');
     showDialog(
         context: context,

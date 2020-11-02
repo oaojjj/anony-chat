@@ -130,20 +130,18 @@ class _ChatSendPageState extends State<ChatSendPage> {
                     SizedBox(height: 24.0),
                     BottomButton(
                       text: '보내기',
-                      onPressed: () {
-                        if (possibleMessageOfSend <= 0) {
-                          Fluttertoast.showToast(
-                              msg: '보낼 수 있는 메시지가 없습니다.\n아이템을 구매해 주세요.',
-                              gravity: ToastGravity.BOTTOM,
-                              backgroundColor: Colors.black,
-                              toastLength: Toast.LENGTH_SHORT);
-                        } else {
-                          _sendMessage();
-                          final test = ['1_2', '11_2', '131_3'];
-                          test.forEach((element) {
-                            print((element.split('_'))[1]);
-                          });
+                      onPressed: () async {
+                        final response = await _sendMessage();
+                        if (response == ResponseCode.RUN_OUT) {
+                          showToast('보낼 수 있는 메시지가 없습니다.\n아이템을 구매해 주세요.');
+                        } else if (response == ResponseCode.SUCCESS_CODE) {
+                          showToast('메세지를 보냈습니다.');
                           Navigator.pop(context);
+                        } else if (response ==
+                            ResponseCode.THERE_ARE_NO_USERS) {
+                          showToast('매칭가능한 유저가 없습니다.\n죄송합니다.');
+                        } else {
+                          showToast('알수없는 에러입니다.\n관리자에게 문의해주세요.');
                         }
                       },
                     ),
@@ -157,9 +155,8 @@ class _ChatSendPageState extends State<ChatSendPage> {
     );
   }
 
-  _sendMessage() {
-    // TODO 메시지 아이템 -1, 채팅방 만들기
-    _chatModel.createChatRoom(
+  Future<int> _sendMessage() async {
+    final chatResult = await _chatModel.createChatRoom(
       ChatRoom(
         imageIcon: _choiceIcon,
         message: Message(
@@ -169,6 +166,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
         ),
       ),
     );
+    return chatResult;
   }
 
   Future<void> _buildImageGridView() async {

@@ -1,10 +1,15 @@
 import 'dart:async';
 
+import 'package:anony_chat/controller/firebase_controller.dart';
+import 'package:anony_chat/controller/pick_image_controller.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ChatRoomPage extends StatefulWidget {
@@ -33,6 +38,11 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   bool _isSubmit = true;
 
   AuthState _authState;
+
+  bool flag = false;
+  String timeLine;
+
+  List _elements = [];
 
   @override
   void initState() {
@@ -73,25 +83,39 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     if (!snapshot.hasData) {
                       return Center(child: CircularProgressIndicator());
                     } else {
-                      _messages.clear();
+                      // isRead -> true
+                      updateReadMsg(snapshot);
 
+                      _elements.clear();
                       snapshot.data.documents.forEach((element) {
                         final value = element.data();
                         print('msg: $value');
-                        _messages.add(ChatMessage(
-                          message: Message(
-                              senderID: value['senderID'],
-                              content: value['content'],
-                              time: value['time'],
-                              isRead: value['isRead']),
-                        ));
+                        _elements.add({
+                          'item': ChatMessage(
+                            message: Message(
+                                senderID: value['senderID'],
+                                content: value['content'],
+                                time: value['time'],
+                                type: value['type'],
+                                isRead: value['isRead']),
+                          ),
+                          'date': value['time'],
+                          'group': DateFormat('yyyy.MM.d').format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  value['time']))
+                        });
                       });
-                      return ListView.builder(
-                        padding: EdgeInsets.all(10.0),
-                        itemBuilder: (context, index) => _messages[index],
-                        itemCount: snapshot.data.documents.length,
-                        reverse: true,
-                        controller: _scrollController,
+                      return GroupedListView<dynamic, String>(
+                        elements: _elements,
+                        groupBy: (element) => element['group'],
+                        groupSeparatorBuilder: (String groupByValue) =>
+                            _buildDivider(groupByValue),
+                        itemBuilder: (context, dynamic element) =>
+                            element['item'],
+                        itemComparator: (item1, item2) =>
+                            item1['date'].compareTo(item2['date']),
+                        floatingHeader: true,
+                        order: GroupedListOrder.ASC,
                       );
                     }
                   },
@@ -103,6 +127,38 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildDivider(String groupByValue) {
+    return Row(children: <Widget>[
+      Expanded(
+          child: Divider(
+        color: Colors.black,
+        thickness: 0.5,
+        indent: 8,
+      )),
+      Padding(
+        padding: const EdgeInsets.only(left: 8, right: 8),
+        child: Text(groupByValue),
+      ),
+      Expanded(
+          child: Divider(
+        color: Colors.black,
+        thickness: 0.5,
+        endIndent: 8,
+      )),
+    ]);
+  }
+
+  void updateReadMsg(snapshot) {
+    for (var data in snapshot.data.documents) {
+      if (data['receiverID'] == widget.senderID && data['isRead'] == false) {
+        if (data.reference != null) {
+          FirebaseFirestore.instance.runTransaction((transaction) async =>
+              transaction.update(data.reference, {'isRead': true}));
+        }
+      }
+    }
   }
 
   Widget _buildTextComposer() {
@@ -125,9 +181,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             child: FlatButton(
                 child: Icon(Icons.photo, size: 24.0),
                 //Text('사진', style: TextStyle(fontWeight: FontWeight.bold)),
-                onPressed: () {
-                  //TODO 사진 보내기 작성
-                }),
+                onPressed: () => sendImageFile()),
           ),
           Flexible(
             child: TextField(
@@ -149,13 +203,31 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 
-  void _handleSubmitted(String text) {
-    if (text.isEmpty) return;
+  void sendImageFile() {
+    PickImageController.instance.cropImageFromFile().then((croppedFile) {
+      if (croppedFile != null) {
+        _saveImageToFirebaseStorage(croppedFile);
+      }
+    });
+  }
+
+  Future<void> _saveImageToFirebaseStorage(croppedFile) async {
+    try {
+      String imageURL = await FirebaseController.instance
+          .sendImageToUserInChatRoom(croppedFile, widget.chatRoomID);
+      _handleSubmitted(imageURL, type: 'photo');
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void _handleSubmitted(String content, {String type = 'text'}) {
+    if (content.isEmpty) return;
     _messageController.clear();
 
     final msg = Message(
-        content: text,
-        type: 'text',
+        content: content,
+        type: type,
         time: DateTime.now().millisecondsSinceEpoch,
         receiverID: widget.receiverID,
         senderID: widget.senderID);

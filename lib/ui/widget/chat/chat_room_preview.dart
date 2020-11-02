@@ -21,28 +21,34 @@ class _ChatRoomPreviewState extends State<ChatRoomPreview> {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    left: 16, right: 24, top: 16, bottom: 16),
+                    left: 16, right: 16, top: 16, bottom: 16),
                 child: Image(
-                    height: 64.0, image: AssetImage('${widget.previewIcon}')),
+                    height: 48.0, image: AssetImage('${widget.previewIcon}')),
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 16, right: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(widget.lastMessage,
-                          style: TextStyle(color: Colors.black, fontSize: 16.0),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis),
-                      Row(
-                        children: [
-                          Spacer(),
-                          Text(widget.timestamp,
-                              style: TextStyle(color: Colors.black)),
-                        ],
-                      )
-                    ],
+                  padding: const EdgeInsets.only(right: 16.0),
+                  child: Container(
+                    height: 80,
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(widget.lastMessage,
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 14.0),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
+                        ),
+                        Positioned(
+                          right: 0,
+                          bottom: 4,
+                          child: Text(widget.timestamp,
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 12.0)),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -53,7 +59,7 @@ class _ChatRoomPreviewState extends State<ChatRoomPreview> {
               indent: 16,
               endIndent: 16,
               thickness: 1,
-              color: Colors.grey[200])
+              color: Colors.grey[300])
         ],
       ),
     );

@@ -43,7 +43,7 @@ Map<String, dynamic> _$MemberToJson(Member instance) =>
       'department': instance.department ?? "null",
       'birth_year': instance.birthYear ?? -1,
       'num': instance.phoneNumber ?? "null",
-      'studentID': instance.studentID ?? -1,
+      'student_id': instance.studentID ?? -1,
       'img': instance.studentImageNumber ?? -1,
       'possibleMessageOfSend': instance.possibleMessageOfSend ?? -1,
       'studentCardImage': instance.studentCardImage,

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/intl.dart';
 
 const HOST = 'https://unim.chaeft.com';
 
@@ -7,20 +9,27 @@ Map headers = Map<String, String>();
 const Color chatPrimaryColor = Color.fromRGBO(81, 17, 243, 1);
 const Color chatAccentColor = Color.fromRGBO(100, 70, 245, 1);
 
-class ChatUtil {
-  static convertTimeToString(int time) {
-    final now = DateTime.now();
-    final tf = DateTime.fromMillisecondsSinceEpoch(time); // 오늘
+convertTimeToString(int time) {
+  final now = DateTime.now();
+  final tf = DateTime.fromMillisecondsSinceEpoch(time); // 오늘
 
-    if (now.difference(tf).inHours > 24) {
-      if (now.year - tf.year != 0)
-        return '${tf.year}년${tf.month}월${tf.day}일';
-      else
-        return '${tf.month}월${tf.day}일';
-    } else {
-      return '${tf.hour < 12 ? '오전' : '오후'} ${tf.hour > 12 ? tf.hour - 12 : tf.hour}:${tf.minute}';
-    }
+  if (now.difference(tf).inHours > 24) {
+    if (now.day - tf.day == 1) return '어제';
+    if (now.year - tf.year != 0)
+      return '${tf.year}년${tf.month}월${tf.day}일';
+    else
+      return '${tf.month}월${tf.day}일';
+  } else {
+    return '${tf.hour < 12 ? '오전' : '오후'} ${DateFormat('h:mm').format(tf)}';
   }
+}
+
+void showToast(text) {
+  Fluttertoast.showToast(
+      msg: text,
+      gravity: ToastGravity.BOTTOM,
+      backgroundColor: Colors.black,
+      toastLength: Toast.LENGTH_SHORT);
 }
 
 class ResponseCode {
@@ -59,6 +68,12 @@ class ResponseCode {
 
   /// 권한 확인 실패
   static const AUTHORIZATION_CHECK_FAILURE = 2007;
+
+  /// 횟수 소진
+  static const RUN_OUT = 2008;
+
+  /// 매칭 가능한 유저 없음
+  static const THERE_ARE_NO_USERS = 2009;
 
   /// body JSON 형식 오류
   static const JSON_PARSE_ERROR = 4000;

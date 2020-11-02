@@ -78,7 +78,7 @@ class _ChatListPageState extends State<ChatListPage> {
         _chatRooms.add(ChatRoomPreview(
           previewIcon: 'assets/icons/${element['imageIcon']}',
           lastMessage: element['lastMessage'],
-          timestamp: ChatUtil.convertTimeToString(element['lastMessageTime']),
+          timestamp: convertTimeToString(element['lastMessageTime']),
         ));
       });
     }
