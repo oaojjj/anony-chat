@@ -8,9 +8,9 @@ import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 class ChatRoomPage extends StatefulWidget {
   final receiverID;
@@ -29,8 +29,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   final _messageController = TextEditingController();
   final _scrollController = ScrollController();
-
-  final List<ChatMessage> _messages = [];
 
   final chatAppBarName = '익명의 상대방';
 
@@ -105,17 +103,18 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                   value['time']))
                         });
                       });
-                      return GroupedListView<dynamic, String>(
+                      return StickyGroupedListView<dynamic, String>(
                         elements: _elements,
                         groupBy: (element) => element['group'],
-                        groupSeparatorBuilder: (String groupByValue) =>
-                            _buildDivider(groupByValue),
+                        groupSeparatorBuilder: (dynamic element) =>
+                            _buildDivider(element['group']),
                         itemBuilder: (context, dynamic element) =>
                             element['item'],
                         itemComparator: (item1, item2) =>
                             item1['date'].compareTo(item2['date']),
                         floatingHeader: true,
-                        order: GroupedListOrder.ASC,
+                        order: StickyGroupedListOrder.DESC,
+                        reverse: true,
                       );
                     }
                   },

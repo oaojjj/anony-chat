@@ -1,13 +1,16 @@
 import 'dart:math';
 
+import 'package:anony_chat/controller/hive_controller.dart';
+import 'package:anony_chat/ui/view/chat/chat_room_page.dart';
 import 'package:flutter/material.dart';
 
 class StackItem extends StatefulWidget {
-  StackItem(this.minDX, this.maxDX, this.deviceY);
+  StackItem({this.minDY, this.maxDY, this.deviceX, this.chatRoom});
 
-  double minDX;
-  double maxDX;
-  double deviceY;
+  final chatRoom;
+  final double minDY;
+  final double maxDY;
+  final double deviceX;
 
   @override
   _StackItemState createState() => _StackItemState();
@@ -20,10 +23,10 @@ class _StackItemState extends State<StackItem> {
   @override
   void initState() {
     super.initState();
-    int min = widget.minDX.toInt();
-    int max = widget.maxDX.toInt();
-    xPosition = min + Random().nextInt(max - min);
-    yPosition = Random().nextInt(widget.deviceY.toInt());
+    int min = widget.minDY.toInt();
+    int max = widget.maxDY.toInt();
+    yPosition = min + Random().nextInt(max - min);
+    xPosition = Random().nextInt(widget.deviceX.toInt());
   }
 
   @override
@@ -31,9 +34,25 @@ class _StackItemState extends State<StackItem> {
     return Positioned(
       top: yPosition.toDouble(),
       left: xPosition.toDouble(),
-      child: Container(
-        width: 50,
-        height: 50,
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ChatRoomPage(
+                  senderID: HiveController.instance.getMemberID(),
+                  receiverID: widget.chatRoom['withWho'],
+                  chatRoomID: widget.chatRoom.id),
+            ),
+          );
+        },
+        child: Container(
+          child: Image(
+              image:
+                  AssetImage('assets/icons/${widget.chatRoom['imageIcon']}')),
+          width: 64,
+          height: 64,
+        ),
       ),
     );
   }

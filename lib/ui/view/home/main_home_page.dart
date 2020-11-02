@@ -4,6 +4,7 @@ import 'package:anony_chat/ui/widget/home/home_drawer.dart';
 import 'package:anony_chat/ui/widget/home/stack_item.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -85,12 +86,19 @@ class _MainPageState extends State<MainPage> {
               ],
             ),
             Expanded(
-              child: StreamBuilder<Object>(
+              child: StreamBuilder(
                 stream: _chatModel.getChatRoomList(userId),
-                builder: (context, snapshot) {
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData) {
-                    stackItems.add(StackItem(
-                        150, deviceSize.height - 150, deviceSize.width - 50));
+                    stackItems.clear();
+                    snapshot.data.docs.forEach((element) {
+                      stackItems.add(StackItem(
+                        chatRoom: element,
+                        deviceX: deviceSize.width - 100,
+                        minDY: 150,
+                        maxDY: deviceSize.width - 150,
+                      ));
+                    });
                     return Stack(
                       children: stackItems,
                     );

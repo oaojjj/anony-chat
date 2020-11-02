@@ -20,6 +20,8 @@ class _MessageState extends State<ChatMessage> {
   bool isSendByMe;
 
   static const double CHAT_FONT_SIZE = 12.0;
+  static const double CHAT_CONTAINER_HEIGHT_MARGIN = 4.0;
+  static const double CHAT_CONTAINER_RADIUS = 24.0;
 
   @override
   Widget build(BuildContext context) {
@@ -48,25 +50,28 @@ class _MessageState extends State<ChatMessage> {
                 ])
               : Container(),*/
           Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
+            padding: const EdgeInsets.only(
+                left: 16, right: 16, top: CHAT_CONTAINER_HEIGHT_MARGIN),
             child: widget.message.type == 'text'
                 ? Container(
                     decoration: BoxDecoration(
                       color: isSendByMe ? Colors.black : chatPrimaryColor,
                       borderRadius: isSendByMe
                           ? BorderRadius.only(
-                              topLeft: Radius.circular(32.0),
-                              topRight: Radius.circular(32.0),
-                              bottomLeft: Radius.circular(32.0),
+                              topLeft: Radius.circular(CHAT_CONTAINER_RADIUS),
+                              topRight: Radius.circular(CHAT_CONTAINER_RADIUS),
+                              bottomLeft:
+                                  Radius.circular(CHAT_CONTAINER_RADIUS),
                             )
                           : BorderRadius.only(
-                              topLeft: Radius.circular(32.0),
-                              topRight: Radius.circular(32.0),
-                              bottomRight: Radius.circular(32.0),
+                              topLeft: Radius.circular(CHAT_CONTAINER_RADIUS),
+                              topRight: Radius.circular(CHAT_CONTAINER_RADIUS),
+                              bottomRight:
+                                  Radius.circular(CHAT_CONTAINER_RADIUS),
                             ),
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Text(widget.message.content,
                           style: TextStyle(
                               fontSize: CHAT_FONT_SIZE, color: Colors.white)),
@@ -92,8 +97,10 @@ class _MessageState extends State<ChatMessage> {
           ),
           Padding(
             padding: isSendByMe
-                ? const EdgeInsets.only(right: 16.0, bottom: 8.0)
-                : const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                ? const EdgeInsets.only(
+                    right: 16.0, bottom: CHAT_CONTAINER_HEIGHT_MARGIN)
+                : const EdgeInsets.only(
+                    left: 16.0, bottom: CHAT_CONTAINER_HEIGHT_MARGIN),
             child: Row(
               mainAxisAlignment:
                   isSendByMe ? MainAxisAlignment.end : MainAxisAlignment.start,
