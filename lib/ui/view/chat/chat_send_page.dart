@@ -131,7 +131,12 @@ class _ChatSendPageState extends State<ChatSendPage> {
                     BottomButton(
                       text: '보내기',
                       onPressed: () async {
+                        if (_messageController.text.length <= 0) {
+                          showToast('메세지를 입력해주세요!!');
+                          return;
+                        }
                         final response = await _sendMessage();
+
                         if (response == ResponseCode.RUN_OUT) {
                           showToast('보낼 수 있는 메시지가 없습니다.\n아이템을 구매해 주세요.');
                         } else if (response == ResponseCode.SUCCESS_CODE) {

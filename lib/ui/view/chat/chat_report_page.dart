@@ -1,17 +1,26 @@
 import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/model/report/report_type.dart';
+import 'package:anony_chat/model/report/user_report.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
+import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/report_http_model.dart';
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 
 class ChatReportPage extends StatefulWidget {
+  ChatReportPage({this.receiverID});
+
+  final receiverID;
+
   @override
   _ChatReportPageState createState() => _ChatReportPageState();
 }
 
 class _ChatReportPageState extends State<ChatReportPage> {
   final AsyncMemoizer _memoizer = AsyncMemoizer();
+
+  final _reportHttpModel = ReportHttpModel();
+
   String _selectedType;
   List<String> reportType = [];
 
@@ -144,8 +153,8 @@ class _ChatReportPageState extends State<ChatReportPage> {
                   SizedBox(height: 32.0),
                   BottomButton(
                     text: '신고하기',
-                    onPressed: () {
-                      //TODO 신고하기 작성 / complete toast msg
+                    onPressed: () async {
+                      await report(context);
                     },
                   ),
                   SizedBox(height: 20),
@@ -158,11 +167,22 @@ class _ChatReportPageState extends State<ChatReportPage> {
     );
   }
 
+  Future<void> report(BuildContext context) async {
+    final UserReport reportResult = await _reportHttpModel.report(
+        _selectedType, ModalRoute.of(context).settings.arguments);
+
+    if (reportResult.code == ResponseCode.SUCCESS_CODE) {
+      showToast('신고가 접수되었습니다.');
+      Navigator.pop(context);
+    } else {
+      showToast('신고에 실패했습니다.');
+    }
+  }
+
   Future<void> getReportType() async {
     return this._memoizer.runOnce(() async {
       ReportType rt = await ReportHttpModel().requestReportType();
       rt.data.item.forEach((element) {
-        print(element["value"]);
         reportType.add(element["value"]);
       });
       return reportType;

@@ -1,3 +1,4 @@
+import 'package:anony_chat/ui/view/home/ad_watching_page.dart';
 import 'package:anony_chat/ui/view/join/student_card_authorization_page.dart';
 import 'package:flutter/material.dart';
 
@@ -26,8 +27,9 @@ final routes = {
   '/chat_page': (BuildContext context) => ChatRoomPage(),
   '/chat_list_page': (BuildContext context) => ChatListPage(),
   '/chat_send_page': (BuildContext context) => ChatSendPage(),
+  '/chat_report_page': (BuildContext context) => ChatReportPage(),
   '/report_page': (BuildContext context) => ReportPage(),
-  '/report_chat_page': (BuildContext context) => ChatReportPage(),
   '/report_guide_page': (BuildContext context) => ReportGuidePage(),
   '/item_store_page': (BuildContext context) => ItemStorePage(),
+  '/ad_watching_page': (BuildContext context) => AdWatchingPage(),
 };

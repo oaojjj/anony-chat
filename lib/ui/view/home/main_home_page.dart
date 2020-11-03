@@ -44,7 +44,9 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    deviceSize = MediaQuery.of(context).size;
+    deviceSize = MediaQuery
+        .of(context)
+        .size;
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -70,15 +72,15 @@ class _MainPageState extends State<MainPage> {
                             .getPossibleMessageOfSend()
                             .toString(),
                         style:
-                            TextStyle(color: chatPrimaryColor, fontSize: 25)),
+                        TextStyle(color: chatPrimaryColor, fontSize: 25)),
                     SizedBox(width: 16),
                     Container(
                       width: 60,
                       child: IconButton(
                         icon: Image.asset(_adIconPath),
-                        onPressed: () {
-                          // TODO 광고 보기 작성
-                        },
+                        onPressed: () =>
+                            Navigator.pushNamed(context, '/ad_watching_page')
+                        ,
                       ),
                     ),
                   ],
@@ -117,8 +119,16 @@ class _MainPageState extends State<MainPage> {
                       iconSize: 56,
                       // 크기때문에 아이콘 버튼보다는 container 로 감싸는게 나은듯?
                       icon: Image.asset(_sendMsgIconPath),
-                      onPressed: () =>
-                          Navigator.pushNamed(context, '/chat_send_page'),
+                      onPressed: () {
+                        final myAuthState =
+                            Provider
+                                .of<AuthProvider>(context)
+                                .authState;
+                        if (myAuthState == AuthState.authorizations)
+                          Navigator.pushNamed(context, '/chat_send_page');
+                        else
+                          showToast('서비스가 제한되어 사용이 불가능합니다.');
+                      },
                     ),
                   ),
                   Positioned(

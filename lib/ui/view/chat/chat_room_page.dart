@@ -4,6 +4,7 @@ import 'package:anony_chat/controller/firebase_controller.dart';
 import 'package:anony_chat/controller/pick_image_controller.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/provider/auth_provider.dart';
+import 'package:anony_chat/ui/widget/always_disabled_focus_node.dart';
 import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,7 +34,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   final chatAppBarName = '익명의 상대방';
 
   int limit = 20;
-  bool _isSubmit = true;
 
   AuthState _authState;
 
@@ -46,6 +46,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   void initState() {
     super.initState();
     _authState = Provider.of<AuthProvider>(context, listen: false).authState;
+    // _authState = AuthState.banned;
   }
 
   @override
@@ -92,6 +93,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           'item': ChatMessage(
                             message: Message(
                                 senderID: value['senderID'],
+                                receiverID: value['receiverID'],
                                 content: value['content'],
                                 time: value['time'],
                                 type: value['type'],
@@ -112,7 +114,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                             element['item'],
                         itemComparator: (item1, item2) =>
                             item1['date'].compareTo(item2['date']),
-                        floatingHeader: true,
+                        floatingHeader: false,
                         order: StickyGroupedListOrder.DESC,
                         reverse: true,
                       );
@@ -179,16 +181,23 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             height: 48.0,
             child: FlatButton(
                 child: Icon(Icons.photo, size: 24.0),
-                //Text('사진', style: TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () => sendImageFile()),
           ),
           Flexible(
-            child: TextField(
-              controller: _messageController,
-              onSubmitted: _handleSubmitted,
-              decoration: InputDecoration.collapsed(hintText: '채팅 작성'),
-              focusNode: _focusNode,
-            ),
+            child: _authState == AuthState.authorizations
+                ? TextField(
+                    controller: _messageController,
+                    onSubmitted: _handleSubmitted,
+                    decoration: InputDecoration.collapsed(hintText: '채팅 작성'),
+                    focusNode: _focusNode,
+                  )
+                : TextField(
+                    enableInteractiveSelection: false,
+                    enabled: false,
+                    decoration:
+                        InputDecoration.collapsed(hintText: '서비스가 제한됩니다.'),
+                    focusNode: AlwaysDisabledFocusNode(),
+                  ),
           ),
           Container(
             width: 56.0,
@@ -203,6 +212,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   }
 
   void sendImageFile() {
+    if (_authState != AuthState.authorizations) return;
     PickImageController.instance.cropImageFromFile().then((croppedFile) {
       if (croppedFile != null) {
         _saveImageToFirebaseStorage(croppedFile);
@@ -256,7 +266,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               child: Text('나가기', style: TextStyle(color: Colors.black)),
               onPressed: () {
                 Navigator.popUntil(
-                    context, ModalRoute.withName(Navigator.defaultRouteName));
+                    context, ModalRoute.withName('/chat_list_page'));
               },
             ),
           ],
@@ -289,7 +299,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           : Colors.grey)),
               onTap: _authState == AuthState.authorizations
                   ? () {
-                      Navigator.pushNamed(context, '/report_chat_page');
+                      Navigator.pushNamed(context, '/chat_report_page',
+                          arguments: widget.receiverID);
                     }
                   : null,
             ),

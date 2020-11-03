@@ -5,6 +5,7 @@ class BottomButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
   final Color color;
+  final Icon icon;
 
   @override
   Widget build(BuildContext context) {
@@ -14,15 +15,24 @@ class BottomButton extends StatelessWidget {
         height: 50.0,
         buttonColor: color,
         child: RaisedButton(
-          child: Text(text,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              icon != null ? icon : Container(),
+              SizedBox(width: 8.0),
+              Text(text,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold)),
+            ],
+          ),
           onPressed: onPressed,
         ),
       ),
     );
   }
-  BottomButton({this.onPressed, this.text, this.color = chatPrimaryColor});
+
+  BottomButton(
+      {this.icon, this.onPressed, this.text, this.color = chatPrimaryColor});
 }
