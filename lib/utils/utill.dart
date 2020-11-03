@@ -24,10 +24,12 @@ convertTimeToString(int time) {
   }
 }
 
-void showToast(text) {
+int convertBirthYearToAge(int birthYear) => DateTime.now().year - birthYear + 1;
+
+void showToast(text, {gravity = ToastGravity.BOTTOM}) {
   Fluttertoast.showToast(
       msg: text,
-      gravity: ToastGravity.BOTTOM,
+      gravity: gravity,
       backgroundColor: Colors.black,
       toastLength: Toast.LENGTH_SHORT);
 }

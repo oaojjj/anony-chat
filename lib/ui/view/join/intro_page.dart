@@ -324,50 +324,51 @@ class _IntroPageState extends State<IntroPage> {
     setState(() => _loading = false);
     print('#20대 아니라서 가입 불가');
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return SimpleDialog(
-            contentPadding: EdgeInsets.all(0),
-            title: Container(
-              width: 400,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    '가입불가',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: chatPrimaryColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ],
-              ),
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          contentPadding: EdgeInsets.all(0),
+          title: Container(
+            width: 400,
+            child: Column(
+              children: <Widget>[
+                Text(
+                  '가입불가',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: chatPrimaryColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            children: [
-              SizedBox(height: 24),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Text(
-                    '어플의 특성상 20대만 이용할 수 있습니다. :-)\n회원님의 가입은 불가능합니다.',
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 40),
-                  Container(
-                    height: 40,
-                    child: FlatButton(
-                        color: chatPrimaryColor,
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        child: Center(
-                            child: Text('확인',
-                                style: TextStyle(color: Colors.white))),
-                        onPressed: () => Navigator.pop(context)),
-                  ),
-                ],
-              ),
-            ],
-          );
-        });
+          ),
+          children: [
+            SizedBox(height: 24),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(
+                  '어플의 특성상 20대만 이용할 수 있습니다. :-)\n회원님의 가입은 불가능합니다.',
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 40),
+                Container(
+                  height: 40,
+                  child: FlatButton(
+                      color: chatPrimaryColor,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      child: Center(
+                          child: Text('확인',
+                              style: TextStyle(color: Colors.white))),
+                      onPressed: () => Navigator.pop(context)),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }

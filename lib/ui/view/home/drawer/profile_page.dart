@@ -203,7 +203,8 @@ class _ProfilePageState extends State<ProfilePage> {
                             fit: FlexFit.tight,
                             flex: 2,
                             child: Center(
-                                child: Text(member.birthYear.toString()))),
+                                child: Text(
+                                    '${convertBirthYearToAge(member.birthYear)}'))),
                         Flexible(
                             fit: FlexFit.tight, flex: 1, child: Container())
                       ],
