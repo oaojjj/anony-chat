@@ -10,6 +10,7 @@ ChatRoom _$ChatRoomFromJson(Map<String, dynamic> json) {
   return ChatRoom(
     imageIcon: json['imageIcon'] as String,
     withWho: json['withWho'] as int,
+    activation: json['activation'] as bool,
     message: json['message'] == null
         ? null
         : Message.fromJson(json['message'] as Map<String, dynamic>),
@@ -19,6 +20,7 @@ ChatRoom _$ChatRoomFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ChatRoomToJson(ChatRoom instance) => <String, dynamic>{
   'imageIcon': instance.imageIcon,
   'withWho': instance.withWho,
+  'activation': instance.activation,
   'lastMessageTime': instance.message.time,
   'lastMessage': instance.message.content,
 };

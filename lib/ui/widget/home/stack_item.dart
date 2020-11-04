@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/ui/view/chat/chat_room_page.dart';
+import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
 import 'package:flutter/material.dart';
 
 class StackItem extends StatefulWidget {
@@ -17,16 +18,18 @@ class StackItem extends StatefulWidget {
 }
 
 class _StackItemState extends State<StackItem> {
+  final _chatModel = ChatModel();
+
   int xPosition = 0;
   int yPosition = 0;
 
   @override
   void initState() {
-    super.initState();
     int min = widget.minDY.toInt();
     int max = widget.maxDY.toInt();
     yPosition = min + Random().nextInt(max - min);
     xPosition = Random().nextInt(widget.deviceX.toInt());
+    super.initState();
   }
 
   @override
@@ -35,7 +38,9 @@ class _StackItemState extends State<StackItem> {
       top: yPosition.toDouble(),
       left: xPosition.toDouble(),
       child: GestureDetector(
-        onTap: () {
+        onTap: () async {
+          _chatModel.setChatActivation(
+              HiveController.instance.getMemberID(), widget.chatRoom.id, true);
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -48,8 +53,8 @@ class _StackItemState extends State<StackItem> {
         },
         child: Container(
           child: Image(
-              image:
-                  AssetImage('assets/icons/${widget.chatRoom['imageIcon']}')),
+              image: AssetImage(
+                  'assets/icons/messageIcons/${widget.chatRoom['imageIcon']}')),
           width: 64,
           height: 64,
         ),

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:anony_chat/utils/utill.dart';
 import 'package:path/path.dart';
 
 class HttpController {

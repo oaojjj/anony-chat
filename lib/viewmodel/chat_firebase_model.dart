@@ -85,17 +85,20 @@ class ChatModel {
     return 1000;
   }
 
-  void _createChatRoom(ChatRoom chatRoom) {
-    _fdb
+  Future<void> _createChatRoom(ChatRoom chatRoom) async {
+    await _fdb
         .collection(CHAT_ROOM_COLLECTION)
         .doc(chatRoom.chatRoomID)
-        .collection(CHAT_MESSAGES)
-        .doc(chatRoom.message.time.toString())
-        .set(chatRoom.message.toJson());
+        .set({'activation': true}).then((value) async => await _fdb
+            .collection(CHAT_ROOM_COLLECTION)
+            .doc(chatRoom.chatRoomID)
+            .collection(CHAT_MESSAGES)
+            .doc(chatRoom.message.time.toString())
+            .set(chatRoom.message.toJson()));
   }
 
-  void _createChatList(ChatRoom chatRoom) {
-    _fdb
+  Future<void> _createChatList(ChatRoom chatRoom) async {
+    await _fdb
         .collection(MemberModel.USERS_COLLECTION)
         .doc('${chatRoom.message.senderID}')
         .collection(CHAT_LIST_COLLECTION)
@@ -103,8 +106,9 @@ class ChatModel {
         .set(chatRoom.toJson());
 
     chatRoom.withWho = chatRoom.message.senderID;
+    chatRoom.activation = false;
 
-    _fdb
+    await _fdb
         .collection(MemberModel.USERS_COLLECTION)
         .doc('${chatRoom.message.receiverID}')
         .collection(CHAT_LIST_COLLECTION)
@@ -112,11 +116,21 @@ class ChatModel {
         .set(chatRoom.toJson());
   }
 
-  getChatRoomList(int id) {
+  getChatRoomListActivation(int id) {
     return _fdb
         .collection(MemberModel.USERS_COLLECTION)
         .doc('$id')
         .collection(CHAT_LIST_COLLECTION)
+        .where('activation', isEqualTo: true)
+        .snapshots();
+  }
+
+  getChatRoomListNonActivation(int id) {
+    return _fdb
+        .collection(MemberModel.USERS_COLLECTION)
+        .doc('$id')
+        .collection(CHAT_LIST_COLLECTION)
+        .where('activation', isEqualTo: false)
         .snapshots();
   }
 
@@ -136,5 +150,30 @@ class ChatModel {
         .doc(id.toString())
         .get();
     return data['fcmToken'];
+  }
+
+  Future<void> setChatActivation(int id, String chatRoomID, bool b) async {
+    await _fdb
+        .collection(MemberModel.USERS_COLLECTION)
+        .doc('$id')
+        .collection(CHAT_LIST_COLLECTION)
+        .doc('$chatRoomID')
+        .update({'activation': b}).then((value) async => await _fdb
+            .collection(CHAT_ROOM_COLLECTION)
+            .doc('$chatRoomID')
+            .set({'activation': b}));
+  }
+
+  checkChatActivation(chatRoomID) =>
+      _fdb.collection(CHAT_ROOM_COLLECTION).doc(chatRoomID).snapshots();
+
+  exitChatRoom(id, chatRoomID) {
+    setChatActivation(id, chatRoomID, false);
+    _fdb
+        .collection(MemberModel.USERS_COLLECTION)
+        .doc('$id')
+        .collection(CHAT_LIST_COLLECTION)
+        .doc('$chatRoomID')
+        .delete();
   }
 }

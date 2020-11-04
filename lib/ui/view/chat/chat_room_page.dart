@@ -14,6 +14,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 
 class ChatRoomPage extends StatefulWidget {
@@ -32,7 +33,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   final FocusNode _focusNode = FocusNode();
 
   final _messageController = TextEditingController();
-  final _scrollController = ScrollController();
+  final _groupedItemScrollController = GroupedItemScrollController();
+  final _itemPositionsListener = ItemPositionsListener.create();
 
   final chatAppBarName = '익명의 상대방';
 
@@ -44,7 +46,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   IconData floatingIcon = Icons.person;
 
   int limit = 20;
-  double _animatedHeight = 60.0;
+  double _animatedHeight = 0.0;
   bool clickFlag = false;
   bool infoFlag = false;
 
@@ -56,20 +58,26 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   void initState() {
     super.initState();
     _authState = Provider.of<AuthProvider>(context, listen: false).authState;
+    _itemPositionsListener.itemPositions.addListener(_scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final infoResult =
-          await _chatHttpModel.getMatchingUserInfo(widget.receiverID);
-      print('#채팅유저인포 결과:${infoResult.toJson()}');
-      if (infoResult.code == ResponseCode.SUCCESS_CODE) {
-        member.birthYear = infoResult.data.item[0]['birth_year'];
-        member.gender = infoResult.data.item[0]['gender'];
-        member.university = infoResult.data.item[0]['school'];
-        member.department = infoResult.data.item[0]['department'];
-        infoFlag = true;
-      } else {
-        infoFlag = false;
-      }
+      await fetchDataInfoApi();
     });
+  }
+
+  Future fetchDataInfoApi() async {
+    final infoResult =
+        await _chatHttpModel.getMatchingUserInfo(widget.receiverID);
+    print('#채팅유저인포:${infoResult.toJson()}');
+    if (infoResult.code == ResponseCode.SUCCESS_CODE) {
+      member.birthYear =
+          convertBirthYearToAge(infoResult.data.item[0]['birth_year']);
+      member.gender = infoResult.data.item[0]['gender'] == 1 ? '남자' : '여자';
+      member.university = infoResult.data.item[0]['school'];
+      member.department = infoResult.data.item[0]['department'];
+      infoFlag = true;
+    } else {
+      infoFlag = false;
+    }
   }
 
   @override
@@ -108,8 +116,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           return Center(child: CircularProgressIndicator());
                         } else {
                           // isRead -> true
-                          updateReadMsg(snapshot);
-
+                          _updateReadMsg(snapshot);
                           _elements.clear();
                           snapshot.data.documents.forEach((element) {
                             final value = element.data();
@@ -132,6 +139,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           });
                           return StickyGroupedListView<dynamic, String>(
                             elements: _elements,
+                            itemPositionsListener: _itemPositionsListener,
+                            itemScrollController: _groupedItemScrollController,
                             groupBy: (element) => element['group'],
                             groupSeparatorBuilder: (dynamic element) =>
                                 _buildDivider(element['group']),
@@ -139,7 +148,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                 element['item'],
                             itemComparator: (item1, item2) =>
                                 item1['date'].compareTo(item2['date']),
-                            floatingHeader: false,
+                            floatingHeader: true,
                             order: StickyGroupedListOrder.DESC,
                             reverse: true,
                           );
@@ -147,71 +156,117 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       },
                     ),
                     Positioned(
-                      right: 30,
-                      top: infoFlag ? 24 : 36,
+                      right: 12,
+                      top: 64,
                       child: Container(
                         child: AnimatedContainer(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Colors.black54,
                             borderRadius: BorderRadius.circular(8),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.grey.withOpacity(0.5),
-                                blurRadius: 1,
-                                offset: Offset(2, 2),
+                                blurRadius: 3,
+                                offset: Offset(1, 2),
                               ),
                             ],
                           ),
-                          duration: const Duration(milliseconds: 200),
-                          child: buildContainerInfo(),
+                          duration: const Duration(milliseconds: 300),
+                          child: SingleChildScrollView(
+                              child: _buildContainerInfo()),
                           height: _animatedHeight,
-                          width: infoFlag ? 150 : 130,
+                          width: infoFlag ? 200 : 150,
                         ),
                       ),
                     ),
                     Positioned(
-                        right: 4,
-                        top: 16,
-                        child: Container(
-                          height: 44,
-                          child: FloatingActionButton(
-                            onPressed: () {
-                              setState(() {
-                                if (clickFlag) {
-                                  floatingIcon = Icons.person;
-                                  _animatedHeight = 0.0;
-                                } else {
-                                  floatingIcon = Icons.close;
-                                  _animatedHeight = infoFlag ? 60.0 : 35.0;
-                                }
-                              });
-                              clickFlag = !clickFlag;
-                            },
-                            backgroundColor: Colors.white,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            child: Icon(
-                              floatingIcon,
-                              size: 32,
-                              color: chatPrimaryColor,
-                            ),
+                      right: 4,
+                      top: 14,
+                      child: Container(
+                        height: 44,
+                        child: FloatingActionButton(
+                          elevation: 2,
+                          tooltip: '상대정보 확인',
+                          hoverElevation: 0,
+                          onPressed: () {
+                            setState(() {
+                              if (clickFlag) {
+                                floatingIcon = Icons.person;
+                                _animatedHeight = 0.0;
+                              } else {
+                                floatingIcon = Icons.close;
+                                _animatedHeight = infoFlag ? 60.0 : 35.0;
+                              }
+                            });
+                            clickFlag = !clickFlag;
+                          },
+                          backgroundColor: Colors.black54,
+                          materialTapTargetSize:
+                              MaterialTapTargetSize.shrinkWrap,
+                          child: Icon(
+                            floatingIcon,
+                            size: 32,
+                            color: Colors.white,
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Container(
-                color: Colors.black,
-                height: 50,
-                width: double.infinity,
-                child: Center(
-                  child: Text(
-                    '광고배너',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
-              _buildTextComposer(),
+              StreamBuilder(
+                  stream: _chatModel.checkChatActivation(widget.chatRoomID),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData && !snapshot.data['activation']) {
+                      return Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 24.0),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.black54,
+                                    borderRadius: BorderRadius.circular(16.0)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    '상대방이 대화를 나갔습니다.',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                )),
+                          ),
+                          Container(
+                            color: Colors.black,
+                            height: 50,
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                '광고배너',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                          _buildTextComposer(snapshot.data['activation']),
+                        ],
+                      );
+                    } else if (snapshot.hasData) {
+                      return Column(children: [
+                        Container(
+                          color: Colors.black,
+                          height: 50,
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              '광고배너',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                        _buildTextComposer(snapshot.data['activation']),
+                      ]);
+                    } else {
+                      return Container();
+                    }
+                  }),
             ],
           ),
         ),
@@ -219,7 +274,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 
-  Container buildContainerInfo({textColor = chatPrimaryColor}) {
+  Container _buildContainerInfo({textColor = Colors.white}) {
     return new Container(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -276,7 +331,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     ]);
   }
 
-  void updateReadMsg(snapshot) {
+  void _updateReadMsg(snapshot) {
     for (var data in snapshot.data.documents) {
       if (data['receiverID'] == widget.senderID && data['isRead'] == false) {
         if (data.reference != null) {
@@ -287,7 +342,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     }
   }
 
-  Widget _buildTextComposer() {
+  Widget _buildTextComposer(activation) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -306,10 +361,10 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             height: 48.0,
             child: FlatButton(
                 child: Icon(Icons.photo, size: 24.0),
-                onPressed: () => sendImageFile()),
+                onPressed: () => _sendImageFile(activation)),
           ),
           Flexible(
-            child: _authState == AuthState.authorizations
+            child: returnChatState() && activation == true
                 ? TextField(
                     controller: _messageController,
                     onSubmitted: _handleSubmitted,
@@ -329,15 +384,41 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             height: 48.0,
             child: FlatButton(
                 child: Icon(Icons.send, size: 24.0),
-                onPressed: () => _handleSubmitted(_messageController.text)),
+                onPressed: () => returnChatState() && activation == true
+                    ? _handleSubmitted(_messageController.text)
+                    : null),
           ),
         ],
       ),
     );
   }
 
-  void sendImageFile() {
-    if (_authState != AuthState.authorizations) return;
+  bool returnChatState() => _authState == AuthState.authorizations;
+
+  void _scrollListener() {
+    /*  final min = _itemPositionsListener.itemPositions.value
+        .where((ItemPosition position) => position.itemTrailingEdge > 0)
+        .reduce((ItemPosition min, ItemPosition position) =>
+    position.itemTrailingEdge < min.itemTrailingEdge
+        ? position
+        : min)
+        .index;
+    */
+
+    final index = _itemPositionsListener.itemPositions.value
+        .where((ItemPosition position) => position.itemLeadingEdge < 1)
+        .reduce((ItemPosition max, ItemPosition position) =>
+            position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
+        .index;
+    print('$index:start');
+    if (index == limit * 2 - 1) {
+      setState(() => limit *= 2);
+      print('$index:end/limit:$limit}');
+    }
+  }
+
+  void _sendImageFile(activation) {
+    if (_authState != AuthState.authorizations || activation == false) return;
     PickImageController.instance.cropImageFromFile().then((croppedFile) {
       if (croppedFile != null) {
         _saveImageToFirebaseStorage(croppedFile);
@@ -368,8 +449,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
     _chatModel.sendMessage(chatRoomId: widget.chatRoomID, message: msg);
     _focusNode.requestFocus();
-    _scrollController.animateTo(0.0,
-        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
   }
 
   Future<void> _showMyDialog() async {
@@ -423,7 +502,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   ),
                   Expanded(
                     child: InkWell(
-                      onTap: () => exitChatRoom(context),
+                      onTap: () async => await _exitChatRoom(context),
                       child: Container(
                         color: chatPrimaryColor,
                         height: 45,
@@ -446,7 +525,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     );
   }
 
-  void exitChatRoom(BuildContext context) {
+  Future<void> _exitChatRoom(BuildContext context) async {
+    await _chatModel.exitChatRoom(widget.senderID, widget.chatRoomID);
     Navigator.popUntil(context, ModalRoute.withName('/chat_list_page'));
     // TODO 채팅 나갔을 때 이벤트들
   }
@@ -470,10 +550,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
               title: Text('신고하기',
                   style: TextStyle(
                       fontSize: 18.0,
-                      color: _authState == AuthState.authorizations
-                          ? Colors.black
-                          : Colors.grey)),
-              onTap: _authState == AuthState.authorizations
+                      color: returnChatState() ? Colors.black : Colors.grey)),
+              onTap: returnChatState()
                   ? () {
                       Navigator.pushNamed(context, '/chat_report_page',
                           arguments: widget.receiverID);
@@ -498,6 +576,4 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
       ),
     );
   }
-
-  showInfo() {}
 }

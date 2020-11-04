@@ -4,10 +4,8 @@ import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
-import 'package:anony_chat/viewmodel/member_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class ChatSendPage extends StatefulWidget {
   @override
@@ -22,20 +20,28 @@ class _ChatSendPageState extends State<ChatSendPage> {
   ChatModel _chatModel = ChatModel();
   final _messageController = TextEditingController();
 
-  String _choiceIcon = 'messageIcon1.png';
+  String _choiceIcon = 'star.png';
 
   int possibleMessageOfSend;
 
   final List<Widget> _icons = [];
   final List<String> _iconName = [
-    'messageIcon1.png',
-    'messageIcon2.png',
-    'messageIcon3.png',
-    'messageIcon4.png',
-    'messageIcon5.png',
-    'messageIcon6.png',
-    'messageIcon7.png',
-    'messageIcon8.png',
+    'balloon.png',
+    'clover.png',
+    'game.png',
+    'heart.png',
+    'letter.png',
+    'lightning.png',
+    'moon.png',
+    'note.png',
+    'paper_airplane.png',
+    'planet.png',
+    'rain_cloud.png',
+    'rainbow.png',
+    'sprout.png',
+    'star.png',
+    'sun.png',
+    'umbrella.png',
   ];
 
   @override
@@ -79,7 +85,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
                                 height: 120.0,
                                 child: IconButton(
                                     icon: Image.asset(
-                                        'assets/icons/$_choiceIcon'),
+                                        'assets/icons/messageIcons/$_choiceIcon'),
                                     onPressed: () => _buildImageGridView())),
                             Positioned(
                               top: 8,
@@ -163,6 +169,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
   Future<int> _sendMessage() async {
     final chatResult = await _chatModel.createChatRoom(
       ChatRoom(
+        activation: true,
         imageIcon: _choiceIcon,
         message: Message(
           senderID: HiveController.instance.getMemberID(),
@@ -197,7 +204,7 @@ class _ChatSendPageState extends State<ChatSendPage> {
                     height: DIALOG_CONTAINER_HEIGHT - 70,
                     child: GridView.count(
                         padding: EdgeInsets.all(8),
-                        crossAxisCount: 3,
+                        crossAxisCount: 4,
                         children: _buildGridItem()),
                   ),
                 ],
@@ -219,8 +226,8 @@ class _ChatSendPageState extends State<ChatSendPage> {
           child: InkWell(
             highlightColor: chatPrimaryColor,
             child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Image.asset('assets/icons/$path'),
+              padding: const EdgeInsets.all(1.0),
+              child: Image.asset('assets/icons/messageIcons/$path'),
             ),
             onTap: () {
               Navigator.pop(context);

@@ -37,7 +37,7 @@ class _ChatListPageState extends State<ChatListPage> {
         ),
         body: Container(
           child: StreamBuilder(
-            stream: _chatModel.getChatRoomList(userId),
+            stream: _chatModel.getChatRoomListActivation(userId),
             builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData || snapshot.hasError)
                 return Center(child: CircularProgressIndicator());
@@ -76,7 +76,7 @@ class _ChatListPageState extends State<ChatListPage> {
         _receiverID.add(element['withWho']);
         _chatRoomID.add(element.id);
         _chatRooms.add(ChatRoomPreview(
-          previewIcon: 'assets/icons/${element['imageIcon']}',
+          previewIcon: 'assets/icons/messageIcons/${element['imageIcon']}',
           lastMessage: element['lastMessage'],
           timestamp: convertTimeToString(element['lastMessageTime']),
         ));

@@ -32,8 +32,8 @@ class _MainPageState extends State<MainPage> {
   Size deviceSize;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var status = await Permission.storage.status;
       if (status.isUndetermined) {
@@ -44,9 +44,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    deviceSize = MediaQuery
-        .of(context)
-        .size;
+    deviceSize = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         key: _scaffoldKey,
@@ -72,15 +70,14 @@ class _MainPageState extends State<MainPage> {
                             .getPossibleMessageOfSend()
                             .toString(),
                         style:
-                        TextStyle(color: chatPrimaryColor, fontSize: 25)),
+                            TextStyle(color: chatPrimaryColor, fontSize: 25)),
                     SizedBox(width: 16),
                     Container(
                       width: 60,
                       child: IconButton(
                         icon: Image.asset(_adIconPath),
                         onPressed: () =>
-                            Navigator.pushNamed(context, '/ad_watching_page')
-                        ,
+                            Navigator.pushNamed(context, '/ad_watching_page'),
                       ),
                     ),
                   ],
@@ -89,7 +86,7 @@ class _MainPageState extends State<MainPage> {
             ),
             Expanded(
               child: StreamBuilder(
-                stream: _chatModel.getChatRoomList(userId),
+                stream: _chatModel.getChatRoomListNonActivation(userId),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if (snapshot.hasData) {
                     stackItems.clear();
@@ -121,8 +118,7 @@ class _MainPageState extends State<MainPage> {
                       icon: Image.asset(_sendMsgIconPath),
                       onPressed: () {
                         final myAuthState =
-                            Provider
-                                .of<AuthProvider>(context)
+                            Provider.of<AuthProvider>(context, listen: false)
                                 .authState;
                         if (myAuthState == AuthState.authorizations)
                           Navigator.pushNamed(context, '/chat_send_page');

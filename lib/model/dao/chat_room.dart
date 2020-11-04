@@ -7,11 +7,17 @@ part 'chat_room.g.dart';
 class ChatRoom {
   String imageIcon;
   String chatRoomID;
+  bool activation;
   int withWho;
   int createdTime;
   Message message;
 
-  ChatRoom({this.imageIcon, this.withWho, this.message, this.chatRoomID}) {
+  ChatRoom(
+      {this.imageIcon,
+      this.withWho,
+      this.message,
+      this.chatRoomID,
+      this.activation = false}) {
     createdTime = message.time;
   }
 
