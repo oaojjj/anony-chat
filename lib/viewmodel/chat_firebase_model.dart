@@ -1,3 +1,4 @@
+import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/controller/notification_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
@@ -8,17 +9,12 @@ import 'member_model.dart';
 
 class ChatModel {
   static final FirebaseFirestore _fdb = FirebaseFirestore.instance;
-  final _chatHttpModel = ChatHttpModel();
 
   static const String CHAT_ROOM_COLLECTION = 'chat_room';
   static const String CHAT_LIST_COLLECTION = 'chat_list';
   static const String CHAT_MESSAGES = 'messages';
 
   Future<void> sendMessage({String chatRoomId, Message message}) async {
-    final senderID = message.senderID;
-    final receiverID = message.receiverID;
-
-    print('$senderID,$receiverID');
     // 메세지 전송 추가
     _fdb
         .collection(CHAT_ROOM_COLLECTION)
@@ -27,33 +23,32 @@ class ChatModel {
         .doc(message.time.toString())
         .set(message.toJson());
 
+    // 최근 메시지 업데이트
+    updateChatList(message.receiverID, chatRoomId, message, false);
+    updateChatList(message.senderID, chatRoomId, message, true);
+
     // 알림 보내기
     final peerUserToken = await getFcmToken(message.receiverID);
     NotificationController.instance.sendNotificationToPeerUser(
         text: message.content,
         myID: message.senderID,
         messageType: message.type,
+        unReadMSGCount: await getUnReadMsgCountFuture(chatRoomId),
         peerUserToken: peerUserToken);
+  }
 
-    // 최근 메시지 업데이트
-    _fdb
+  Future<void> updateChatList(
+      int senderID, String chatRoomId, Message message, bool isSender) async {
+    await _fdb
         .collection(MemberModel.USERS_COLLECTION)
         .doc('$senderID')
         .collection(CHAT_LIST_COLLECTION)
         .doc('$chatRoomId')
         .update({
       'lastMessage': message.type == 'photo' ? '(사진)' : message.content,
-      'lastMessageTime': message.time
-    });
-
-    _fdb
-        .collection(MemberModel.USERS_COLLECTION)
-        .doc('$receiverID')
-        .collection(CHAT_LIST_COLLECTION)
-        .doc('$chatRoomId')
-        .update({
-      'lastMessage': message.type == 'photo' ? '(사진)' : message.content,
-      'lastMessageTime': message.time
+      'lastMessageTime': message.time,
+      'unReadMsgCount':
+          isSender ? FieldValue.increment(0) : FieldValue.increment(1),
     });
   }
 
@@ -78,8 +73,10 @@ class ChatModel {
 
     // 알림 보내기
     final peerUserToken = await getFcmToken(chatRoom.message.receiverID);
-    NotificationController.instance
-        .sendNotificationToPeerUser(mode: 0, peerUserToken: peerUserToken);
+    NotificationController.instance.sendNotificationToPeerUser(
+        mode: 0,
+        peerUserToken: peerUserToken,
+        unReadMSGCount: await getUnReadMsgCountFuture(chatRoom.chatRoomID));
     // }
     // return matchingResult.code;
     return 1000;
@@ -107,6 +104,7 @@ class ChatModel {
 
     chatRoom.withWho = chatRoom.message.senderID;
     chatRoom.activation = false;
+    chatRoom.unReadMsgCount = 1;
 
     await _fdb
         .collection(MemberModel.USERS_COLLECTION)
@@ -175,5 +173,42 @@ class ChatModel {
         .collection(CHAT_LIST_COLLECTION)
         .doc('$chatRoomID')
         .delete();
+  }
+
+  void updateReadMsg(snapshot, id, chatRoomId) async {
+    for (var data in snapshot.data.documents) {
+      if (data['receiverID'] == id && data['isRead'] == false) {
+        if (data.reference != null) {
+          FirebaseFirestore.instance.runTransaction((transaction) async =>
+              transaction.update(data.reference, {'isRead': true}));
+        }
+      }
+    }
+
+    await _fdb
+        .collection(MemberModel.USERS_COLLECTION)
+        .doc('$id')
+        .collection(CHAT_LIST_COLLECTION)
+        .doc('$chatRoomId')
+        .update({
+      'unReadMsgCount': 0,
+    });
+  }
+
+  getUnReadMsgCountStream(String chatRoomId) => _fdb
+      .collection(MemberModel.USERS_COLLECTION)
+      .doc('${HiveController.instance.getMemberID()}')
+      .collection(CHAT_LIST_COLLECTION)
+      .doc('$chatRoomId')
+      .snapshots();
+
+  getUnReadMsgCountFuture(String chatRoomId) {
+    final result = _fdb
+        .collection(MemberModel.USERS_COLLECTION)
+        .doc('${HiveController.instance.getMemberID()}')
+        .collection(CHAT_LIST_COLLECTION)
+        .doc('$chatRoomId')
+        .get();
+    result.then((value) => print(value['unReadMsgCount']));
   }
 }

@@ -10,7 +10,6 @@ import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:anony_chat/utils/utill.dart';
 import 'package:anony_chat/viewmodel/chat_firebase_model.dart';
 import 'package:anony_chat/viewmodel/chat_http_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -116,7 +115,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           return Center(child: CircularProgressIndicator());
                         } else {
                           // isRead -> true
-                          _updateReadMsg(snapshot);
+                          _chatModel.updateReadMsg(
+                              snapshot, widget.senderID, widget.chatRoomID);
                           _elements.clear();
                           snapshot.data.documents.forEach((element) {
                             final value = element.data();
@@ -331,17 +331,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     ]);
   }
 
-  void _updateReadMsg(snapshot) {
-    for (var data in snapshot.data.documents) {
-      if (data['receiverID'] == widget.senderID && data['isRead'] == false) {
-        if (data.reference != null) {
-          FirebaseFirestore.instance.runTransaction((transaction) async =>
-              transaction.update(data.reference, {'isRead': true}));
-        }
-      }
-    }
-  }
-
   Widget _buildTextComposer(activation) {
     return Container(
       decoration: BoxDecoration(
@@ -410,7 +399,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         .reduce((ItemPosition max, ItemPosition position) =>
             position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
         .index;
-    print('$index:start');
+    print('$index:index');
     if (index == limit * 2 - 1) {
       setState(() => limit *= 2);
       print('$index:end/limit:$limit}');
@@ -528,7 +517,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   Future<void> _exitChatRoom(BuildContext context) async {
     await _chatModel.exitChatRoom(widget.senderID, widget.chatRoomID);
     Navigator.popUntil(context, ModalRoute.withName('/chat_list_page'));
-    // TODO 채팅 나갔을 때 이벤트들
   }
 
   Widget _buildEndDrawer() {

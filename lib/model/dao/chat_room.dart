@@ -10,14 +10,18 @@ class ChatRoom {
   bool activation;
   int withWho;
   int createdTime;
+  int unReadMsgCount;
   Message message;
 
-  ChatRoom(
-      {this.imageIcon,
-      this.withWho,
-      this.message,
-      this.chatRoomID,
-      this.activation = false}) {
+  ChatRoom({
+    this.imageIcon,
+    this.withWho,
+    this.unReadMsgCount = 0,
+    this.message,
+    this.createdTime,
+    this.chatRoomID,
+    this.activation = false,
+  }) {
     createdTime = message.time;
   }
 

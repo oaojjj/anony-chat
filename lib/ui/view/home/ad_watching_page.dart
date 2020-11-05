@@ -73,7 +73,9 @@ class _AdWatchingPageState extends State<AdWatchingPage> {
                       horizontal: 24.0, vertical: 40.0),
                   child: BottomButton(
                     icon: Icon(Icons.extension, color: Colors.white),
-                    onPressed: () {},
+                    onPressed: () {
+                      // TODO 메세지 추가로 얻기
+                    },
                     text: '메시지 추가로 얻기',
                   ),
                 )

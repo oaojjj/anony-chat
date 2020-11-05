@@ -1,12 +1,7 @@
 import 'package:anony_chat/ui/widget/bottom_button.dart';
 import 'package:flutter/material.dart';
 
-class ItemStorePage extends StatefulWidget {
-  @override
-  _ItemStorePageState createState() => _ItemStorePageState();
-}
-
-class _ItemStorePageState extends State<ItemStorePage> {
+class ItemStorePage extends StatelessWidget {
   static const SUBSCRIBE_IMAGE_PATH = 'assets/images/subscribe_image1440px.jpg';
   static const DOWN_ARROW_IMAGE_PATH = 'assets/images/down_arrow_image.png';
 

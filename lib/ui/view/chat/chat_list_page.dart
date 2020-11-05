@@ -76,6 +76,7 @@ class _ChatListPageState extends State<ChatListPage> {
         _receiverID.add(element['withWho']);
         _chatRoomID.add(element.id);
         _chatRooms.add(ChatRoomPreview(
+          chatRoomId:element.id,
           previewIcon: 'assets/icons/messageIcons/${element['imageIcon']}',
           lastMessage: element['lastMessage'],
           timestamp: convertTimeToString(element['lastMessageTime']),

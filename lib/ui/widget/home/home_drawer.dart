@@ -29,10 +29,6 @@ class HomeDrawer extends StatelessWidget {
               title: Text('서비스 정보', style: TextStyle(fontSize: 18.0)),
               onTap: () => Navigator.pushNamed(context, '/service_info_page'),
             ),
-            ListTile(
-              title: Text('테스트', style: TextStyle(fontSize: 20.0)),
-              onTap: () async {},
-            )
           ],
         ),
       ),

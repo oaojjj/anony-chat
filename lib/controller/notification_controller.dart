@@ -132,7 +132,8 @@ class NotificationController {
                 ? '메시지가 도착했습니다!'
                 : messageType == 'text' ? '$text' : '(사진)',
             'title': mode == 0 ? '익명의 상대방' : '$myID번 회원',
-            "sound": "default"
+            'badge':unReadMSGCount,
+            'sound': "default"
           },
           'priority': 'high',
           'data': <String, dynamic>{
