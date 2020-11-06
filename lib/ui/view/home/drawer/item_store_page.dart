@@ -24,7 +24,7 @@ class ItemStorePage extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width,
+                width: double.infinity,
                 child: Image.asset(
                   SUBSCRIBE_IMAGE_PATH,
                 ),
@@ -38,9 +38,8 @@ class ItemStorePage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 24.0, vertical: 12.0),
                 child: BottomButton(
-                  onPressed: () {
-                    //TODO 월구독 신청
-                  },
+                  onPressed: () =>
+                      Navigator.pushNamed(context, '/payment_ready_page'),
                   text: '월구독 신청',
                 ),
               ),
@@ -57,7 +56,7 @@ class ItemStorePage extends StatelessWidget {
               ),
               Container(
                 color: Colors.grey[300],
-                width: MediaQuery.of(context).size.width,
+                width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 24.0, vertical: 16.0),

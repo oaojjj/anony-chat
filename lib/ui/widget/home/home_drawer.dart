@@ -1,3 +1,4 @@
+import 'package:anony_chat/viewmodel/payment_http_model.dart';
 import 'package:flutter/material.dart';
 
 class HomeDrawer extends StatelessWidget {
@@ -28,6 +29,11 @@ class HomeDrawer extends StatelessWidget {
               leading: Icon(Icons.info_outline, size: 30),
               title: Text('서비스 정보', style: TextStyle(fontSize: 18.0)),
               onTap: () => Navigator.pushNamed(context, '/service_info_page'),
+            ),
+            ListTile(
+              title: Text('테스트', style: TextStyle(fontSize: 18.0)),
+              onTap: () async {
+              },
             ),
           ],
         ),

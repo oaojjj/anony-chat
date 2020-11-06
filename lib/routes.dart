@@ -1,4 +1,5 @@
 import 'package:anony_chat/ui/view/home/ad_watching_page.dart';
+import 'package:anony_chat/ui/view/home/drawer/card_registration_page.dart';
 import 'package:anony_chat/ui/view/join/student_card_authorization_page.dart';
 import 'package:flutter/material.dart';
 
@@ -14,11 +15,13 @@ import 'ui/view/home/drawer/profile_page.dart';
 import 'ui/view/home/drawer/report_guide_page.dart';
 import 'ui/view/home/drawer/report_page.dart';
 import 'ui/view/home/drawer/terms_of_service_page.dart';
+import 'ui/view/home/payment_ready_page.dart';
 import 'ui/view/join/intro_page.dart';
 
 final routes = {
   '/intro_page': (BuildContext context) => IntroPage(),
-  '/student_card_authorization_page': (BuildContext context) => SCAuthorizationPage(),
+  '/student_card_authorization_page': (BuildContext context) =>
+      SCAuthorizationPage(),
   '/main_page': (BuildContext context) => MainPage(),
   '/profile_page': (BuildContext context) => ProfilePage(),
   '/service_info_page': (BuildContext context) => ServiceInfoPage(),
@@ -32,4 +35,6 @@ final routes = {
   '/report_guide_page': (BuildContext context) => ReportGuidePage(),
   '/item_store_page': (BuildContext context) => ItemStorePage(),
   '/ad_watching_page': (BuildContext context) => AdWatchingPage(),
+  '/card_registration_page': (BuildContext context) => CardRegistrationPage(),
+  '/payment_ready_page': (BuildContext context) => PaymentReadyPage(),
 };
