@@ -131,6 +131,16 @@ class ChatModel {
         .snapshots();
   }
 
+  getChatMessageList(String chatRoomID, int limit) {
+    return _fdb
+        .collection(CHAT_ROOM_COLLECTION)
+        .doc(chatRoomID)
+        .collection(CHAT_MESSAGES)
+        .orderBy('time', descending: true)
+        .limit(limit)
+        .snapshots();
+  }
+
   fetchFirstMessageList(chatRoomID, limit) async {
     return (await _fdb
             .collection(CHAT_ROOM_COLLECTION)

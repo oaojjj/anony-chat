@@ -65,9 +65,13 @@ class MessageProvider extends ChangeNotifier {
 
   Future<void> requestMessages(chatRoomID) async {
     try {
+      print('test:1111111');
       final newDocumentList = await _chatModel.fetchNewMessage(chatRoomID);
-      documentList.insert(0, newDocumentList);
+      print('test:2222222');
+      documentList.insert(0, newDocumentList[0]);
+      print('test:333333');
       messageController.sink.add(documentList);
+      print('test:444444');
       try {
         if (documentList.length == 0) {
           messageController.sink.addError("No Data Available");
