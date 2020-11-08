@@ -19,7 +19,7 @@ class ChatMessage extends StatefulWidget {
 class _MessageState extends State<ChatMessage> {
   bool isSendByMe;
 
-  static const double CHAT_FONT_SIZE = 12.0;
+  static const double CHAT_FONT_SIZE = 14.0;
   static const double CHAT_CONTAINER_HEIGHT_MARGIN = 4.0;
   static const double CHAT_CONTAINER_RADIUS = 24.0;
 

@@ -16,7 +16,7 @@ class Payment extends StatelessWidget {
 
   final _paymentHttpModel = PaymentHttpModel();
   final pg;
-  final amount =1;
+  final amount = 1;
   final customerUid;
   static const USER_CODE = 'imp50062885';
   final _member = HiveController.instance.loadMemberInfoToLocal();

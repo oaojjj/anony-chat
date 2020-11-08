@@ -1,4 +1,5 @@
 import 'package:anony_chat/controller/notification_controller.dart';
+import 'package:anony_chat/provider/message_provider.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/routes.dart';
@@ -27,6 +28,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider.value(value: RegisterProvider()),
         ChangeNotifierProvider.value(value: AuthProvider()),
+        ChangeNotifierProvider.value(value: MessageProvider()),
       ],
       child: AnonymousChat(),
     ),

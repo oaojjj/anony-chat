@@ -2,7 +2,6 @@ import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/controller/notification_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
-import 'package:anony_chat/viewmodel/chat_http_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'member_model.dart';
@@ -132,14 +131,39 @@ class ChatModel {
         .snapshots();
   }
 
-  getChatMessageList(String chatRoomID, int limit) {
-    return _fdb
-        .collection(CHAT_ROOM_COLLECTION)
-        .doc(chatRoomID)
-        .collection(CHAT_MESSAGES)
-        .orderBy('time', descending: true)
-        .limit(limit)
-        .snapshots();
+  fetchFirstMessageList(chatRoomID, limit) async {
+    return (await _fdb
+            .collection(CHAT_ROOM_COLLECTION)
+            .doc(chatRoomID)
+            .collection(CHAT_MESSAGES)
+            .orderBy('time', descending: true)
+            .limit(limit)
+            .get())
+        .docs;
+  }
+
+  fetchNextMessageList(
+      List<DocumentSnapshot> documentList, chatRoomID, limit) async {
+    return (await _fdb
+            .collection(CHAT_ROOM_COLLECTION)
+            .doc(chatRoomID)
+            .collection(CHAT_MESSAGES)
+            .orderBy('time', descending: true)
+            .startAfterDocument(documentList[documentList.length - 1])
+            .limit(limit)
+            .get())
+        .docs;
+  }
+
+  fetchNewMessage(chatRoomID) async {
+    return (await _fdb
+            .collection(CHAT_ROOM_COLLECTION)
+            .doc(chatRoomID)
+            .collection(CHAT_MESSAGES)
+            .orderBy('time', descending: true)
+            .limit(1)
+            .get())
+        .docs;
   }
 
   getFcmToken(int id) async {
@@ -176,7 +200,7 @@ class ChatModel {
   }
 
   void updateReadMsg(snapshot, id, chatRoomId) async {
-    for (var data in snapshot.data.documents) {
+    for (var data in snapshot.data) {
       if (data['receiverID'] == id && data['isRead'] == false) {
         if (data.reference != null) {
           FirebaseFirestore.instance.runTransaction((transaction) async =>

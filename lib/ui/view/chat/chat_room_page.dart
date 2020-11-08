@@ -5,6 +5,7 @@ import 'package:anony_chat/controller/pick_image_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/provider/auth_provider.dart';
+import 'package:anony_chat/provider/message_provider.dart';
 import 'package:anony_chat/ui/widget/always_disabled_focus_node.dart';
 import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:anony_chat/utils/utill.dart';
@@ -34,6 +35,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   final _messageController = TextEditingController();
   final _groupedItemScrollController = GroupedItemScrollController();
   final _itemPositionsListener = ItemPositionsListener.create();
+  final _scrollController = ScrollController();
 
   final chatAppBarName = '익명의 상대방';
 
@@ -45,6 +47,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   IconData floatingIcon = Icons.person;
 
   int limit = 20;
+  int prevLimit = 0;
   double _animatedHeight = 0.0;
   bool clickFlag = false;
   bool infoFlag = false;
@@ -54,11 +57,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
   List _elements = [];
 
   @override
-  void initState() {
+  initState() {
     super.initState();
     _authState = Provider.of<AuthProvider>(context, listen: false).authState;
     _itemPositionsListener.itemPositions.addListener(_scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      await Provider.of<MessageProvider>(context, listen: false)
+          .fetchFirstList(widget.chatRoomID, limit);
       await fetchDataInfoApi();
     });
   }
@@ -108,8 +113,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 child: Stack(
                   children: [
                     StreamBuilder(
-                      stream: _chatModel.getChatMessageList(
-                          widget.chatRoomID, limit),
+                      stream:
+                          Provider.of<MessageProvider>(context).messageStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return Center(child: CircularProgressIndicator());
@@ -118,7 +123,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           _chatModel.updateReadMsg(
                               snapshot, widget.senderID, widget.chatRoomID);
                           _elements.clear();
-                          snapshot.data.documents.forEach((element) {
+                          snapshot.data.forEach((element) {
                             final value = element.data();
                             print('msg: $value');
                             _elements.add({
@@ -137,20 +142,24 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                                       value['time']))
                             });
                           });
-                          return StickyGroupedListView<dynamic, String>(
-                            elements: _elements,
-                            itemPositionsListener: _itemPositionsListener,
-                            itemScrollController: _groupedItemScrollController,
-                            groupBy: (element) => element['group'],
-                            groupSeparatorBuilder: (dynamic element) =>
-                                _buildDivider(element['group']),
-                            itemBuilder: (context, dynamic element) =>
-                                element['item'],
-                            itemComparator: (item1, item2) =>
-                                item1['date'].compareTo(item2['date']),
-                            floatingHeader: true,
-                            order: StickyGroupedListOrder.DESC,
-                            reverse: true,
+                          return Scrollbar(
+                            controller: _scrollController,
+                            child: StickyGroupedListView<dynamic, String>(
+                              elements: _elements,
+                              itemPositionsListener: _itemPositionsListener,
+                              itemScrollController:
+                                  _groupedItemScrollController,
+                              groupBy: (element) => element['group'],
+                              groupSeparatorBuilder: (dynamic element) =>
+                                  _buildDivider(element['group']),
+                              itemBuilder: (context, dynamic element) =>
+                                  element['item'],
+                              itemComparator: (item1, item2) =>
+                                  item1['date'].compareTo(item2['date']),
+                              floatingHeader: true,
+                              order: StickyGroupedListOrder.DESC,
+                              reverse: true,
+                            ),
                           );
                         }
                       },
@@ -355,8 +364,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           Flexible(
             child: returnChatState() && activation == true
                 ? TextField(
+                    style: TextStyle(
+                        fontSize: 16.0, height: 2, color: Colors.black),
                     controller: _messageController,
-                    onSubmitted: _handleSubmitted,
+                    onSubmitted: (text) async {
+                      return await _handleSubmitted(text);
+                    },
                     decoration: InputDecoration.collapsed(hintText: '채팅 작성'),
                     focusNode: _focusNode,
                   )
@@ -400,9 +413,13 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
         .index;
     print('$index:index');
-    if (index == limit * 2 - 1) {
-      setState(() => limit *= 2);
-      print('$index:end/limit:$limit}');
+    print('outLimit:${(limit * 2 + prevLimit) - 1}');
+    if (index >= (limit * 2 + prevLimit) - 1) {
+      print('limit:$limit');
+      limit *= 2;
+      prevLimit = limit;
+      Provider.of<MessageProvider>(context, listen: false)
+          .fetchNextMovies(widget.chatRoomID, limit);
     }
   }
 
@@ -425,7 +442,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     }
   }
 
-  void _handleSubmitted(String content, {String type = 'text'}) {
+  Future<void> _handleSubmitted(String content, {String type = 'text'}) async {
     if (content.isEmpty) return;
     _messageController.clear();
 
@@ -436,7 +453,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         receiverID: widget.receiverID,
         senderID: widget.senderID);
 
-    _chatModel.sendMessage(chatRoomId: widget.chatRoomID, message: msg);
+    await _chatModel.sendMessage(chatRoomId: widget.chatRoomID, message: msg);
+    Provider.of<MessageProvider>(context, listen: false)
+        .requestMessages(widget.chatRoomID);
     _focusNode.requestFocus();
   }
 
