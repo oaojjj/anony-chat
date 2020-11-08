@@ -62,8 +62,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     _authState = Provider.of<AuthProvider>(context, listen: false).authState;
     _itemPositionsListener.itemPositions.addListener(_scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      await Provider.of<MessageProvider>(context, listen: false)
-          .fetchFirstList(widget.chatRoomID, limit);
       await fetchDataInfoApi();
     });
   }
@@ -113,8 +111,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 child: Stack(
                   children: [
                     StreamBuilder(
-                      stream:
-                          Provider.of<MessageProvider>(context).messageStream,
+                      stream: _chatModel.getChatMessageList(
+                          widget.chatRoomID, limit),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return Center(child: CircularProgressIndicator());
@@ -123,7 +121,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           _chatModel.updateReadMsg(
                               snapshot, widget.senderID, widget.chatRoomID);
                           _elements.clear();
-                          snapshot.data.forEach((element) {
+                          snapshot.data.documents.forEach((element) {
                             final value = element.data();
                             print('msg: $value');
                             _elements.add({
@@ -415,13 +413,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
             position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
         .index;
     print('$index:index');
-    print('outLimit:${(limit * 2 + prevLimit) - 1}');
-    if (index >= (limit * 2 + prevLimit) - 1) {
+    print('outLimit:${(limit * 2) - 1}');
+    if (index >= (limit * 2) - 1) {
       print('limit:$limit');
-      limit *= 2;
-      prevLimit = limit;
-      Provider.of<MessageProvider>(context, listen: false)
-          .fetchNextMovies(widget.chatRoomID, limit);
+      setState(() {
+        limit *= 2;
+      });
     }
   }
 
@@ -457,10 +454,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         senderID: widget.senderID);
 
     await _chatModel
-        .sendMessage(chatRoomId: widget.chatRoomID, message: msg)
-        .then((value) async =>
-            await Provider.of<MessageProvider>(context, listen: false)
-                .requestMessages(widget.chatRoomID, time));
+        .sendMessage(chatRoomId: widget.chatRoomID, message: msg);
     _focusNode.requestFocus();
   }
 

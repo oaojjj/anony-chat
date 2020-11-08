@@ -210,7 +210,7 @@ class ChatModel {
   }
 
   void updateReadMsg(snapshot, id, chatRoomId) async {
-    for (var data in snapshot.data) {
+    for (var data in snapshot.data.documents) {
       if (data['receiverID'] == id && data['isRead'] == false) {
         if (data.reference != null) {
           FirebaseFirestore.instance.runTransaction((transaction) async =>

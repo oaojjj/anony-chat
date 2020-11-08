@@ -1,3 +1,4 @@
+/*
 import 'dart:async';
 import 'dart:io';
 
@@ -9,7 +10,7 @@ import 'package:rxdart/rxdart.dart';
 class MessageProvider extends ChangeNotifier {
   ChatModel _chatModel;
   List<QueryDocumentSnapshot> documentList;
-  var messageController;
+  BehaviorSubject<List<DocumentSnapshot>> messageController;
 
   MessageProvider() {
     _chatModel = ChatModel();
@@ -85,3 +86,4 @@ class MessageProvider extends ChangeNotifier {
     }
   }
 }
+*/

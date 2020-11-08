@@ -28,7 +28,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider.value(value: RegisterProvider()),
         ChangeNotifierProvider.value(value: AuthProvider()),
-        ChangeNotifierProvider.value(value: MessageProvider()),
+        //ChangeNotifierProvider.value(value: MessageProvider()),
       ],
       child: AnonymousChat(),
     ),
