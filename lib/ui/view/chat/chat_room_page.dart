@@ -70,7 +70,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   Future fetchDataInfoApi() async {
     final infoResult =
-    await _chatHttpModel.getMatchingUserInfo(widget.receiverID);
+        await _chatHttpModel.getMatchingUserInfo(widget.receiverID);
     print('#채팅유저인포:${infoResult.toJson()}');
     if (infoResult.code == ResponseCode.SUCCESS_CODE) {
       member.birthYear =
@@ -114,7 +114,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                   children: [
                     StreamBuilder(
                       stream:
-                      Provider.of<MessageProvider>(context).messageStream,
+                          Provider.of<MessageProvider>(context).messageStream,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return Center(child: CircularProgressIndicator());
@@ -148,12 +148,12 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                               elements: _elements,
                               itemPositionsListener: _itemPositionsListener,
                               itemScrollController:
-                              _groupedItemScrollController,
+                                  _groupedItemScrollController,
                               groupBy: (element) => element['group'],
                               groupSeparatorBuilder: (dynamic element) =>
                                   _buildDivider(element['group']),
                               itemBuilder: (context, dynamic element) =>
-                              element['item'],
+                                  element['item'],
                               itemComparator: (item1, item2) =>
                                   item1['date'].compareTo(item2['date']),
                               floatingHeader: true,
@@ -211,7 +211,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           },
                           backgroundColor: Colors.black54,
                           materialTapTargetSize:
-                          MaterialTapTargetSize.shrinkWrap,
+                              MaterialTapTargetSize.shrinkWrap,
                           child: Icon(
                             floatingIcon,
                             size: 32,
@@ -289,31 +289,31 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         padding: const EdgeInsets.all(8.0),
         child: infoFlag
             ? Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text.rich(
-              TextSpan(
-                text: '${member.birthYear}살',
-                style: TextStyle(color: textColor),
-                children: <TextSpan>[
-                  TextSpan(text: ' · '),
-                  TextSpan(text: member.gender),
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    TextSpan(
+                      text: '${member.birthYear}살',
+                      style: TextStyle(color: textColor),
+                      children: <TextSpan>[
+                        TextSpan(text: ' · '),
+                        TextSpan(text: member.gender),
+                      ],
+                    ),
+                  ),
+                  Text.rich(
+                    TextSpan(
+                      text: member.university,
+                      style: TextStyle(color: textColor),
+                      children: <TextSpan>[
+                        TextSpan(text: ' · '),
+                        TextSpan(text: member.department),
+                      ],
+                    ),
+                  )
                 ],
-              ),
-            ),
-            Text.rich(
-              TextSpan(
-                text: member.university,
-                style: TextStyle(color: textColor),
-                children: <TextSpan>[
-                  TextSpan(text: ' · '),
-                  TextSpan(text: member.department),
-                ],
-              ),
-            )
-          ],
-        )
+              )
             : Text('회원정보 비공개'),
       ),
     );
@@ -323,20 +323,20 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     return Row(children: <Widget>[
       Expanded(
           child: Divider(
-            color: Colors.black,
-            thickness: 0.5,
-            indent: 8,
-          )),
+        color: Colors.black,
+        thickness: 0.5,
+        indent: 8,
+      )),
       Padding(
         padding: const EdgeInsets.only(left: 8, right: 8),
         child: Text(groupByValue),
       ),
       Expanded(
           child: Divider(
-            color: Colors.black,
-            thickness: 0.5,
-            endIndent: 8,
-          )),
+        color: Colors.black,
+        thickness: 0.5,
+        endIndent: 8,
+      )),
     ]);
   }
 
@@ -364,30 +364,32 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
           Flexible(
             child: returnChatState() && activation == true
                 ? TextField(
-              style: TextStyle(
-                  fontSize: 16.0, height: 2, color: Colors.black),
-              controller: _messageController,
-              onSubmitted: (text) async {
-                return await _handleSubmitted(text);
-              },
-              decoration: InputDecoration.collapsed(hintText: '채팅 작성'),
-              focusNode: _focusNode,
-            )
+                    style: TextStyle(
+                        fontSize: 16.0, height: 2, color: Colors.black),
+                    controller: _messageController,
+                    onSubmitted: (text) async {
+                      return await _handleSubmitted(text);
+                    },
+                    decoration: InputDecoration.collapsed(hintText: '채팅 작성'),
+                    focusNode: _focusNode,
+                  )
                 : TextField(
-              enableInteractiveSelection: false,
-              enabled: false,
-              decoration:
-              InputDecoration.collapsed(hintText: '서비스가 제한됩니다.'),
-              focusNode: AlwaysDisabledFocusNode(),
-            ),
+                    enableInteractiveSelection: false,
+                    enabled: false,
+                    decoration:
+                        InputDecoration.collapsed(hintText: '서비스가 제한됩니다.'),
+                    focusNode: AlwaysDisabledFocusNode(),
+                  ),
           ),
           Container(
             width: 56.0,
             height: 48.0,
             child: FlatButton(
                 child: Icon(Icons.send, size: 24.0),
-                onPressed: () => returnChatState() && activation == true
-                    ? _handleSubmitted(_messageController.text)
+                onPressed: returnChatState() && activation == true
+                    ? () async {
+                        await _handleSubmitted(_messageController.text);
+                      }
                     : null),
           ),
         ],
@@ -410,7 +412,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     final index = _itemPositionsListener.itemPositions.value
         .where((ItemPosition position) => position.itemLeadingEdge < 1)
         .reduce((ItemPosition max, ItemPosition position) =>
-    position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
+            position.itemLeadingEdge > max.itemLeadingEdge ? position : max)
         .index;
     print('$index:index');
     print('outLimit:${(limit * 2 + prevLimit) - 1}');
@@ -446,16 +448,19 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
     if (content.isEmpty) return;
     _messageController.clear();
 
+    final time = DateTime.now().millisecondsSinceEpoch;
     final msg = Message(
         content: content,
         type: type,
-        time: DateTime.now().millisecondsSinceEpoch,
+        time: time,
         receiverID: widget.receiverID,
         senderID: widget.senderID);
 
-    await _chatModel.sendMessage(chatRoomId: widget.chatRoomID, message: msg);
-    Provider.of<MessageProvider>(context, listen: false)
-        .requestMessages(widget.chatRoomID);
+    await _chatModel
+        .sendMessage(chatRoomId: widget.chatRoomID, message: msg)
+        .then((value) async =>
+            await Provider.of<MessageProvider>(context, listen: false)
+                .requestMessages(widget.chatRoomID, time));
     _focusNode.requestFocus();
   }
 
@@ -477,7 +482,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                         child: Text(
                           '주의',
                           style:
-                          TextStyle(color: chatPrimaryColor, fontSize: 24),
+                              TextStyle(color: chatPrimaryColor, fontSize: 24),
                         ),
                       ),
                     ),
@@ -560,9 +565,9 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                       color: returnChatState() ? Colors.black : Colors.grey)),
               onTap: returnChatState()
                   ? () {
-                Navigator.pushNamed(context, '/chat_report_page',
-                    arguments: widget.receiverID);
-              }
+                      Navigator.pushNamed(context, '/chat_report_page',
+                          arguments: widget.receiverID);
+                    }
                   : null,
             ),
             Divider(

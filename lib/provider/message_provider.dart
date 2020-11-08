@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 
 class MessageProvider extends ChangeNotifier {
   ChatModel _chatModel;
-  var documentList;
+  List<QueryDocumentSnapshot> documentList;
   var messageController;
 
   MessageProvider() {
@@ -63,15 +63,12 @@ class MessageProvider extends ChangeNotifier {
   // ignore: must_call_super
   void dispose() => messageController.close();
 
-  Future<void> requestMessages(chatRoomID) async {
+  Future<void> requestMessages(chatRoomID, time) async {
     try {
-      print('test:1111111');
-      final newDocumentList = await _chatModel.fetchNewMessage(chatRoomID);
-      print('test:2222222');
+      final newDocumentList =
+          await _chatModel.fetchNewMessage(chatRoomID, time);
       documentList.insert(0, newDocumentList[0]);
-      print('test:333333');
       messageController.sink.add(documentList);
-      print('test:444444');
       try {
         if (documentList.length == 0) {
           messageController.sink.addError("No Data Available");

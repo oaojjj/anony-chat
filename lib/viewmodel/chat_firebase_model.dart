@@ -141,7 +141,8 @@ class ChatModel {
         .snapshots();
   }
 
-  fetchFirstMessageList(chatRoomID, limit) async {
+  Future<List<QueryDocumentSnapshot>> fetchFirstMessageList(
+      chatRoomID, limit) async {
     return (await _fdb
             .collection(CHAT_ROOM_COLLECTION)
             .doc(chatRoomID)
@@ -152,7 +153,7 @@ class ChatModel {
         .docs;
   }
 
-  fetchNextMessageList(
+  Future<List<QueryDocumentSnapshot>> fetchNextMessageList(
       List<DocumentSnapshot> documentList, chatRoomID, limit) async {
     return (await _fdb
             .collection(CHAT_ROOM_COLLECTION)
@@ -165,13 +166,12 @@ class ChatModel {
         .docs;
   }
 
-  fetchNewMessage(chatRoomID) async {
+  Future<List<QueryDocumentSnapshot>> fetchNewMessage(chatRoomID, time) async {
     return (await _fdb
             .collection(CHAT_ROOM_COLLECTION)
             .doc(chatRoomID)
             .collection(CHAT_MESSAGES)
-            .orderBy('time', descending: true)
-            .limit(1)
+            .where('time', isEqualTo: time)
             .get())
         .docs;
   }
