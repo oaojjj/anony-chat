@@ -183,15 +183,35 @@ class _CardRegistrationPageState extends State<CardRegistrationPage> {
                             _cardNumberController[1].text +
                             _cardNumberController[2].text +
                             _cardNumberController[3].text;
-                        final cardAddResult =
-                            await _cardHttpModel.addCard(customerUid);
-                        if (cardAddResult.code == ResponseCode.SUCCESS_CODE) {
-                          showToast('카드 등록에 성공했습니다.');
-                          Navigator.pop(context);
-                          Navigator.popAndPushNamed(
-                              context, '/payment_ready_page');
+
+                        final cardNumber = _cardNumberController[0].text +
+                            '-' +
+                            _cardNumberController[1].text +
+                            '-' +
+                            _cardNumberController[2].text +
+                            '-' +
+                            _cardNumberController[3].text;
+
+                        final result = await _cardHttpModel.addImportApiCard(
+                            cardNumber: cardNumber,
+                            birth: _birthController.text,
+                            expiry: _selectedYear + '-' + _selectedMonth,
+                            pwd2Digit: _cardPWController.text,
+                            customerUid: customerUid);
+
+                        print(result.toString());
+                        if (result['code'] == -1) {
+                          showToast(result['message']);
                         } else {
-                          showToast('카드 등록에 실패했습니다.');
+                          final cardAddResult =
+                              await _cardHttpModel.addCard(customerUid);
+                          if (cardAddResult.code == ResponseCode.SUCCESS_CODE) {
+                            showToast('카드 등록에 성공했습니다.');
+                            Navigator.popUntil(
+                                context, ModalRoute.withName('/payment_page'));
+                          } else {
+                            showToast('카드 등록에 실패했습니다.');
+                          }
                         }
                       }
                     }),

@@ -1,3 +1,4 @@
+import 'package:anony_chat/viewmodel/card_http_model.dart';
 import 'package:anony_chat/viewmodel/payment_http_model.dart';
 import 'package:flutter/material.dart';
 
@@ -33,6 +34,7 @@ class HomeDrawer extends StatelessWidget {
             ListTile(
               title: Text('테스트', style: TextStyle(fontSize: 18.0)),
               onTap: () async {
+                Navigator.pushNamed(context, '/payment_page');
               },
             ),
           ],

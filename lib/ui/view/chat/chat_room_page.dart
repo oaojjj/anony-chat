@@ -5,7 +5,6 @@ import 'package:anony_chat/controller/pick_image_controller.dart';
 import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/model/dao/message.dart';
 import 'package:anony_chat/provider/auth_provider.dart';
-import 'package:anony_chat/provider/message_provider.dart';
 import 'package:anony_chat/ui/widget/always_disabled_focus_node.dart';
 import 'package:anony_chat/ui/widget/chat/chat_message.dart';
 import 'package:anony_chat/utils/utill.dart';
@@ -41,6 +40,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   final _chatHttpModel = ChatHttpModel();
 
+  FocusScopeNode node;
   AuthState _authState;
   Member member = Member();
 
@@ -84,6 +84,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   @override
   Widget build(BuildContext context) {
+    node = FocusScope.of(context);
     return SafeArea(
       child: Scaffold(
         endDrawer: _buildEndDrawer(),
@@ -123,7 +124,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                           _elements.clear();
                           snapshot.data.documents.forEach((element) {
                             final value = element.data();
-                            print('msg: $value');
+                            //print('msg: $value');
                             _elements.add({
                               'item': ChatMessage(
                                 message: Message(
@@ -365,8 +366,14 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                     style: TextStyle(
                         fontSize: 16.0, height: 2, color: Colors.black),
                     controller: _messageController,
+                    onEditingComplete: () {
+                      node.requestFocus();
+                      print('onEditingComplete');
+                    },
                     onSubmitted: (text) async {
-                      return await _handleSubmitted(text);
+                      print('onSubmitted');
+                      await _handleSubmitted(text);
+                      _messageController.clear();
                     },
                     decoration: InputDecoration.collapsed(hintText: '채팅 작성'),
                     focusNode: _focusNode,
@@ -387,6 +394,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
                 onPressed: returnChatState() && activation == true
                     ? () async {
                         await _handleSubmitted(_messageController.text);
+                        _messageController.clear();
                       }
                     : null),
           ),
@@ -443,8 +451,8 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
 
   Future<void> _handleSubmitted(String content, {String type = 'text'}) async {
     if (content.isEmpty) return;
-    _messageController.clear();
 
+    _messageController.clear();
     final time = DateTime.now().millisecondsSinceEpoch;
     final msg = Message(
         content: content,
@@ -453,8 +461,7 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         receiverID: widget.receiverID,
         senderID: widget.senderID);
 
-    await _chatModel
-        .sendMessage(chatRoomId: widget.chatRoomID, message: msg);
+    await _chatModel.sendMessage(chatRoomId: widget.chatRoomID, message: msg);
     _focusNode.requestFocus();
   }
 

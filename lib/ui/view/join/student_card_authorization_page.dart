@@ -913,13 +913,13 @@ class _SCAuthorizationPageState extends State<SCAuthorizationPage> {
       final rp = Provider.of<RegisterProvider>(context, listen: false);
       final ap = Provider.of<AuthProvider>(context, listen: false);
       final result = await _memberModel.register(rp.member);
-
       if (result) {
         ap.setAuthState(ResponseCode.NOT_AUTHORIZED);
         Navigator.pushNamedAndRemoveUntil(
             context, '/main_page', (route) => false);
       } else {
         print('#회원가입 실패');
+        showToast('회원가입 실패');
         Navigator.pop(context);
       }
     }

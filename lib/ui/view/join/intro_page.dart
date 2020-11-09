@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:anony_chat/controller/hive_controller.dart';
-import 'package:anony_chat/model/dao/member.dart';
 import 'package:anony_chat/provider/auth_provider.dart';
 import 'package:anony_chat/provider/register_provider.dart';
 import 'package:anony_chat/ui/widget/loading.dart';
@@ -113,10 +112,8 @@ class _IntroPageState extends State<IntroPage> {
                     FlatButton(
                       child: Text('지름길'),
                       onPressed: () async {
-                        headers['token'] =
-                            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1IjozLCJsIjowLCJpYXQiOjE2MDQyNzgyNTAsImV4cCI6MTYwNTE0MjI1MCwiaXNzIjoidW5pbSIsInN1YiI6InVpbmZvIn0.lekQCHsrjAGh69YuYQdGtd-sewZ1ttZPBZeuACEvzAk';
-                        await _fetchAndUpdateUser(1000);
-                        Navigator.pushNamed(context, '/main_page');
+                        await test(context);
+                        //Navigator.pushNamed(context, '/student_card_authorization_page');
                       },
                     ),
                     SizedBox(height: deviceSize.height * 0.25)
@@ -125,6 +122,13 @@ class _IntroPageState extends State<IntroPage> {
               ),
             ),
           );
+  }
+
+  Future test(BuildContext context) async {
+    headers['token'] =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1IjozLCJsIjowLCJpYXQiOjE2MDQyNzgyNTAsImV4cCI6MTYwNTE0MjI1MCwiaXNzIjoidW5pbSIsInN1YiI6InVpbmZvIn0.lekQCHsrjAGh69YuYQdGtd-sewZ1ttZPBZeuACEvzAk';
+    await _fetchAndUpdateUser(1000);
+    Navigator.pushNamed(context, '/main_page');
   }
 
   _startGuideDialog(context) {
@@ -240,7 +244,11 @@ class _IntroPageState extends State<IntroPage> {
             }
 
             // 사용자 체크하고 로컬db 업데이트
-            if (await _fetchAndUpdateUser(loginResult.code)) return;
+            if (await _fetchAndUpdateUser(loginResult.code)) {
+              showToast('로그인 실패');
+              setState(() => _loading = false);
+              return;
+            }
 
             // 사용자 인증 상태 업데이트
             Provider.of<AuthProvider>(context, listen: false)

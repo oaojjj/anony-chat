@@ -39,7 +39,7 @@ class ItemStorePage extends StatelessWidget {
                     horizontal: 24.0, vertical: 12.0),
                 child: BottomButton(
                   onPressed: () =>
-                      Navigator.pushNamed(context, '/payment_ready_page'),
+                      Navigator.pushNamed(context, '/payment_page'),
                   text: '월구독 신청',
                 ),
               ),

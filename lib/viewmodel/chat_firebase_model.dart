@@ -2,6 +2,8 @@ import 'package:anony_chat/controller/hive_controller.dart';
 import 'package:anony_chat/controller/notification_controller.dart';
 import 'package:anony_chat/model/dao/chat_room.dart';
 import 'package:anony_chat/model/dao/message.dart';
+import 'package:anony_chat/utils/utill.dart';
+import 'package:anony_chat/viewmodel/chat_http_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'member_model.dart';
@@ -12,6 +14,8 @@ class ChatModel {
   static const String CHAT_ROOM_COLLECTION = 'chat_room';
   static const String CHAT_LIST_COLLECTION = 'chat_list';
   static const String CHAT_MESSAGES = 'messages';
+
+  final _chatHttpModel = ChatHttpModel();
 
   Future<void> sendMessage({String chatRoomId, Message message}) async {
     // 메세지 전송 추가
@@ -53,32 +57,31 @@ class ChatModel {
 
   Future<int> createChatRoom(ChatRoom chatRoom) async {
     // api 이용해서 상대방 id 가져오기
-    //final matchingResult = await _chatHttpModel.matching();
-    //print("#메세지보내기: ${matchingResult.toJson()}");
-    //matchingResult.data.item[0]['id'] = 10;
+    final matchingResult = await _chatHttpModel.matching();
+    print("#메세지보내기: ${matchingResult.toJson()}");
+    // matchingResult.data.item[0]['id'] = 10; test
 
-    //if (matchingResult.code == ResponseCode.SUCCESS_CODE) {
-    // final receiver = matchingResult.data.item[0]['id'];
-    chatRoom.message.receiverID = 10;
-    chatRoom.withWho = 10;
-    chatRoom.chatRoomID =
-        '${chatRoom.message.senderID}_${chatRoom.message.receiverID}';
+    if (matchingResult.code == ResponseCode.SUCCESS_CODE) {
+      final receiver = matchingResult.data.item[0]['id'];
+      chatRoom.message.receiverID = receiver;
+      chatRoom.withWho = receiver;
+      chatRoom.chatRoomID =
+          '${chatRoom.message.senderID}_${chatRoom.message.receiverID}';
 
-    // 채팅 리스트 만들기
-    _createChatList(chatRoom);
+      // 채팅 리스트 만들기
+      _createChatList(chatRoom);
 
-    // 채팅방 만들기
-    _createChatRoom(chatRoom);
+      // 채팅방 만들기
+      _createChatRoom(chatRoom);
 
-    // 알림 보내기
-    final peerUserToken = await getFcmToken(chatRoom.message.receiverID);
-    NotificationController.instance.sendNotificationToPeerUser(
-        mode: 0,
-        peerUserToken: peerUserToken,
-        unReadMSGCount: await getUnReadMsgCountFuture(chatRoom.chatRoomID));
-    // }
-    // return matchingResult.code;
-    return 1000;
+      // 알림 보내기
+      final peerUserToken = await getFcmToken(chatRoom.message.receiverID);
+      NotificationController.instance.sendNotificationToPeerUser(
+          mode: 0,
+          peerUserToken: peerUserToken,
+          unReadMSGCount: await getUnReadMsgCountFuture(chatRoom.chatRoomID));
+    }
+    return matchingResult.code;
   }
 
   Future<void> _createChatRoom(ChatRoom chatRoom) async {

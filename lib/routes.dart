@@ -1,5 +1,6 @@
 import 'package:anony_chat/ui/view/home/ad_watching_page.dart';
 import 'package:anony_chat/ui/view/home/drawer/card_registration_page.dart';
+import 'package:anony_chat/ui/view/home/drawer/payment_page.dart';
 import 'package:anony_chat/ui/view/join/student_card_authorization_page.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,6 @@ import 'ui/view/home/drawer/profile_page.dart';
 import 'ui/view/home/drawer/report_guide_page.dart';
 import 'ui/view/home/drawer/report_page.dart';
 import 'ui/view/home/drawer/terms_of_service_page.dart';
-import 'ui/view/home/payment_ready_page.dart';
 import 'ui/view/join/intro_page.dart';
 
 final routes = {
@@ -36,5 +36,5 @@ final routes = {
   '/item_store_page': (BuildContext context) => ItemStorePage(),
   '/ad_watching_page': (BuildContext context) => AdWatchingPage(),
   '/card_registration_page': (BuildContext context) => CardRegistrationPage(),
-  '/payment_ready_page': (BuildContext context) => PaymentReadyPage(),
+  '/payment_page': (BuildContext context) => PaymentPage(),
 };

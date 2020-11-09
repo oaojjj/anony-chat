@@ -6,6 +6,10 @@ const HOST = 'https://unim.chaeft.com';
 
 Map headers = Map<String, String>();
 
+const IMP_KEY = "1044177210088829";
+const IMP_SECRET =
+    "MPQjMMwYSZo1LagTcgL092WPUegRLtkyjaR6Xo5QotR9E83QoPRxRNnL2DCO7Xmr8ex5DDW16OaLWeCl";
+
 const Color chatPrimaryColor = Color.fromRGBO(81, 17, 243, 1);
 const Color chatAccentColor = Color.fromRGBO(100, 70, 245, 1);
 

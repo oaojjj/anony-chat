@@ -35,7 +35,7 @@ class MemberModel {
 
       print('#학생증 업로드');
       final uploadResult =
-      await _fileHttpModel.uploadFile(file: member.studentCardImage);
+          await _fileHttpModel.uploadFile(file: member.studentCardImage);
 
       if (uploadResult.success) {
         UserInfoEdit userEditResult = await _userHttpModel.userEdit(member,
@@ -67,7 +67,8 @@ class MemberModel {
 
   // 회원 프로필 수정하기
   Future<bool> updateProfile(Member fixProfile) async {
-    UserInfoEdit userEditResult = await _userHttpModel.userEdit(fixProfile);
+    UserInfoEdit userEditResult = await _userHttpModel.userEdit(fixProfile,
+        imageCode: fixProfile.studentImageNumber);
     if (userEditResult.code == ResponseCode.SUCCESS_CODE) {
       HiveController.instance.saveMemberInfoToLocal(fixProfile);
       return true;

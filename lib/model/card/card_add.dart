@@ -1,12 +1,12 @@
-class Billings {
+class CardAdd {
   num code;
   String message;
   bool success;
   CardAddData data;
 
-  Billings({this.code, this.message, this.success, this.data});
+  CardAdd({this.code, this.message, this.success, this.data});
 
-  Billings.fromJson(Map<String, dynamic> json) {
+  CardAdd.fromJson(Map<String, dynamic> json) {
     code = json['code'];
     message = json['message'];
     success = json['success'];
