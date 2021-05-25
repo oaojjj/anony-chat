@@ -17,12 +17,12 @@ samples, guidance on mobile development, and a full API reference.
 
 ## 앱 화면
 <div margin-right:10px>
-<img src="https://user-images.githubusercontent.com/49146043/119470882-ba5db180-bd83-11eb-9283-c27c6443b1f8.jpg" title="홈화면" width="300" height="600" hspace="5">
-<img src="https://user-images.githubusercontent.com/49146043/119472608-56d48380-bd85-11eb-8123-6c6cbf5de9cc.jpg" title="메세지 아이콘" width="300" height="600" hspace="5">
-<img src="https://user-images.githubusercontent.com/49146043/119471609-68695b80-bd84-11eb-9612-1499dd7c953e.jpg" title="메세지 전송" width="300" height="600" hspace="5">
+<img src="https://user-images.githubusercontent.com/49146043/119470882-ba5db180-bd83-11eb-9283-c27c6443b1f8.jpg" title="홈화면" width="300" height="600" hspace="2">
+<img src="https://user-images.githubusercontent.com/49146043/119472608-56d48380-bd85-11eb-8123-6c6cbf5de9cc.jpg" title="메세지 아이콘" width="300" height="600" hspace="2">
+<img src="https://user-images.githubusercontent.com/49146043/119471609-68695b80-bd84-11eb-9612-1499dd7c953e.jpg" title="메세지 전송" width="300" height="600" hspace="2">
 <br>
 <br>
-<img src="https://user-images.githubusercontent.com/49146043/119472699-6a7fea00-bd85-11eb-9156-9c29e88f65f2.jpg" title="채팅 알림" width="300" height="600" hspace="5">
-<img src="https://user-images.githubusercontent.com/49146043/119472450-399fb500-bd85-11eb-94b4-de67a8f6b26b.jpg" title="메세지 알림 뱃지" width="300" height="600" hspace="5">
-<img src="https://user-images.githubusercontent.com/49146043/119471004-d6f9e980-bd83-11eb-8e71-31040f5cca09.jpg" title="채팅방" width="300" height="600" hspace="5">
+<img src="https://user-images.githubusercontent.com/49146043/119472699-6a7fea00-bd85-11eb-9156-9c29e88f65f2.jpg" title="채팅 알림" width="300" height="600" hspace="2">
+<img src="https://user-images.githubusercontent.com/49146043/119472450-399fb500-bd85-11eb-94b4-de67a8f6b26b.jpg" title="메세지 알림 뱃지" width="300" height="600" hspace="2">
+<img src="https://user-images.githubusercontent.com/49146043/119471004-d6f9e980-bd83-11eb-8e71-31040f5cca09.jpg" title="채팅방" width="300" height="600" hspace="2">
 <div>
