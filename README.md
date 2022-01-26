@@ -1,6 +1,6 @@
 # anony_chat
 
-익명메신저어플
+기존의 돛단배를 벤치마킹한 익명메신저어플 MVP
 
 ## Getting Started
 
